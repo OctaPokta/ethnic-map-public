@@ -1,0 +1,242 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e4e4e7; min-height: 100vh; overflow: hidden; transition: background 0.5s ease; }
+
+/* --- FEATURE 2: LOADING SCREEN --- */
+#loading-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s; }
+.loading-logo { width: 180px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); animation: pulseLogo 2s infinite alternate; }
+@keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
+.loading-bar-container { width: 250px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; position: relative; transition: opacity 0.4s ease; }
+.loading-bar-fill { height: 100%; width: 0%; background: #6366f1; transition: width 0.3s ease-out; }
+.enter-map-btn { margin-top: -6px; padding: 0.75rem 2rem; background: #6366f1; color: #fff; font-family: inherit; font-weight: 600; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); transition: all 0.3s ease; opacity: 1; transform: translateY(0); }
+.enter-map-btn:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6); }
+.enter-map-btn.hidden { opacity: 0; visibility: hidden; transform: translateY(10px); position: absolute; }
+
+/* Main App */
+.app { position: relative; width: 100vw; height: 100vh; display: flex; overflow: hidden; }
+.glass-panel { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+/* --- TOP FLOATING ETHNICITY TITLE --- */
+#top-title-banner { position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 1rem 3rem; border-radius: 16px; display: flex; align-items: center; gap: 3rem; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; }
+#top-title-banner.hidden { opacity: 0; transform: translate(-50%, -150%); pointer-events: none; }
+#top-title-banner h1 { font-size: 2.2rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 0.05em; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+#close-title-btn { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fff; font-size: 2rem; line-height: 1; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+#close-title-btn:hover { background: rgba(239, 68, 68, 0.9); transform: scale(1.1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+
+/* --- FEATURE 3: CITY DOSSIER POPUP --- */
+.dossier-panel { display: flex; flex-direction: column; padding: 1.5rem !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); width: 350px; border-radius: 16px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); text-align: right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; }
+.dossier-panel.hidden { opacity: 0; transform: translate(-50%, -40%) scale(0.9); pointer-events: none; }
+#city-dossier h2 { font-size: 1.6rem; color: #fff; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.25rem; }
+.dossier-stats { display: flex; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 0.5rem !important; border-radius: 8px; margin-bottom: 0.75rem; }
+.stat-label { color: #94a3b8; font-size: 0.9rem; }
+.stat-value { color: #6366f1; font-weight: 700; font-size: 1rem; }
+.dossier-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 1rem; max-height: 180px; }
+.dossier-desc { color: #e2e8f0; font-size: 0.9rem; line-height: 1.5; overflow-y: auto; max-height: 250px; }
+
+/* --- COMPASS BUTTON --- */
+.compass-btn { position: absolute; top: 2rem; left: 2rem; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 40; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+.compass-btn svg { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.compass-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+.compass-btn:hover svg { transform: rotate(90deg); }
+
+/* Sidebar Styling */
+.sidebar { position: absolute; top: 0; right: 0; height: 100vh; width: 320px; border-left: 1px solid rgba(255, 255, 255, 0.1); box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4); z-index: 50; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: visible !important; }
+.sidebar-scrollable { width: 100%; height: 100%; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; }
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.sidebar-title { font-size: 1.25rem; font-weight: 700; color: #f8fafc; }
+.theme-toggle-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.25rem 0.5rem; cursor: pointer; font-size: 1.25rem; transition: all 0.2s ease; }
+.theme-toggle-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+.sidebar-section { display: flex; flex-direction: column; gap: 0.75rem; }
+.sidebar-section > label:first-child, .section-heading { font-size: 0.75rem; font-weight: 600; color: #94a3b8; letter-spacing: 0.05em; }
+
+/* Dropdown & Checkboxes */
+.custom-select-wrapper { position: relative; width: 100%; }
+.custom-select-trigger { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; font-size: 0.875rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #f1f5f9; cursor: pointer; transition: all 0.2s ease; }
+.custom-select-trigger:hover { background: rgba(15, 23, 42, 0.9); border-color: rgba(255, 255, 255, 0.2); }
+.custom-select-trigger .arrow { width: 10px; height: 10px; border-bottom: 2px solid #94a3b8; border-left: 2px solid #94a3b8; transform: translateY(-2px) rotate(-45deg); transition: transform 0.3s ease; }
+.custom-select-wrapper.open .arrow { transform: translateY(2px) rotate(135deg); }
+.custom-options { position: absolute; top: 100%; left: 0; right: 0; margin-top: 0.5rem; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; z-index: 30; max-height: 250px; overflow-y: auto; }
+.custom-select-wrapper.open .custom-options { opacity: 1; visibility: visible; transform: translateY(0); }
+.custom-option { display: block; padding: 0.75rem 1rem; font-size: 0.875rem; color: #e2e8f0; cursor: pointer; transition: background 0.2s ease; }
+.custom-option:hover { background: rgba(99, 102, 241, 0.2); color: #fff; }
+.checkbox-group { display: flex; flex-direction: column; gap: 4px; }
+.checkbox-label { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: #e2e8f0; cursor: pointer; padding: 0.5rem; border-radius: 8px; transition: background 0.2s ease; }
+.checkbox-label:hover { background: rgba(255, 255, 255, 0.05); }
+.checkbox-label input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.checkbox-custom { position: relative; flex-shrink: 0; width: 40px; height: 22px; border-radius: 11px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+.checkbox-custom::after { content: ''; position: absolute; top: 1px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: #94a3b8; transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
+.checkbox-label input:checked + .checkbox-custom { background: #6366f1; border-color: #6366f1; box-shadow: 0 0 12px rgba(99, 102, 241, 0.6); }
+.checkbox-label input:checked + .checkbox-custom::after { transform: translateX(-16px); background: #fff; }
+.sidebar-actions { margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem; }
+.action-btn { width: 100%; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; font-family: inherit; }
+.select-all-btn { background: #6366f1; color: #fff; border: 1px solid #6366f1; box-shadow: 0 0 12px rgba(99, 102, 241, 0.4); }
+.select-all-btn:hover { background: #4f46e5; box-shadow: 0 0 16px rgba(99, 102, 241, 0.6); }
+.clear-map-btn { color: #f8fafc; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
+.clear-map-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+
+/* Slide-in Info Panel */
+.info-panel { position: absolute; top: 6rem; left: 2rem; width: 320px; max-height: calc(100vh - 8rem); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.4); padding: 1.5rem; z-index: 20; transform: translateX(-120%); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; }
+.info-panel.active { transform: translateX(0); opacity: 1; }
+.info-panel h3 { font-size: 1.25rem; color: #fff; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.close-info-btn { position: absolute; top: 1rem; left: 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-size: 1.25rem; line-height: 1; cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; z-index: 10; }
+.close-info-btn:hover { color: #fff; background: rgba(239, 68, 68, 0.8); border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+
+/* --- FEATURE 5: DONUT CHART & BARS --- */
+.donut-container { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+.donut-chart { width: 140px; height: 140px; transform: rotate(-90deg); animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes popIn { 0% { transform: rotate(-90deg) scale(0.5); opacity: 0; } 100% { transform: rotate(-90deg) scale(1); opacity: 1; } }
+.donut-slice { transition: stroke-width 0.2s ease, filter 0.2s ease; cursor: pointer; }
+.donut-slice:hover { stroke-width: 18; filter: brightness(1.3); }
+
+.demo-item { margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; }
+.demo-item:hover { background: rgba(255, 255, 255, 0.08); transform: translateX(-4px); }
+.demo-label { display: flex; justify-content: space-between; font-size: 0.8125rem; color: #e2e8f0; margin-bottom: 0.375rem; pointer-events: none; }
+.demo-bar-bg { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; pointer-events: none; }
+.demo-bar-fill { height: 100%; border-radius: 4px; width: 0%; animation: slideBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; }
+@keyframes slideBar { from { width: 0%; } to { width: var(--target-width); } }
+
+/* Map Layers */
+.map-area { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+.map-container { width: 100%; height: 100%; position: relative; }
+#map-viewport { width: 100%; height: 100%; position: relative; overflow: hidden; cursor: grab; touch-action: none; }
+#map-viewport:active { cursor: grabbing; }
+
+/* 🔥 NEW ASPECT-RATIO MAP WRAPPER 🔥 */
+/* Fixes the "Floating City Pins" on mobile */
+#map-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  max-width: calc(100vh * (1536 / 864));
+  max-height: calc(100vw * (864 / 1536));
+}
+
+#map-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 0 0; transition: transform 0.8s ease-in-out; }
+.map-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+.map-base { z-index: 0; transition: filter 0.8s ease; }
+.map-ethnic { z-index: 1; opacity: 0; mix-blend-mode: multiply; transition: opacity 0.5s ease; pointer-events: none; }
+.map-ethnic.visible { opacity: 0.85; }
+.map-label { z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.5s ease 0.2s, filter 0.5s ease 0.2s; filter: drop-shadow(0px 0px 0px rgba(0,0,0,0)); }
+.map-label.visible { opacity: 1; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.7)); }
+.map-border { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 100; pointer-events: none; }
+
+.vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.8); z-index: 10; }
+
+/* NIGHT MODE CSS */
+body.night-mode { background: #050505; }
+body.night-mode .map-base { filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9); }
+body.night-mode .map-ethnic { mix-blend-mode: screen; }
+body.night-mode .map-ethnic.visible { opacity: 0.65; }
+body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
+
+/* --- CITY PINS --- */
+#city-pins { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 105; pointer-events: none; }
+.city-pin { position: absolute; width: 14px; height: 14px; background-color: #ffd900; border-radius: 50%; transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px rgba(0, 0, 0, 0.9); pointer-events: auto; cursor: pointer; transition: opacity 0.4s ease; }
+.city-pin:hover { background-color: #fff; box-shadow: 0 0 20px #fff; }
+.city-pin.dimmed { opacity: 0; pointer-events: none; }
+.city-pin::before { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 2px solid #ffd000; animation: pulse 2s infinite; pointer-events: none; }
+.city-pin.dimmed::before { animation: none; display: none; }
+@keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+.city-tooltip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px); background: rgba(15, 23, 42, 0.9); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); }
+.city-pin:hover .city-tooltip { opacity: 1; }
+
+.toggle-sidebar-btn { position: absolute; top: 2rem; left: -32px; width: 32px; height: 48px; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-right: none; border-radius: 8px 0 0 8px; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; }
+.toggle-sidebar-btn:hover { background: #6366f1; color: #fff; }
+.arrow-icon { width: 8px; height: 8px; border-top: 2px solid #fff; border-right: 2px solid #fff; transform: rotate(45deg); transition: transform 0.3s ease; }
+.sidebar.collapsed { transform: translateX(100%); }
+.sidebar.collapsed .arrow-icon { transform: rotate(-135deg); }
+.sidebar { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+
+#minimap { position: absolute; bottom: 2rem; left: 2rem; width: 200px; aspect-ratio: 16/9; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); z-index: 20; cursor: grab; user-select: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+#minimap:active { cursor: grabbing; } 
+#minimap:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); }
+#minimap img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; }
+#minimap-rect { position: absolute; border: 2px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4); background: rgba(255, 255, 255, 0.1); pointer-events: none; }
+
+/* 🔥 EXTRAVAGANT DONATION BUTTON & ANIMATIONS 🔥 */
+.donation-btn { position: absolute; bottom: 2.2rem; left: calc(200px + 3.5rem); width: 52px; height: 52px; border-radius: 50%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 2px solid rgba(251, 191, 36, 0.6); color: #fbbf24; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(251, 191, 36, 0.2); text-decoration: none; }
+.donation-btn::before { content: ''; position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, rgba(251, 191, 36, 0.9), transparent 40%); animation: spinAura 3s linear infinite; z-index: -1; opacity: 0; transition: opacity 0.3s ease; }
+.donation-btn.pulsing::before, .donation-btn:hover::before { opacity: 1; }
+.donation-btn:hover { transform: scale(1.1) translateY(-4px); background: rgba(30, 41, 59, 0.95); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 30px rgba(251, 191, 36, 0.5); border-color: #f59e0b; color: #fcd34d; }
+.donation-btn svg { width: 24px; height: 24px; transition: transform 0.4s ease; }
+.donation-btn:hover svg { transform: rotate(-15deg) scale(1.1); }
+.donation-callout-card { position: absolute; bottom: calc(100% + 20px); left: 50%; transform: translateX(-20%) scale(0); transform-origin: bottom left; background: linear-gradient(135deg, #f59e0b 0%, #d97706 40%, #fbbf24 50%, #d97706 60%, #f59e0b 100%); background-size: 200% 200%; animation: cardShineBg 3s infinite linear; padding: 14px 20px; border-radius: 16px 16px 16px 4px; box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(245, 158, 11, 0.4); color: #fff; display: flex; flex-direction: column; gap: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); border: 1px solid rgba(255,255,255,0.4); }
+.donation-callout-card::after { content: ''; position: absolute; bottom: -9px; left: 15%; border-width: 9px 9px 0 0; border-style: solid; border-color: #d97706 transparent transparent transparent; }
+.callout-title { font-size: 1.15rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.callout-subtitle { font-size: 0.85rem; font-weight: 500; opacity: 0.95; }
+.donation-callout-card.show, .donation-btn:hover .donation-callout-card { transform: translateX(-20%) scale(1); opacity: 1; }
+@keyframes spinAura { 100% { transform: rotate(360deg); } }
+@keyframes cardShineBg { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ========================================================================= */
+/* 📱 MOBILE RESPONSIVENESS (Screens smaller than 768px, or Landscape Phones) */
+/* ========================================================================= */
+@media (max-width: 768px), (max-width: 950px) and (orientation: landscape) {
+  
+  /* 1. Hide Minimap to save screen space on rotated phones */
+  #minimap { display: none !important; }
+  
+  /* 2. Move Donation Button to bottom left where minimap was */
+  .donation-btn {
+    left: 1.5rem;
+    bottom: 1.5rem;
+    width: 44px;
+    height: 44px;
+  }
+  .donation-btn svg { width: 20px; height: 20px; }
+
+  /* Ensure the golden card doesn't overflow off the left side of the screen */
+  .donation-callout-card {
+    left: 0;
+    transform: translateX(0) scale(0);
+    transform-origin: bottom left;
+  }
+  .donation-callout-card.show, .donation-btn:hover .donation-callout-card {
+    transform: translateX(0) scale(1);
+  }
+  .donation-callout-card::after { left: 18px; }
+
+  /* 3. Adjust Compass Size */
+  .compass-btn { top: 1.5rem; left: 1.5rem; width: 40px; height: 40px; }
+
+  /* 4. Transform Info Panel (Demographics) into a "Bottom Sheet" */
+  .info-panel {
+    top: auto;
+    bottom: 5.5rem; 
+    left: 1rem;
+    right: 1rem;
+    width: calc(100% - 2rem);
+    max-height: 45vh; 
+    transform: translateY(120%); 
+  }
+  .info-panel.active { transform: translateY(0); }
+
+  /* 5. Adjust City Dossier */
+  #city-dossier {
+    width: 90%;
+    max-width: 340px;
+    padding: 1.25rem !important;
+  }
+  #city-dossier h2 { font-size: 1.4rem; }
+  .dossier-image { max-height: 140px; }
+
+  /* 6. Top Title Banner Scaling */
+  #top-title-banner { top: 1.5rem; width: 85%; padding: 0.75rem 1.5rem; gap: 1rem; }
+  #top-title-banner h1 { font-size: 1.2rem; }
+  #close-title-btn { width: 34px; height: 34px; font-size: 1.5rem; }
+
+  /* 7. Sidebar scaling */
+  .sidebar { width: 280px; }
+  .sidebar-title { font-size: 1.1rem; }
+  
+  /* 9. Hide info panel completely if sidebar is open to prevent messy overlap */
+  .sidebar:not(.collapsed) ~ .info-panel {
+    transform: translateY(120%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}

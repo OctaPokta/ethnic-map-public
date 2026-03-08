@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>מפה אתנית - המזרח התיכון</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="loading-screen">
+    <img id="loading-logo" alt="Logo" class="loading-logo">
+    <div class="loading-bar-container" id="loading-bar-container">
+      <div class="loading-bar-fill" id="loading-bar-fill"></div>
+    </div>
+    <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
+  </div>
+
+  <div class="app">
+    <main class="map-area">
+      <div id="top-title-banner" class="glass-panel hidden">
+        <h1><span id="top-title-prefix"></span> <span id="top-title-text"></span></h1>
+        <button id="close-title-btn" title="סגור תצוגה">&times;</button>
+      </div>
+
+      <div id="city-dossier" class="glass-panel dossier-panel hidden">
+        <button id="close-dossier-btn" class="close-info-btn">&times;</button>
+        <h2 id="dossier-title">שם עיר</h2>
+        <div class="dossier-stats">
+          <span class="stat-label" id="dossier-pop-label">אוכלוסייה:</span>
+          <span id="dossier-pop" class="stat-value">0</span>
+        </div>
+        <img id="dossier-image" class="dossier-image" alt="Dossier photo of city">
+        <p id="dossier-desc" class="dossier-desc">תיאור העיר יופיע כאן.</p>
+      </div>
+
+      <div class="map-container">
+        <div id="map-viewport">
+          <div id="map-content">       
+            
+            <div id="map-wrapper">
+              <img draggable="false" id="base-map-img" class="map-layer map-base">
+              
+              <div id="dynamic-ethnic-layers"></div>
+              <div id="dynamic-label-layers"></div>
+              
+              <img id="borders-img" class="map-border" alt="Map border" draggable="false">
+              <div id="city-pins"></div>
+            </div>
+
+          </div>
+          <div class="vignette"></div>
+        </div>
+
+        <button id="compass-btn" class="glass-panel compass-btn" title="אפס תצוגה">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+        </button>
+
+        <a id="donation-btn" class="donation-btn" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+            <line x1="6" y1="1" x2="6" y2="4"></line>
+            <line x1="10" y1="1" x2="10" y2="4"></line>
+            <line x1="14" y1="1" x2="14" y2="4"></line>
+          </svg>
+          
+          <div class="donation-callout-card" id="donation-callout">
+            <div class="callout-title"><span id="callout-title-text"></span></div>
+            <div class="callout-subtitle">אהבתם את המפה? תמכו ביצירה!</div>
+          </div>
+        </a>
+
+        <div id="minimap" class="glass-panel">
+          <img id="minimap-bg" alt="Minimap background">
+          <div id="minimap-rect"></div>
+        </div>
+      </div>
+    </main>
+    
+    <aside class="sidebar glass-panel">
+      <button type="button" id="toggle-sidebar-btn" class="toggle-sidebar-btn">
+        <span class="arrow-icon"></span>
+      </button>
+      <div class="sidebar-scrollable">
+        <div class="sidebar-header">
+          <h1 class="sidebar-title" id="sidebar-main-title"></h1>
+          <button type="button" id="theme-toggle-btn" class="theme-toggle-btn">🌙</button>
+        </div>
+        <div class="sidebar-section">
+          <label id="sidebar-dropdown-label"></label>
+          <div class="custom-select-wrapper" id="country-dropdown">
+            <div class="custom-select-trigger">
+              <span id="custom-select-text"></span>
+              <div class="arrow"></div>
+            </div>
+            <div class="custom-options" id="dynamic-dropdown-options"></div>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <h2 class="section-heading" id="sidebar-checkboxes-label"></h2>
+          <div class="checkbox-group" id="dynamic-checkboxes"></div>
+        </div>
+        <div class="sidebar-actions">
+          <button type="button" id="select-all-btn" class="action-btn select-all-btn"></button>
+          <button type="button" id="clear-map-btn" class="action-btn clear-map-btn"></button>
+        </div>
+      </div> 
+    </aside>
+
+    <aside class="info-panel glass-panel" id="info-panel">
+      <button type="button" id="close-info-btn" class="close-info-btn">&times;</button>
+      <div id="info-panel-content"></div>
+    </aside>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="audio.js"></script>
+  <script src="map.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
