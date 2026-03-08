@@ -108,9 +108,9 @@ const DashboardData = {
     },
     Lebanon: {
       hebrewName: "לבנון",
-      view: { scale: 5.00, x: -2479, y: -1105 },
+      view: { scale: 5.00, x: -2430, y: -1848 },
       ethnicImage: "images/countries-ethnic/ethnic-Lebanon.png",
-      labelImage: "", 
+      labelImage: "images/countries-labels/labels-Lebanon.png",
       demographics: [
         { name: "ערבים", percent: 95, color: "#22c55e" },
         { name: "ארמנים", percent: 4, color: "#3b82f6" },
