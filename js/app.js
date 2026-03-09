@@ -7,13 +7,13 @@ const UI = {
     
     init() {
       this.cityDossier = document.getElementById('city-dossier');
+      this.ethnicDossier = document.getElementById('ethnic-dossier'); 
       
       this.buildDebugPanel();
       this.injectData();
       this.setupLoadingScreen();
       this.setupEventListeners();
       this.setupPerformanceMonitor();
-      // 🔥 NEW: Setup the Wake-Up Splash Screen for Tab Switching
       this.setupVisibilityHandler(); 
     },
   
@@ -35,7 +35,6 @@ const UI = {
       }
     },
     setupPerformanceMonitor() {
-      // 1. Create the elegant "Processing..." overlay (Always On)
       const smoothLoader = document.createElement('div');
       smoothLoader.id = 'smooth-fps-loader';
       smoothLoader.style.cssText = `
@@ -55,7 +54,6 @@ const UI = {
       style.innerHTML = `@keyframes spinLoader { to { transform: rotate(360deg); } }`;
       document.head.appendChild(style);
 
-      // 2. Setup the Debug FPS Text (Only if DEBUG_MODE is true)
       let fpsPanel = null;
       if (this.DEBUG_MODE) {
         fpsPanel = document.createElement('div');
@@ -67,7 +65,6 @@ const UI = {
         document.body.appendChild(fpsPanel);
       }
 
-      // 3. The Render Loop (Tracks frame drops dynamically)
       let lastFrameTime = performance.now();
       let secondStart = lastFrameTime;
       let frames = 0; let lagSpikeCount = 0;
@@ -77,25 +74,14 @@ const UI = {
         lastFrameTime = now;
         frames++;
 
-        // If a single frame takes longer than ~45ms (massive stutter), trigger the mask!
-        if (delta > 45) {
-          lagSpikeCount += 2; 
-        } else {
-          lagSpikeCount = Math.max(0, lagSpikeCount - 1); 
-        }
+        if (delta > 45) { lagSpikeCount += 2; } else { lagSpikeCount = Math.max(0, lagSpikeCount - 1); }
 
-        // Beautifully fade the loader in and out based on the phone's struggle
         if (lagSpikeCount > 4) {
-          smoothLoader.style.opacity = '1';
-          smoothLoader.style.visibility = 'visible';
-          smoothLoader.style.transform = 'translateX(-50%) translateY(0)';
+          smoothLoader.style.opacity = '1'; smoothLoader.style.visibility = 'visible'; smoothLoader.style.transform = 'translateX(-50%) translateY(0)';
         } else if (lagSpikeCount === 0) {
-          smoothLoader.style.opacity = '0';
-          smoothLoader.style.visibility = 'hidden';
-          smoothLoader.style.transform = 'translateX(-50%) translateY(-20px)';
+          smoothLoader.style.opacity = '0'; smoothLoader.style.visibility = 'hidden'; smoothLoader.style.transform = 'translateX(-50%) translateY(-20px)';
         }
 
-        // Update FPS Panel (if debug mode is on)
         if (now >= secondStart + 1000) {
           if (fpsPanel) {
             fpsPanel.innerText = `FPS: ${frames}`;
@@ -103,8 +89,7 @@ const UI = {
             else if (frames >= 30) fpsPanel.style.color = "#fbbf24";
             else fpsPanel.style.color = "#ef4444";
           }
-          frames = 0;
-          secondStart = now;
+          frames = 0; secondStart = now;
         }
         requestAnimationFrame(renderLoop);
       };
@@ -125,8 +110,7 @@ const UI = {
       document.getElementById('top-title-prefix').textContent = DashboardData.ui.distributionTitle;
       document.getElementById('dossier-pop-label').textContent = DashboardData.ui.populationLabel;
       
-      // 🔥 Play a subtle tick when hovering over the coffee button
-     document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
+      document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
       document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
   
       document.getElementById('powered-by-prefix').textContent = DashboardData.ui.poweredByPrefix;
@@ -182,7 +166,6 @@ const UI = {
         const pin = document.createElement('div');
         pin.className = 'city-pin'; 
         pin.setAttribute('data-country', city.country);
-        // 🔥 NEW: High-resolution SVG City Skyline Icon
         pin.innerHTML = `
           <svg class="city-icon" viewBox="0 0 512 512" fill="currentColor">
             <path d="M240 32c0-17.7 14.3-32 32-32h160c17.7 0 32 14.3 32 32v64h32c17.7 0 32 14.3 32 32v352H16V160c0-17.7 14.3-32 32-32h80c17.7 0 32 14.3 32 32v96h80V32zM128 224v-32H64v32h64zm0 96v-32H64v32h64zm0 96v-32H64v32h64zm192-256v-32h-64v32h64zm0 96v-32h-64v32h64zm0 96v-32h-64v32h64zM448 160v-32h-64v32h64zm0 96v-32h-64v32h64zm0 96v-32h-64v32h64z"/>
@@ -209,6 +192,7 @@ const UI = {
               dossierImageElement.style.display = 'none';
           }
           this.cityDossier.classList.remove('hidden');
+          this.ethnicDossier.classList.add('hidden'); 
         });
         cityPinsContainer.appendChild(pin);
       });
@@ -218,7 +202,7 @@ const UI = {
       const loadingScreen = document.getElementById('loading-screen');
       const loaderFill = document.getElementById('loading-bar-fill');
       const loaderContainer = document.getElementById('loading-bar-container');
-      const percentText = document.getElementById('loading-percentage'); // 🔥 Fetches the text
+      const percentText = document.getElementById('loading-percentage'); 
       const enterBtn = document.getElementById('enter-map-btn');
       const images = document.querySelectorAll('img'); 
       
@@ -227,7 +211,6 @@ const UI = {
         loadedCount++; 
         const pct = Math.round((loadedCount / totalImages) * 100);
         
-        // Update bar and text dynamically
         if (loaderFill) loaderFill.style.width = `${pct}%`;
         if (percentText) percentText.textContent = `${pct}%`;
         
@@ -256,8 +239,6 @@ const UI = {
       });
     },
 
-    // 🔥 NEW: Tab Switch Wake-Up Manager
-    // 🔥 NEW: Tab Switch Wake-Up Manager (With Percentage Bar)
     setupVisibilityHandler() {
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
@@ -267,7 +248,6 @@ const UI = {
                 wakeMask.id = 'wake-mask';
                 wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.5s ease;';
                 
-                // Inject logo, progress bar, and percentage text
                 wakeMask.innerHTML = `
                     <img src="${DashboardData.images.watermark}" style="width: 150px; margin-bottom: 24px; animation: pulseLogo 1.5s infinite alternate;">
                     <div style="width: 220px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
@@ -281,20 +261,19 @@ const UI = {
                 const barFill = document.getElementById('wake-bar-fill');
                 const barText = document.getElementById('wake-bar-text');
                 
-                // Rapidly count up to 100%
                 const wakeInterval = setInterval(() => {
-                    progress += Math.floor(Math.random() * 15) + 5; // Jump by 5-20%
+                    progress += Math.floor(Math.random() * 15) + 5; 
                     if (progress >= 100) {
                         progress = 100;
                         clearInterval(wakeInterval);
                         setTimeout(() => {
                             wakeMask.style.opacity = '0';
                             setTimeout(() => wakeMask.remove(), 500);
-                        }, 150); // Pause for a split second at 100%
+                        }, 150); 
                     }
                     barFill.style.width = `${progress}%`;
                     barText.textContent = `${progress}%`;
-                }, 40); // Updates very fast (simulating memory caching)
+                }, 40); 
             }
         });
     },
@@ -322,12 +301,19 @@ const UI = {
       const checkboxes = document.querySelectorAll('.checkbox-label input[data-layer]');
       checkboxes.forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); });
       let found = 0;
+      
+      let ethnicDataObj = null;
+
       Object.keys(this.demographicData).forEach(country => {
-        if (this.demographicData[country].some(d => d.name === ethnicName)) {
+        const ethnicData = this.demographicData[country].find(d => d.name === ethnicName);
+        if (ethnicData) {
           document.querySelector(`input[data-layer="${country}"]`).checked = true;
-          this.updateLayerVisibility(country, true); found++;
+          this.updateLayerVisibility(country, true); 
+          found++;
+          if (!ethnicDataObj) ethnicDataObj = ethnicData; 
         }
       });
+
       if (found > 0) {
         document.getElementById('top-title-text').textContent = ethnicName; 
         document.getElementById('top-title-banner').classList.remove('hidden');
@@ -335,6 +321,33 @@ const UI = {
         MapEngine.resetView(); 
         SoundEngine.play('swoosh'); 
         this.updateCityVisibility();
+
+        if (ethnicDataObj) {
+            document.getElementById('ethnic-dossier-title').textContent = ethnicDataObj.name;
+            const imgEl = document.getElementById('ethnic-dossier-image');
+            if (ethnicDataObj.image) {
+                imgEl.src = ethnicDataObj.image;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+            
+            // 🔥 NEW: Inject Language and Religion Badges
+            const badgesContainer = document.getElementById('ethnic-badges');
+            const langBadge = document.getElementById('ethnic-lang-badge');
+            const relBadge = document.getElementById('ethnic-rel-badge');
+            
+            if (ethnicDataObj.language || ethnicDataObj.religion) {
+                badgesContainer.style.display = 'flex';
+                if (ethnicDataObj.language) { langBadge.innerHTML = `🗣️ ${ethnicDataObj.language}`; langBadge.style.display = 'flex'; } else { langBadge.style.display = 'none'; }
+                if (ethnicDataObj.religion) { relBadge.innerHTML = `🕌 ${ethnicDataObj.religion}`; relBadge.style.display = 'flex'; } else { relBadge.style.display = 'none'; }
+            } else {
+                badgesContainer.style.display = 'none';
+            }
+
+            document.getElementById('ethnic-dossier-desc').textContent = ethnicDataObj.desc || `הצגת תפוצה אזורית עבור ${ethnicDataObj.name} על גבי המפה.`;
+            this.ethnicDossier.classList.remove('hidden');
+        }
       }
     },
   
@@ -363,15 +376,10 @@ const UI = {
       });
       svg += `</svg></div>`; html += svg;
   
-      // 🔥 NEW: Adjusted HTML structure to hold both Image and Bars
       data.forEach(item => {
-        const imgSrc = item.image || 'images/ethnicities/default.webp';
         html += `<div class="demo-item" data-ethnic="${item.name}" title="לחץ לראות תפוצה אזורית">
-            <img class="demo-ethnic-img" src="${imgSrc}" alt="${item.name}" onerror="this.style.display='none'">
-            <div class="demo-details">
-              <div class="demo-label"><span>${item.name}</span><span dir="ltr">${item.percent}%</span></div>
-              <div class="demo-bar-bg"><div class="demo-bar-fill" style="--target-width: ${item.percent}%; background-color: ${item.color};"></div></div>
-            </div>
+            <div class="demo-label"><span>${item.name}</span><span dir="ltr">${item.percent}%</span></div>
+            <div class="demo-bar-bg"><div class="demo-bar-fill" style="--target-width: ${item.percent}%; background-color: ${item.color};"></div></div>
           </div>`;
       });
   
@@ -398,14 +406,19 @@ const UI = {
       const dropdownText = document.getElementById('custom-select-text');
       const infoPanel = document.getElementById('info-panel');
   
-      // 🔥 Play the new steam hiss & bubble sound when hovering over the coffee button
       document.getElementById('donation-btn').addEventListener('mouseenter', () => { SoundEngine.play('coffee-hover'); });
-      
-      // 🔥 Play a magical, rewarding chime when they actually click it!
       document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
+      
       document.getElementById('close-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.cityDossier.classList.add('hidden'); });
+      document.getElementById('close-ethnic-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.ethnicDossier.classList.add('hidden'); });
+
       document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
-      document.getElementById('close-title-btn').addEventListener('click', () => { SoundEngine.play('tick'); document.getElementById('clear-map-btn').click(); });
+      
+      document.getElementById('close-title-btn').addEventListener('click', () => { 
+          SoundEngine.play('tick'); 
+          document.getElementById('clear-map-btn').click(); 
+          this.ethnicDossier.classList.add('hidden'); 
+      });
       
       document.querySelector('.custom-select-trigger').addEventListener('click', (e) => { 
         e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick'); 
@@ -413,7 +426,11 @@ const UI = {
       
       document.querySelectorAll('.custom-option').forEach(opt => {
         opt.addEventListener('click', () => {
-          SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+          SoundEngine.play('tick'); 
+          this.hideTopBanner(); 
+          this.cityDossier.classList.add('hidden'); 
+          this.ethnicDossier.classList.add('hidden'); 
+          
           dropdownText.textContent = opt.textContent;
           window.history.replaceState(null, null, '#' + opt.dataset.value);
           
@@ -433,7 +450,11 @@ const UI = {
   
       document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => {
         cb.addEventListener('change', () => {
-          SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+          SoundEngine.play('tick'); 
+          this.hideTopBanner(); 
+          this.cityDossier.classList.add('hidden'); 
+          this.ethnicDossier.classList.add('hidden'); 
+
           this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
           if (cb.checked) { 
@@ -451,12 +472,20 @@ const UI = {
       });
   
       document.getElementById('clear-map-btn').addEventListener('click', () => { 
-        SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+        SoundEngine.play('tick'); 
+        this.hideTopBanner(); 
+        this.cityDossier.classList.add('hidden'); 
+        this.ethnicDossier.classList.add('hidden'); 
+
         document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); }); 
         dropdownText.textContent = DashboardData.ui.defaultDropdownText; infoPanel.classList.remove('active'); window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
       });
   
-     
+      document.getElementById('mute-toggle-btn').addEventListener('click', (e) => { 
+        SoundEngine.isMuted = !SoundEngine.isMuted;
+        e.currentTarget.textContent = SoundEngine.isMuted ? '🔇' : '🔊';
+        if (!SoundEngine.isMuted) SoundEngine.play('tick'); 
+      });
   
       document.getElementById('theme-toggle-btn').addEventListener('click', () => { 
         document.body.classList.toggle('night-mode'); SoundEngine.play('tick'); 

@@ -60,6 +60,19 @@
         <p id="dossier-desc" class="dossier-desc">תיאור העיר יופיע כאן.</p>
       </div>
 
+      <div id="ethnic-dossier" class="glass-panel dossier-panel hidden" style="z-index: 2500;">
+        <button id="close-ethnic-dossier-btn" class="close-info-btn">&times;</button>
+        <h2 id="ethnic-dossier-title" style="margin-bottom: 1rem; color: #fff; font-size: 1.8rem;">שם קבוצה</h2>
+        <img id="ethnic-dossier-image" class="dossier-image" alt="Ethnicity photo" style="max-height: 250px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6);">
+        
+        <div id="ethnic-badges" class="ethnic-badges">
+          <span id="ethnic-lang-badge" class="ethnic-badge">🗣️ שפה</span>
+          <span id="ethnic-rel-badge" class="ethnic-badge">🕌 דת</span>
+        </div>
+        
+        <p id="ethnic-dossier-desc" class="dossier-desc" style="margin-top: 1rem; font-size: 1rem; line-height: 1.6;"></p>
+      </div>
+
       <div class="map-container">
         <div id="map-viewport">
           <div id="map-content">       
@@ -71,7 +84,6 @@
               <div id="dynamic-label-layers"></div>
               
               <img id="borders-img" class="map-border" src="images/Borders.webp" draggable="false">
-              
               
               <div id="city-pins"></div>
             </div>
@@ -121,7 +133,10 @@
       <div class="sidebar-scrollable">
         <div class="sidebar-header">
           <h1 class="sidebar-title" id="sidebar-main-title"></h1>
-          <button type="button" id="theme-toggle-btn" class="theme-toggle-btn">🌙</button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="mute-toggle-btn" class="theme-toggle-btn" title="השתק קול">🔊</button>
+            <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="החלף עיצוב">🌙</button>
+          </div>
         </div>
         <div class="sidebar-section">
           <label id="sidebar-dropdown-label"></label>
