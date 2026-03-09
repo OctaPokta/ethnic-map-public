@@ -24,10 +24,10 @@ const DashboardData = {
 
   // --- 2. BASE IMAGE PATHS ---
   images: {
-    baseMap: "images/Background.png",
+    baseMap: "images/Background.svg",
     watermark: "images/logo.png",
     borders: "images/Borders.png",
-    minimapBg: "images/Background.png"
+    minimapBg: "images/Background.svg"
   },
 
   // --- 3. COUNTRY CONFIGURATION ---
@@ -58,7 +58,7 @@ const DashboardData = {
     Iran: {
       hebrewName: "איראן",
       view: { scale: 1.50, x: -835, y: -125 },
-      ethnicImage: "images/countries-ethnic/ethnic-Iran.png",
+      ethnicImage: "images/countries-ethnic/ethnic-Iran.svg",
       labelImage: "images/countries-labels/labels-Iran.png",
       demographics: [
         { name: "פרסים", percent: 61, color: "#0ea5e9" },
