@@ -244,8 +244,6 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 /* Sidebar Buttons */
 .sidebar-actions { margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem; }
 .action-btn { width: 100%; padding: 0.875rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; text-align: center; font-family: inherit; }
-.select-all-btn { background: #6366f1; color: #fff; border: 1px solid #6366f1; box-shadow: 0 0 12px rgba(99, 102, 241, 0.4); }
-.select-all-btn:hover { background: #4f46e5; box-shadow: 0 0 16px rgba(99, 102, 241, 0.6); }
 .clear-map-btn { color: #f8fafc; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); }
 .clear-map-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
 
@@ -274,9 +272,15 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 .donut-slice { transition: stroke-width 0.2s ease, filter 0.2s ease; cursor: pointer; }
 .donut-slice:hover { stroke-width: 18; filter: brightness(1.3); }
 
-.demo-item { margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; }
+/* 🔥 NEW: Added Flexbox setup to hold the image next to the text */
+.demo-item { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; }
 .demo-item:hover { background: rgba(255, 255, 255, 0.08); transform: translateX(-4px); }
-.demo-label { display: flex; justify-content: space-between; font-size: 0.8125rem; color: #e2e8f0; margin-bottom: 0.375rem; pointer-events: none; }
+
+/* Hidden by default on Desktop */
+.demo-ethnic-img { display: none; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+.demo-details { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+.demo-label { display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; color: #e2e8f0; margin-bottom: 0.375rem; pointer-events: none; }
 .demo-bar-bg { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; pointer-events: none; }
 .demo-bar-fill { height: 100%; border-radius: 4px; width: 0%; animation: slideBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; }
 @keyframes slideBar { from { width: 0%; } to { width: var(--target-width); } }
@@ -339,6 +343,7 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 
   .compass-btn { top: 1.5rem; left: 1.5rem; width: 40px; height: 40px; }
 
+  /* 🔥 Info Panel Mobile Tweaks */
   .info-panel {
     top: auto;
     bottom: 5.5rem; 
@@ -350,6 +355,21 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
     transform: translateY(120%); 
   }
   .info-panel.active { transform: translateY(0); }
+
+  /* 🔥 The Magic Layout Swap 🔥 */
+  .donut-container { display: none; } /* Hide giant donut chart */
+  .demo-bar-bg { display: none; } /* Hide percentage bar */
+  
+  .demo-ethnic-img { display: block; } /* Reveal ethnicity image */
+  
+  .demo-item { 
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.05); 
+    padding: 8px 12px; 
+    margin-bottom: 0.5rem; 
+  }
+  .demo-label { margin-bottom: 0; font-size: 0.95rem; font-weight: 600; }
+
 
   #city-dossier {
     width: 90%;

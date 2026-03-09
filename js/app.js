@@ -363,10 +363,15 @@ const UI = {
       });
       svg += `</svg></div>`; html += svg;
   
+      // 🔥 NEW: Adjusted HTML structure to hold both Image and Bars
       data.forEach(item => {
+        const imgSrc = item.image || 'images/ethnicities/default.webp';
         html += `<div class="demo-item" data-ethnic="${item.name}" title="לחץ לראות תפוצה אזורית">
-            <div class="demo-label"><span>${item.name}</span><span dir="ltr">${item.percent}%</span></div>
-            <div class="demo-bar-bg"><div class="demo-bar-fill" style="--target-width: ${item.percent}%; background-color: ${item.color};"></div></div>
+            <img class="demo-ethnic-img" src="${imgSrc}" alt="${item.name}" onerror="this.style.display='none'">
+            <div class="demo-details">
+              <div class="demo-label"><span>${item.name}</span><span dir="ltr">${item.percent}%</span></div>
+              <div class="demo-bar-bg"><div class="demo-bar-fill" style="--target-width: ${item.percent}%; background-color: ${item.color};"></div></div>
+            </div>
           </div>`;
       });
   
