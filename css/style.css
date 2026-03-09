@@ -143,19 +143,30 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 }
 .map-base { z-index: 0; }
 
-/* 🔥 FAST PAN MODE (The Hybrid Architecture) 🔥 */
+/* Hide the proxy image by default */
+.map-border-proxy {
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
+}
 
-/* 1. Completely nuke the giant border from the render tree to save CPU */
-#map-wrapper.fast-pan .map-border {
+/* 🔥 FAST PAN MODE: The Proxy Swap 🔥 */
+#map-wrapper.fast-pan .map-border-svg {
+  /* Nuke the heavy SVG from the GPU while dragging */
   opacity: 0 !important; 
-  visibility: hidden !important; /* This guarantees zero lag */
+  visibility: hidden !important; 
   transition: none !important;
 }
 
-/* 2. Keep active labels visible, but lock them as hardware-accelerated snapshots */
+#map-wrapper.fast-pan .map-border-proxy {
+  /* Instantly show the flat pixel proxy while dragging! */
+  opacity: 1 !important; /* Make it slightly transparent so it looks cool during movement */
+  visibility: visible !important;
+}
+
+/* Keep active labels visible and locked */
 #map-wrapper.fast-pan .map-label.visible {
   will-change: transform !important;
-  /* Note: The browser automatically culls the labels currently off-screen! */
 }
 
 /* 🔥 FIX: Restored to opacity-only so images stay cached in RAM for lag-free toggling 🔥 */
