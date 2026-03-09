@@ -11,7 +11,6 @@ const MapEngine = {
     isZooming: false, zoomTimeout: null, lastHitTestTime: 0,
     hasDragged: false,
     
-    // 🔥 NEW: Tracker for pinch-to-zoom centering
     pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
     
     MAP_ORIGINAL_W: 6194,
@@ -26,6 +25,9 @@ const MapEngine = {
   
       this.setupWrapper();
       this.setupEventListeners();
+      
+      // 🔥 Ensure high-res snap right on page load
+      setTimeout(() => this.setTransitionEnabled(true), 300);
     },
   
     setupWrapper() {
@@ -38,6 +40,14 @@ const MapEngine = {
     setTransitionEnabled(enabled) { 
       this.mapContent.style.transition = enabled ? 'transform 0.8s ease-in-out' : 'none'; 
       this.minimapRect.style.transition = enabled ? 'all 0.8s ease-in-out' : 'none';
+      
+      // 🔥 FIX: Mobile Dynamic Resolution Engine 🔥
+      // While dragging/pinching (enabled = false), it uses low-res GPU cache for smooth 60fps.
+      // When letting go (enabled = true), it drops the lock and recalculates pure HD pixels.
+      if (window.innerWidth <= 768) {
+          this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
+          this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
+      }
     },
   
     updateMinimap() {
@@ -246,7 +256,11 @@ const MapEngine = {
 
         this.isZooming = true;
         clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { this.isZooming = false; }, 250);
+        this.zoomTimeout = setTimeout(() => { 
+            this.isZooming = false; 
+            // 🔥 Snap to HD on zoom end
+            this.setTransitionEnabled(true);
+        }, 250);
 
         const rect = this.mapViewport.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
         const nextScale = Math.min(5, Math.max(1, this.scale + (e.deltaY > 0 ? -0.1 : 0.1)));
@@ -277,7 +291,6 @@ const MapEngine = {
           );
           this.initialScale = this.scale;
           
-          // 🔥 NEW: Calculate exactly where the user is pinching so we can center the zoom
           const rect = this.mapViewport.getBoundingClientRect();
           this.pinchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
           this.pinchCenterY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
@@ -294,7 +307,11 @@ const MapEngine = {
         
         this.isZooming = true;
         clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { this.isZooming = false; }, 250);
+        this.zoomTimeout = setTimeout(() => { 
+            this.isZooming = false; 
+            // 🔥 Snap to HD on pinch end
+            this.setTransitionEnabled(true);
+        }, 250);
 
         if (this.isDragging && e.touches.length === 1) {
           if (Math.hypot(e.touches[0].clientX - this.dragStartX, e.touches[0].clientY - this.dragStartY) > 3) {
@@ -312,7 +329,6 @@ const MapEngine = {
           const scaleChange = currentDistance / this.initialPinchDistance;
           const nextScale = Math.min(5, Math.max(1, this.initialScale * scaleChange));
           
-          // 🔥 NEW: Mathematically adjust translation to keep the pinch perfectly centered
           this.translateX = this.pinchCenterX - ((this.pinchCenterX - this.initialTranslateX) / this.initialScale) * nextScale;
           this.translateY = this.pinchCenterY - ((this.pinchCenterY - this.initialTranslateY) / this.initialScale) * nextScale;
           
