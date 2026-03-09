@@ -34,7 +34,6 @@ const MapEngine = {
     },
   
     setTransitionEnabled(enabled) { 
-      // Pure, simple transitions without the CSS class hacks
       this.mapContent.style.transition = enabled ? 'transform 0.4s ease-out' : 'none'; 
       this.minimapRect.style.transition = enabled ? 'all 0.4s ease-out' : 'none';
     },
@@ -48,7 +47,6 @@ const MapEngine = {
     },
     
     applyTransform() { 
-      // 🔥 THE SECRET WEAPON: translate3d forces the phone's GPU to take over instantly
       this.mapContent.style.transform = `translate3d(${this.translateX}px, ${this.translateY}px, 0) scale(${this.scale})`; 
       this.updateMinimap(); 
       
@@ -204,8 +202,11 @@ const MapEngine = {
 
         if (this.activeHoverCountry) {
           SoundEngine.play('tick'); 
-          UI.hideTopBanner(); 
-          UI.cityDossier.classList.add('hidden'); 
+          
+          // 🔥 FIX: Safely close dossiers without calling deleted functions
+          document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+          if (UI.cityDossier) UI.cityDossier.classList.add('hidden'); 
+          if (UI.ethnicDossier) UI.ethnicDossier.classList.add('hidden');
           
           const opt = document.querySelector(`.custom-option[data-value="${this.activeHoverCountry}"]`);
           if (opt) document.getElementById('custom-select-text').textContent = opt.textContent;
@@ -238,7 +239,7 @@ const MapEngine = {
   
       this.mapViewport.addEventListener('wheel', (e) => {
         e.preventDefault(); 
-        this.setTransitionEnabled(true); // Smooth scroll instantly
+        this.setTransitionEnabled(true); 
         const rect = this.mapViewport.getBoundingClientRect(); 
         const mx = e.clientX - rect.left; 
         const my = e.clientY - rect.top;

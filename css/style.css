@@ -125,12 +125,6 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 /* ==========================================
    6. FLOATING UI COMPONENTS
    ========================================== */
-#top-title-banner { position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 1rem 3rem; border-radius: 16px; display: flex; align-items: center; gap: 3rem; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; }
-#top-title-banner.hidden { opacity: 0; transform: translate(-50%, -150%); pointer-events: none; }
-#top-title-banner h1 { font-size: 2.2rem; font-weight: 700; color: #fff; margin: 0; letter-spacing: 0.05em; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-#close-title-btn { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fff; font-size: 2rem; line-height: 1; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
-#close-title-btn:hover { background: rgba(239, 68, 68, 0.9); transform: scale(1.1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-
 .compass-btn { position: absolute; top: 2rem; left: 2rem; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 40; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 .compass-btn svg { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .compass-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
@@ -145,7 +139,8 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 /* ==========================================
    7. SIDEBAR & MENUS
    ========================================== */
-.sidebar { position: absolute; top: 0; right: 0; height: 100vh; height: 100dvh; width: 320px; border-left: 1px solid rgba(255, 255, 255, 0.1); box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4); z-index: 50; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: visible !important; }
+/* 🔥 FIX: Increased Z-Index to 2500 so the sidebar is completely above the map and labels! */
+.sidebar { position: absolute; top: 0; right: 0; height: 100vh; height: 100dvh; width: 320px; border-left: 1px solid rgba(255, 255, 255, 0.1); box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4); z-index: 2500; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: visible !important; }
 .sidebar-scrollable { width: 100%; height: 100%; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; }
 .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .sidebar-title { font-size: 1.25rem; font-weight: 700; color: #f8fafc; }
@@ -165,7 +160,7 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 .custom-select-trigger:hover { background: rgba(15, 23, 42, 0.9); border-color: rgba(255, 255, 255, 0.2); }
 .custom-select-trigger .arrow { width: 10px; height: 10px; border-bottom: 2px solid #94a3b8; border-left: 2px solid #94a3b8; transform: translateY(-2px) rotate(-45deg); transition: transform 0.3s ease; }
 .custom-select-wrapper.open .arrow { transform: translateY(2px) rotate(135deg); }
-.custom-options { position: absolute; top: 100%; left: 0; right: 0; margin-top: 0.5rem; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; z-index: 30; max-height: 250px; overflow-y: auto; }
+.custom-options { position: absolute; top: 100%; left: 0; right: 0; margin-top: 0.5rem; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; z-index: 3000; max-height: 250px; overflow-y: auto; }
 .custom-select-wrapper.open .custom-options { opacity: 1; visibility: visible; transform: translateY(0); }
 .custom-option { display: block; padding: 0.75rem 1rem; font-size: 0.875rem; color: #e2e8f0; cursor: pointer; transition: background 0.2s ease; }
 .custom-option:hover { background: rgba(99, 102, 241, 0.2); color: #fff; }
@@ -187,22 +182,21 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 /* ==========================================
    8. DATA PANELS & DOSSIERS
    ========================================== */
-.info-panel { position: absolute; top: 6rem; left: 2rem; width: 320px; max-height: calc(100vh - 8rem); max-height: calc(100dvh - 8rem); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.4); padding: 1.5rem; z-index: 20; transform: translateX(-120%); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; }
+.info-panel { position: absolute; top: 6rem; left: 2rem; width: 320px; max-height: calc(100vh - 8rem); max-height: calc(100dvh - 8rem); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.4); padding: 1.5rem; z-index: 2000; transform: translateX(-120%); opacity: 0; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; overflow-y: auto; }
 .info-panel.active { transform: translateX(0); opacity: 1; }
 .info-panel h3 { font-size: 1.25rem; color: #fff; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .close-info-btn { position: absolute; top: 1rem; left: 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #94a3b8; font-size: 1.25rem; line-height: 1; cursor: pointer; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; z-index: 10; }
 .close-info-btn:hover { color: #fff; background: rgba(239, 68, 68, 0.8); border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
 
-.dossier-panel { display: flex; flex-direction: column; padding: 1.5rem !important; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1); width: 350px; border-radius: 16px; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); text-align: right; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; }
-.dossier-panel.hidden { opacity: 0; transform: translate(-50%, -40%) scale(0.9); pointer-events: none; }
-#city-dossier h2 { font-size: 1.6rem; color: #fff; margin-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.25rem; }
+/* 🔥 Dynamic Multi-Window Classes */
+.dossier-panel { display: flex; flex-direction: column; padding: 1.5rem !important; position: absolute; width: 350px; border-radius: 16px; z-index: 2500; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); text-align: right; }
 .dossier-stats { display: flex; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 0.5rem !important; border-radius: 8px; margin-bottom: 0.75rem; }
 .stat-label { color: #94a3b8; font-size: 0.9rem; }
 .stat-value { color: #6366f1; font-weight: 700; font-size: 1rem; }
 .dossier-image { width: 100%; height: auto; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); margin-bottom: 1rem; max-height: 180px; }
 .dossier-desc { color: #e2e8f0; font-size: 0.9rem; line-height: 1.5; overflow-y: auto; max-height: 250px; }
 
-/* 🔥 NEW: Ethnicity Badges Styles */
+/* Ethnicity Badges Styles */
 .ethnic-badges { display: flex; gap: 8px; margin-top: 12px; justify-content: center; flex-wrap: wrap; }
 .ethnic-badge { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 
@@ -277,28 +271,29 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   .compass-btn { top: 1.5rem; left: 1.5rem; width: 40px; height: 40px; }
 
   .info-panel {
-    top: auto;
-    bottom: 5.5rem; 
-    left: 1rem;
-    right: 1rem;
-    width: calc(100% - 2rem);
-    max-height: 45vh; 
-    max-height: 45dvh; 
+    top: auto !important;
+    bottom: 5.5rem !important; 
+    left: 1rem !important;
+    right: 1rem !important;
+    width: calc(100% - 2rem) !important;
+    max-height: 45vh !important; 
+    max-height: 45dvh !important; 
     transform: translateY(120%); 
   }
-  .info-panel.active { transform: translateY(0); }
+  .info-panel.active { transform: translateY(0) !important; }
 
-  #city-dossier, #ethnic-dossier {
-    width: 90%;
-    max-width: 340px;
+  /* 🔥 LOCK DYNAMIC DOSSIERS ON MOBILE */
+  .dynamic-dossier {
+    width: 90% !important;
+    max-width: 340px !important;
     padding: 1.25rem !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
   }
-  #city-dossier h2, #ethnic-dossier-title { font-size: 1.4rem; }
+  
+  .dossier-drag-handle { font-size: 1.4rem !important; cursor: default !important; }
   .dossier-image { max-height: 140px; }
-
-  #top-title-banner { top: 1.5rem; width: 85%; padding: 0.75rem 1.5rem; gap: 1rem; }
-  #top-title-banner h1 { font-size: 1.2rem; }
-  #close-title-btn { width: 34px; height: 34px; font-size: 1.5rem; }
 
   .sidebar { width: 280px; }
   .sidebar-title { font-size: 1.1rem; }

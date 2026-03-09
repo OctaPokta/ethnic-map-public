@@ -59,11 +59,96 @@ const DashboardData = {
       ethnicImage: "images/countries-ethnic/ethnic-Iran.webp",
       labelImage: "images/countries-labels/labels-Iran.webp",
       demographics: [
-        { name: "פרסים", percent: 61, color: "#0ea5e9", image: "images/ethnicities/persians.webp", desc: "הפרסים הם הקבוצה האתנית הגדולה והדומיננטית באיראן. הם יורשיה של היסטוריה אימפריאלית מפוארת, בעלי השפעה תרבותית עצומה על אזור המזרח התיכון ומרכז אסיה.", language: "פרסית", religion: "אסלאם שיעי" },
-        { name: "אזרים", percent: 16, color: "#ef4444", image: "images/ethnicities/azeris.webp", desc: "מיעוט גדול באיראן, החיים בעיקר במחוזות אזרבייג'ן המזרחית והמערבית שבצפון המדינה, ומעורבים עמוקות בפוליטיקה ובכלכלה האיראנית.", language: "אזרית", religion: "אסלאם שיעי" },
-        { name: "כורדים", percent: 10, color: "#eab308", image: "images/ethnicities/kurds.webp", desc: "עם איראני במוצאו החי באזור ההררי של מערב איראן, בעל תרבות שבטית וקריאות חוזרות לאוטונומיה.", language: "כורדית", religion: "אסלאם (סוני ברובו)" },
-        { name: "לורים", percent: 6, color: "#8b5cf6", image: "images/ethnicities/lurs.webp", desc: "קבוצה איראנית מסורתית החיה במערב ודרום-מערב איראן, ידועה באורח חיים נוודי או נוודי-למחצה ששרד עד ימינו.", language: "לורית", religion: "אסלאם שיעי" },
-        { name: "בלוצ'ים", percent: 2, color: "#d97706", image: "images/ethnicities/baloch.webp", desc: "קבוצה אתנית החיה באזור הגבול המדברי והצחיח שבין איראן, פקיסטן ואפגניסטן.", language: "בלוצ'ית", religion: "אסלאם סוני" }
+        { 
+          name: "פרסים", 
+          percent: 54, 
+          color: "#2dd4bf", 
+          image: "images/ethnicities/persians.webp", 
+          desc: "הקבוצה האתנית הגדולה והדומיננטית באיראן. יורשיה של היסטוריה אימפריאלית מפוארת, המהווים את ליבת התרבות, הכלכלה והפוליטיקה האיראנית.", 
+          language: "פרסית", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "אזרים", 
+          percent: 16, 
+          color: "#ef4444", 
+          image: "images/ethnicities/azeris.webp", 
+          desc: "קבוצה ממוצא טורקי המהווה את המיעוט הגדול ביותר במדינה. מתגוררים בעיקר בצפון-מערב איראן ובעלי השפעה רבה בחברה ובכלכלה.", 
+          language: "אזרית", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "כורדים", 
+          percent: 10, 
+          color: "#4d7c0f", 
+          image: "images/ethnicities/kurds.webp", 
+          desc: "עם איראני החי בעיקר באזורים ההרריים של מערב איראן (כורדיסטן האיראנית), בעל תרבות שבטית ייחודית ושאיפות היסטוריות לאוטונומיה.", 
+          language: "כורדית", 
+          religion: "אסלאם סוני (ברובו)" 
+        },
+        { 
+          name: "לורים", 
+          percent: 6, 
+          color: "#a855f7", 
+          image: "images/ethnicities/lurs.webp", 
+          desc: "קבוצה איראנית מסורתית החיה במערב ודרום-מערב איראן. ללורים מורשת נוודית ושורשים היסטוריים עמוקים באזור הרי הזגרוס.", 
+          language: "לורית", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "גילאקים", 
+          percent: 4, 
+          color: "#c026d3", 
+          image: "images/ethnicities/gilaks.webp", 
+          desc: "קבוצה אתנית החיה במחוז גילאן לחופי הים הכספי. תרבותם וכלכלתם מבוססות במידה רבה על חקלאות, דיג וגידולי תה ואורז.", 
+          language: "גילאקית", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "מזאנים", 
+          percent: 4, 
+          color: "#d946ef", 
+          image: "images/ethnicities/mazanis.webp", 
+          desc: "עם החי במחוז מאזנדראן הסמוך לים הכספי. חולקים קרבה תרבותית ולשונית לגילאקים ומוכרים בזכות המסורות הייחודיות שלהם.", 
+          language: "מאזנדראנית", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "בלוצ'ים", 
+          percent: 2, 
+          color: "#92400e", 
+          image: "images/ethnicities/baloch.webp", 
+          desc: "קבוצה אתנית החיה באזור הגבול המדברי והצחיח שבין איראן לפקיסטן (מחוז סיסטאן ובלוצ'סתאן). מקיימים מבנה חברתי שבטי מובהק.", 
+          language: "בלוצ'ית", 
+          religion: "אסלאם סוני" 
+        },
+        { 
+          name: "טורקמנים", 
+          percent: 2, 
+          color: "#84cc16", 
+          image: "images/ethnicities/turkmens.webp", 
+          desc: "קבוצה ממוצא טורקי החיה בצפון-מזרח איראן, קרוב לגבול עם טורקמניסטן. שומרים על מסורות ייחודיות ורבים מהם חיים באורח חיים נוודי למחצה.", 
+          language: "טורקמנית", 
+          religion: "אסלאם סוני" 
+        },
+        { 
+          name: "קשקאים", 
+          percent: 1.5, 
+          color: "#f97316", 
+          image: "images/ethnicities/qashqai.webp", 
+          desc: "קונפדרציה של שבטים נוודים ממוצא טורקי החיים בדרום-מערב איראן, בעיקר במחוז פארס. ידועים באריגת שטיחים מסורתית.", 
+          language: "קשקאית (ניב טורקי)", 
+          religion: "אסלאם שיעי" 
+        },
+        { 
+          name: "טאלישים", 
+          percent: 0.5, 
+          color: "#94a3b8", 
+          image: "images/ethnicities/talysh.webp", 
+          desc: "עם איראני עתיק החי באזור ההררי של צפון-מערב איראן ודרום-מזרח אזרבייג'ן, השומר על שפה ותרבות ייחודיות.", 
+          language: "טאלישית", 
+          religion: "אסלאם (סוני ושיעי)" 
+        }
       ]
     },
     Iraq: {

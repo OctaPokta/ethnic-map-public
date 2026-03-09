@@ -17,10 +17,8 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-39E16DGBMF');
   </script>
-
 </head>
 <body>
 
@@ -31,7 +29,6 @@
     </div>
     <div id="loading-percentage" style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">0%</div>
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
-    
     <div class="powered-by-badge loading-powered-by" dir="ltr">
       <span id="powered-by-prefix-loading">Powered by</span> <strong>The Security Front</strong>
     </div>
@@ -39,55 +36,20 @@
 
   <div class="app">
     <main class="map-area">
-      
       <div id="development-badge" class="development-badge hidden">
         <span id="development-text"></span>
-      </div>
-
-      <div id="top-title-banner" class="glass-panel hidden">
-        <h1><span id="top-title-prefix"></span> <span id="top-title-text"></span></h1>
-        <button id="close-title-btn" title="סגור תצוגה">&times;</button>
-      </div>
-
-      <div id="city-dossier" class="glass-panel dossier-panel hidden">
-        <button id="close-dossier-btn" class="close-info-btn">&times;</button>
-        <h2 id="dossier-title">שם עיר</h2>
-        <div class="dossier-stats">
-          <span class="stat-label" id="dossier-pop-label">אוכלוסייה:</span>
-          <span id="dossier-pop" class="stat-value">0</span>
-        </div>
-        <img id="dossier-image" class="dossier-image" alt="Dossier photo of city">
-        <p id="dossier-desc" class="dossier-desc">תיאור העיר יופיע כאן.</p>
-      </div>
-
-      <div id="ethnic-dossier" class="glass-panel dossier-panel hidden" style="z-index: 2500;">
-        <button id="close-ethnic-dossier-btn" class="close-info-btn">&times;</button>
-        <h2 id="ethnic-dossier-title" style="margin-bottom: 1rem; color: #fff; font-size: 1.8rem;">שם קבוצה</h2>
-        <img id="ethnic-dossier-image" class="dossier-image" alt="Ethnicity photo" style="max-height: 250px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6);">
-        
-        <div id="ethnic-badges" class="ethnic-badges">
-          <span id="ethnic-lang-badge" class="ethnic-badge">🗣️ שפה</span>
-          <span id="ethnic-rel-badge" class="ethnic-badge">🕌 דת</span>
-        </div>
-        
-        <p id="ethnic-dossier-desc" class="dossier-desc" style="margin-top: 1rem; font-size: 1rem; line-height: 1.6;"></p>
       </div>
 
       <div class="map-container">
         <div id="map-viewport">
           <div id="map-content">       
-            
             <div id="map-wrapper">
               <img draggable="false" id="base-map-img" class="map-layer map-base">
-              
               <div id="dynamic-ethnic-layers"></div>
               <div id="dynamic-label-layers"></div>
-              
               <img id="borders-img" class="map-border" src="images/Borders.webp" draggable="false">
-              
               <div id="city-pins"></div>
             </div>
-
           </div>
           <div class="vignette"></div>
         </div>
@@ -108,7 +70,6 @@
             <path class="aroma-path-2" d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
             <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
           </svg>
-          
           <div class="donation-callout-card" id="donation-callout">
             <div class="callout-title"><span id="callout-title-text"></span></div>
             <div class="callout-subtitle">תפרגנו בכוס קפה!</div>

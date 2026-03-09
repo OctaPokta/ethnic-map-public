@@ -4,11 +4,9 @@
 const UI = {
     DEBUG_MODE: false, 
     countryViews: {}, demographicData: {}, countryNamesHebrew: {},
+    windowZIndex: 2500, // Tracks active windows so clicking brings them to front
     
     init() {
-      this.cityDossier = document.getElementById('city-dossier');
-      this.ethnicDossier = document.getElementById('ethnic-dossier'); 
-      
       this.buildDebugPanel();
       this.injectData();
       this.setupLoadingScreen();
@@ -17,6 +15,58 @@ const UI = {
       this.setupVisibilityHandler(); 
     },
   
+    // Brings a clicked window to the very front
+    bringToFront(element) {
+        this.windowZIndex++;
+        element.style.zIndex = this.windowZIndex;
+    },
+
+    // Master Drag-and-Drop Engine (PC ONLY)
+    makeDraggable(element, handle) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+        handle.onmousedown = (e) => {
+            if (window.innerWidth <= 768) return; 
+            if (e.target.tagName === 'BUTTON') return; 
+            
+            e.preventDefault();
+            this.bringToFront(element);
+            
+            // 🔥 FIX: Instantly kill transitions before calculating the box coordinates to prevent teleportation!
+            element.style.transition = 'none'; 
+            
+            // Read the exact physical pixel location of the element on the screen
+            const rect = element.getBoundingClientRect();
+            
+            // If the element is centered via CSS transforms, lock it to pure pixels before moving
+            if (window.getComputedStyle(element).transform !== 'none') {
+                element.style.left = rect.left + "px";
+                element.style.top = rect.top + "px";
+                element.style.transform = 'none';
+            }
+            
+            pos3 = e.clientX; 
+            pos4 = e.clientY;
+            document.onmouseup = closeDrag;
+            document.onmousemove = elementDrag;
+            handle.style.cursor = 'grabbing';
+        };
+
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+            pos3 = e.clientX; pos4 = e.clientY;
+            
+            element.style.top = (element.offsetTop - pos2) + "px";
+            element.style.left = (element.offsetLeft - pos1) + "px";
+        }
+
+        function closeDrag() {
+            document.onmouseup = null; document.onmousemove = null;
+            handle.style.cursor = 'grab';
+        }
+    },
+
     buildDebugPanel() {
       if (this.DEBUG_MODE) {
         this.debugPanel = document.createElement('div');
@@ -34,6 +84,7 @@ const UI = {
         });
       }
     },
+
     setupPerformanceMonitor() {
       const smoothLoader = document.createElement('div');
       smoothLoader.id = 'smooth-fps-loader';
@@ -107,8 +158,6 @@ const UI = {
       document.getElementById('sidebar-dropdown-label').textContent = DashboardData.ui.dropdownLabel;
       document.getElementById('sidebar-checkboxes-label').textContent = DashboardData.ui.ethnicLayersTitle;
       document.getElementById('clear-map-btn').textContent = DashboardData.ui.clearMapBtn;
-      document.getElementById('top-title-prefix').textContent = DashboardData.ui.distributionTitle;
-      document.getElementById('dossier-pop-label').textContent = DashboardData.ui.populationLabel;
       
       document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
       document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
@@ -160,7 +209,6 @@ const UI = {
       const MAP_ORIGINAL_W = 6194;
       const MAP_ORIGINAL_H = 3876;
       const cityPinsContainer = document.getElementById('city-pins');
-      const dossierImageElement = document.getElementById('dossier-image');
   
       DashboardData.cities.forEach(city => {
         const pin = document.createElement('div');
@@ -178,21 +226,41 @@ const UI = {
 
         pin.addEventListener('click', (e) => {
           if (MapEngine.hasDragged) return;
-
           e.stopPropagation(); SoundEngine.play('tick');
-          document.getElementById('dossier-title').textContent = city.name; 
-          document.getElementById('dossier-pop').textContent = city.pop; 
-          document.getElementById('dossier-desc').textContent = city.desc;
           
-          if (city.imageUrl && dossierImageElement) {
-              dossierImageElement.src = city.imageUrl;
-              dossierImageElement.alt = city.imageAlt || city.name;
-              dossierImageElement.style.display = 'block';
-          } else if (dossierImageElement) {
-              dossierImageElement.style.display = 'none';
+          const isMobile = window.innerWidth <= 768;
+          if (isMobile) {
+              document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+          } else {
+              const existing = document.getElementById(`city-dossier-${city.name}`);
+              if (existing) { UI.bringToFront(existing); return; }
           }
-          this.cityDossier.classList.remove('hidden');
-          this.ethnicDossier.classList.add('hidden'); 
+
+          const dossier = document.createElement('div');
+          dossier.id = `city-dossier-${city.name}`;
+          dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
+          
+          if (!isMobile) {
+              const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
+              dossier.style.top = `calc(50% + ${offset}px)`;
+              dossier.style.left = `calc(50% + ${offset}px)`;
+              dossier.style.transform = 'translate(-50%, -50%)';
+          }
+
+          dossier.innerHTML = `
+              <button class="close-info-btn" onclick="this.parentElement.remove(); SoundEngine.play('tick');">&times;</button>
+              <h2 class="dossier-drag-handle" style="cursor: grab;">${city.name}</h2>
+              <div class="dossier-stats"><span class="stat-label">${DashboardData.ui.populationLabel}</span><span class="stat-value">${city.pop}</span></div>
+              <img class="dossier-image" src="${city.imageUrl}" alt="${city.imageAlt || city.name}" style="display: ${city.imageUrl ? 'block' : 'none'};">
+              <p class="dossier-desc">${city.desc}</p>
+          `;
+          
+          document.body.appendChild(dossier);
+          UI.bringToFront(dossier);
+          dossier.addEventListener('mousedown', () => UI.bringToFront(dossier));
+          
+          const handle = dossier.querySelector('.dossier-drag-handle');
+          UI.makeDraggable(dossier, handle);
         });
         cityPinsContainer.appendChild(pin);
       });
@@ -204,9 +272,24 @@ const UI = {
       const loaderContainer = document.getElementById('loading-bar-container');
       const percentText = document.getElementById('loading-percentage'); 
       const enterBtn = document.getElementById('enter-map-btn');
-      const images = document.querySelectorAll('img'); 
       
-      let loadedCount = 0; const totalImages = images.length;
+      const images = Array.from(document.querySelectorAll('img')).filter(img => img.src && img.src !== window.location.href);
+      let loadedCount = 0; const totalImages = images.length || 1; 
+      
+      const finalizeLoading = () => {
+          if (loaderFill) loaderFill.style.width = `100%`;
+          if (percentText) percentText.textContent = `100%`;
+          setTimeout(() => {
+            if (loaderContainer) loaderContainer.style.opacity = '0';
+            if (percentText) percentText.style.opacity = '0';
+            setTimeout(() => { 
+                if (loaderContainer) loaderContainer.style.display = 'none'; 
+                if (percentText) percentText.style.display = 'none';
+                if (enterBtn) enterBtn.classList.remove('hidden'); 
+            }, 400);
+          }, 500);
+      };
+
       const updateLoading = () => {
         loadedCount++; 
         const pct = Math.round((loadedCount / totalImages) * 100);
@@ -214,40 +297,45 @@ const UI = {
         if (loaderFill) loaderFill.style.width = `${pct}%`;
         if (percentText) percentText.textContent = `${pct}%`;
         
-        if (loadedCount === totalImages) {
-          setTimeout(() => {
-            loaderContainer.style.opacity = '0';
-            if(percentText) percentText.style.opacity = '0';
-            setTimeout(() => { 
-                loaderContainer.style.display = 'none'; 
-                if(percentText) percentText.style.display = 'none';
-                enterBtn.classList.remove('hidden'); 
-            }, 400);
-          }, 500);
-        }
+        if (loadedCount >= totalImages) { finalizeLoading(); }
       };
-      images.forEach(img => { if (img.complete) updateLoading(); else { img.addEventListener('load', updateLoading); img.addEventListener('error', updateLoading); } });
+
+      if (images.length === 0) {
+          finalizeLoading(); 
+      } else {
+          images.forEach(img => { 
+              if (img.complete) { updateLoading(); } else { img.addEventListener('load', updateLoading); img.addEventListener('error', updateLoading); } 
+          });
+      }
       
-      enterBtn.addEventListener('click', () => { 
-        SoundEngine.init(); SoundEngine.play('swoosh'); loadingScreen.style.opacity = '0'; setTimeout(() => loadingScreen.remove(), 800); 
-        setTimeout(() => {
-          const callout = document.getElementById('donation-callout');
-          const btn = document.getElementById('donation-btn');
-          callout.classList.add('show'); btn.classList.add('pulsing'); SoundEngine.play('chime');
-          setTimeout(() => { callout.classList.remove('show'); btn.classList.remove('pulsing'); }, 8000);
-        }, 2000); 
-      });
+      setTimeout(() => {
+          if (enterBtn && enterBtn.classList.contains('hidden')) { finalizeLoading(); }
+      }, 5000);
+      
+      if (enterBtn) {
+          enterBtn.addEventListener('click', () => { 
+            SoundEngine.init(); SoundEngine.play('swoosh'); 
+            loadingScreen.style.opacity = '0'; 
+            setTimeout(() => loadingScreen.remove(), 800); 
+            setTimeout(() => {
+              const callout = document.getElementById('donation-callout');
+              const btn = document.getElementById('donation-btn');
+              if (callout && btn) {
+                  callout.classList.add('show'); btn.classList.add('pulsing'); SoundEngine.play('chime');
+                  setTimeout(() => { callout.classList.remove('show'); btn.classList.remove('pulsing'); }, 8000);
+              }
+            }, 2000); 
+          });
+      }
     },
 
     setupVisibilityHandler() {
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
                 if (document.getElementById('wake-mask')) return;
-
                 const wakeMask = document.createElement('div');
                 wakeMask.id = 'wake-mask';
                 wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.5s ease;';
-                
                 wakeMask.innerHTML = `
                     <img src="${DashboardData.images.watermark}" style="width: 150px; margin-bottom: 24px; animation: pulseLogo 1.5s infinite alternate;">
                     <div style="width: 220px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
@@ -256,23 +344,17 @@ const UI = {
                     <div id="wake-bar-text" style="color: #94a3b8; font-size: 0.85rem; font-weight: 700; font-family: monospace; margin-top: 10px; letter-spacing: 1px;">0%</div>
                 `;
                 document.body.appendChild(wakeMask);
-                
                 let progress = 0;
                 const barFill = document.getElementById('wake-bar-fill');
                 const barText = document.getElementById('wake-bar-text');
-                
                 const wakeInterval = setInterval(() => {
                     progress += Math.floor(Math.random() * 15) + 5; 
                     if (progress >= 100) {
                         progress = 100;
                         clearInterval(wakeInterval);
-                        setTimeout(() => {
-                            wakeMask.style.opacity = '0';
-                            setTimeout(() => wakeMask.remove(), 500);
-                        }, 150); 
+                        setTimeout(() => { wakeMask.style.opacity = '0'; setTimeout(() => wakeMask.remove(), 500); }, 150); 
                     }
-                    barFill.style.width = `${progress}%`;
-                    barText.textContent = `${progress}%`;
+                    barFill.style.width = `${progress}%`; barText.textContent = `${progress}%`;
                 }, 40); 
             }
         });
@@ -301,7 +383,6 @@ const UI = {
       const checkboxes = document.querySelectorAll('.checkbox-label input[data-layer]');
       checkboxes.forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); });
       let found = 0;
-      
       let ethnicDataObj = null;
 
       Object.keys(this.demographicData).forEach(country => {
@@ -315,51 +396,60 @@ const UI = {
       });
 
       if (found > 0) {
-        document.getElementById('top-title-text').textContent = ethnicName; 
-        document.getElementById('top-title-banner').classList.remove('hidden');
-        document.getElementById('info-panel').classList.remove('active'); 
         MapEngine.resetView(); 
         SoundEngine.play('swoosh'); 
         this.updateCityVisibility();
 
         if (ethnicDataObj) {
-            document.getElementById('ethnic-dossier-title').textContent = ethnicDataObj.name;
-            const imgEl = document.getElementById('ethnic-dossier-image');
-            if (ethnicDataObj.image) {
-                imgEl.src = ethnicDataObj.image;
-                imgEl.style.display = 'block';
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
             } else {
-                imgEl.style.display = 'none';
-            }
-            
-            // 🔥 NEW: Inject Language and Religion Badges
-            const badgesContainer = document.getElementById('ethnic-badges');
-            const langBadge = document.getElementById('ethnic-lang-badge');
-            const relBadge = document.getElementById('ethnic-rel-badge');
-            
-            if (ethnicDataObj.language || ethnicDataObj.religion) {
-                badgesContainer.style.display = 'flex';
-                if (ethnicDataObj.language) { langBadge.innerHTML = `🗣️ ${ethnicDataObj.language}`; langBadge.style.display = 'flex'; } else { langBadge.style.display = 'none'; }
-                if (ethnicDataObj.religion) { relBadge.innerHTML = `🕌 ${ethnicDataObj.religion}`; relBadge.style.display = 'flex'; } else { relBadge.style.display = 'none'; }
-            } else {
-                badgesContainer.style.display = 'none';
+                const existing = document.getElementById(`dossier-${ethnicDataObj.name}`);
+                if (existing) { UI.bringToFront(existing); return; }
             }
 
-            document.getElementById('ethnic-dossier-desc').textContent = ethnicDataObj.desc || `הצגת תפוצה אזורית עבור ${ethnicDataObj.name} על גבי המפה.`;
-            this.ethnicDossier.classList.remove('hidden');
+            const dossier = document.createElement('div');
+            dossier.id = `dossier-${ethnicDataObj.name}`;
+            dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
+            
+            if (!isMobile) {
+                const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
+                dossier.style.top = `calc(50% + ${offset}px)`;
+                dossier.style.left = `calc(50% + ${offset}px)`;
+                dossier.style.transform = 'translate(-50%, -50%)';
+            }
+
+            let badgesHtml = '';
+            if (ethnicDataObj.language || ethnicDataObj.religion) {
+                badgesHtml = `<div class="ethnic-badges">`;
+                if (ethnicDataObj.language) badgesHtml += `<span class="ethnic-badge">🗣️ ${ethnicDataObj.language}</span>`;
+                if (ethnicDataObj.religion) badgesHtml += `<span class="ethnic-badge">🕌 ${ethnicDataObj.religion}</span>`;
+                badgesHtml += `</div>`;
+            }
+
+            dossier.innerHTML = `
+                <button class="close-info-btn" onclick="this.parentElement.remove(); SoundEngine.play('tick');">&times;</button>
+                <h2 class="dossier-drag-handle" style="margin-bottom: 1rem; color: #fff; font-size: 1.8rem; cursor: grab;">${ethnicDataObj.name}</h2>
+                <img class="dossier-image" src="${ethnicDataObj.image || ''}" alt="Ethnicity photo" style="max-height: 250px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: ${ethnicDataObj.image ? 'block' : 'none'};">
+                ${badgesHtml}
+                <p class="dossier-desc" style="margin-top: 1rem; font-size: 1rem; line-height: 1.6;">${ethnicDataObj.desc || `הצגת תפוצה אזורית עבור ${ethnicDataObj.name} על גבי המפה.`}</p>
+            `;
+
+            document.body.appendChild(dossier);
+            UI.bringToFront(dossier);
+            dossier.addEventListener('mousedown', () => UI.bringToFront(dossier));
+            
+            const handle = dossier.querySelector('.dossier-drag-handle');
+            UI.makeDraggable(dossier, handle);
         }
       }
-    },
-  
-    hideTopBanner() { 
-      const banner = document.getElementById('top-title-banner');
-      if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden'); 
     },
   
     showInfoPanel(country) {
       const data = this.demographicData[country]; if (!data) return;
       const hebrewName = this.countryNamesHebrew[country] || country;
-      let html = `<h3>${DashboardData.ui.demographicsTitle} - ${hebrewName}</h3>`;
+      let html = `<h3 class="info-drag-handle" style="cursor: grab;">${DashboardData.ui.demographicsTitle} - ${hebrewName}</h3>`;
       
       const radius = 15.9155; 
       let svg = `<div class="donut-container"><svg viewBox="0 0 100 100" class="donut-chart">`;
@@ -390,8 +480,20 @@ const UI = {
       }));
       
       const infoPanel = document.getElementById('info-panel');
-      if (!infoPanel.classList.contains('active')) SoundEngine.play('tick'); 
+      if (!infoPanel.classList.contains('active')) {
+          SoundEngine.play('tick'); 
+          infoPanel.style.transform = ''; 
+          infoPanel.style.top = ''; 
+          infoPanel.style.left = '';
+      }
       infoPanel.classList.add('active');
+      this.bringToFront(infoPanel);
+      
+      const handle = infoContent.querySelector('.info-drag-handle');
+      if (handle) {
+          infoPanel.addEventListener('mousedown', () => this.bringToFront(infoPanel));
+          this.makeDraggable(infoPanel, handle);
+      }
     },
   
     handleUrlHash() { 
@@ -408,17 +510,7 @@ const UI = {
   
       document.getElementById('donation-btn').addEventListener('mouseenter', () => { SoundEngine.play('coffee-hover'); });
       document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
-      
-      document.getElementById('close-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.cityDossier.classList.add('hidden'); });
-      document.getElementById('close-ethnic-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.ethnicDossier.classList.add('hidden'); });
-
       document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
-      
-      document.getElementById('close-title-btn').addEventListener('click', () => { 
-          SoundEngine.play('tick'); 
-          document.getElementById('clear-map-btn').click(); 
-          this.ethnicDossier.classList.add('hidden'); 
-      });
       
       document.querySelector('.custom-select-trigger').addEventListener('click', (e) => { 
         e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick'); 
@@ -427,9 +519,8 @@ const UI = {
       document.querySelectorAll('.custom-option').forEach(opt => {
         opt.addEventListener('click', () => {
           SoundEngine.play('tick'); 
-          this.hideTopBanner(); 
-          this.cityDossier.classList.add('hidden'); 
-          this.ethnicDossier.classList.add('hidden'); 
+          
+          document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove()); 
           
           dropdownText.textContent = opt.textContent;
           window.history.replaceState(null, null, '#' + opt.dataset.value);
@@ -451,9 +542,7 @@ const UI = {
       document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => {
         cb.addEventListener('change', () => {
           SoundEngine.play('tick'); 
-          this.hideTopBanner(); 
-          this.cityDossier.classList.add('hidden'); 
-          this.ethnicDossier.classList.add('hidden'); 
+          document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove()); 
 
           this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
@@ -461,10 +550,13 @@ const UI = {
             window.history.replaceState(null, null, '#' + cb.dataset.layer);
             const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
             if (opt) dropdownText.textContent = opt.textContent;
+            
+            this.showInfoPanel(cb.dataset.layer);
           } else { 
             const anyChecked = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]')).some(c => c.checked);
             if (!anyChecked) { 
-              infoPanel.classList.remove('active'); dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, ' '); 
+              infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
+              dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, ' '); 
             } 
           }
           this.updateCityVisibility();
@@ -473,12 +565,12 @@ const UI = {
   
       document.getElementById('clear-map-btn').addEventListener('click', () => { 
         SoundEngine.play('tick'); 
-        this.hideTopBanner(); 
-        this.cityDossier.classList.add('hidden'); 
-        this.ethnicDossier.classList.add('hidden'); 
+        document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove()); 
 
         document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); }); 
-        dropdownText.textContent = DashboardData.ui.defaultDropdownText; infoPanel.classList.remove('active'); window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
+        dropdownText.textContent = DashboardData.ui.defaultDropdownText; 
+        infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
+        window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
       });
   
       document.getElementById('mute-toggle-btn').addEventListener('click', (e) => { 
@@ -497,7 +589,11 @@ const UI = {
       });
   
       document.getElementById('close-info-btn').addEventListener('click', () => { 
-        infoPanel.classList.remove('active'); SoundEngine.play('tick'); 
+        infoPanel.style.transform = ''; 
+        infoPanel.style.transition = ''; 
+        infoPanel.classList.remove('active'); 
+        SoundEngine.play('tick'); 
+        setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
       });
       
       if (window.innerWidth < 1024) document.querySelector('.sidebar').classList.add('collapsed');
