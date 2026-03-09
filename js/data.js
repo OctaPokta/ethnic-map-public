@@ -136,7 +136,7 @@ const DashboardData = {
     Syria: {
       hebrewName: "סוריה",
       view: { scale: 2.90, x: -1010, y: -395 },
-      ethnicImage: "images/countries-ethnic/ethnic-Syria.png",
+      ethnicImage: "images/countries-ethnic/ethnic-Syria.svg",
       labelImage: "", 
       demographics: [
         { name: "ערבים", percent: 50, color: "#22c55e" },
