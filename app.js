@@ -311,9 +311,29 @@ const UI = {
       });
   
       document.getElementById('select-all-btn').addEventListener('click', () => { 
-        SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
-        document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => { cb.checked = true; this.updateLayerVisibility(cb.dataset.layer, true); }); 
-        dropdownText.textContent = DashboardData.ui.selectAllBtn; infoPanel.classList.remove('active'); window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
+        SoundEngine.play('tick'); 
+        this.hideTopBanner(); 
+        this.cityDossier.classList.add('hidden'); 
+        dropdownText.textContent = DashboardData.ui.selectAllBtn; 
+        infoPanel.classList.remove('active'); 
+        window.history.replaceState(null, null, ' '); 
+        MapEngine.resetView(); 
+        
+        // 🔥 NEW: WATERFALL RENDER ENGINE 🔥
+        const allCheckboxes = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]'));
+        
+        allCheckboxes.forEach((cb, index) => {
+            // Stagger each country rendering by 50 milliseconds
+            setTimeout(() => {
+                cb.checked = true; 
+                this.updateLayerVisibility(cb.dataset.layer, true);
+                
+                // Only update the city pins once the very last layer has loaded
+                if (index === allCheckboxes.length - 1) {
+                    this.updateCityVisibility();
+                }
+            }, index * 50); 
+        });
       });
   
       document.getElementById('theme-toggle-btn').addEventListener('click', () => { 

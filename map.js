@@ -6,7 +6,13 @@ const MapEngine = {
     isDragging: false, isMinimapDragging: false,
     dragStartX: 0, dragStartY: 0, translateStartX: 0, translateStartY: 0,
     initialPinchDistance: null, initialScale: 1,
-    activeHoverCountry: null, debugScrollTimeout: null,
+    activeHoverCountry: null, previousHoverCountry: null, debugScrollTimeout: null, 
+    
+    isZooming: false, zoomTimeout: null, lastHitTestTime: 0,
+    hasDragged: false,
+    
+    // 🔥 NEW: Tracker for pinch-to-zoom centering
+    pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
     
     MAP_ORIGINAL_W: 6194,
     MAP_ORIGINAL_H: 3876,
@@ -46,7 +52,6 @@ const MapEngine = {
       this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`; 
       this.updateMinimap(); 
       
-      // Anti-Growth Pins
       document.querySelectorAll('.city-pin').forEach(pin => {
         pin.style.transform = `translate(-50%, -50%) scale(${1 / this.scale})`;
       });
@@ -120,17 +125,40 @@ const MapEngine = {
     },
   
     setupEventListeners() {
-      // Minimap
       this.minimap.addEventListener('mousedown', (e) => { if (e.button === 0) { e.preventDefault(); this.isMinimapDragging = true; this.setTransitionEnabled(false); this.moveMapFromMinimap(e); } });
       
-      // Map Viewport Dragging
-      this.mapViewport.addEventListener('mousedown', (e) => { if (e.button === 0) { e.preventDefault(); this.isDragging = true; this.dragStartX = e.clientX; this.dragStartY = e.clientY; this.translateStartX = this.translateX; this.translateStartY = this.translateY; this.setTransitionEnabled(false); } });
+      this.mapViewport.addEventListener('mousedown', (e) => { 
+        if (e.button === 0) { 
+          e.preventDefault(); 
+          this.isDragging = true; 
+          this.hasDragged = false; 
+          this.dragStartX = e.clientX; 
+          this.dragStartY = e.clientY; 
+          this.translateStartX = this.translateX; 
+          this.translateStartY = this.translateY; 
+          this.setTransitionEnabled(false); 
+        } 
+      });
       
       document.addEventListener('mousemove', (e) => { 
-        if (this.isDragging) { e.preventDefault(); this.translateX = this.translateStartX + (e.clientX - this.dragStartX); this.translateY = this.translateStartY + (e.clientY - this.dragStartY); this.applyTransform(); } 
+        if (this.isDragging) { 
+          e.preventDefault(); 
+          
+          if (Math.hypot(e.clientX - this.dragStartX, e.clientY - this.dragStartY) > 3) {
+            this.hasDragged = true;
+          }
+
+          this.translateX = this.translateStartX + (e.clientX - this.dragStartX); 
+          this.translateY = this.translateStartY + (e.clientY - this.dragStartY); 
+          this.applyTransform(); 
+        } 
         else if (this.isMinimapDragging) { e.preventDefault(); this.moveMapFromMinimap(e); } 
         else {
-          // Pixel Tracking
+          if (this.isZooming) return; 
+          const now = Date.now();
+          if (now - this.lastHitTestTime < 50) return; 
+          this.lastHitTestTime = now;
+
           const rect = this.mapViewport.getBoundingClientRect();
           const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
           const visibleLayers = Array.from(document.querySelectorAll('.map-ethnic.visible')).reverse();
@@ -164,11 +192,21 @@ const MapEngine = {
             }
           }
           if (!hitFound) { this.activeHoverCountry = null; }
+          
+          if (this.activeHoverCountry !== this.previousHoverCountry) {
+            document.querySelectorAll('.map-ethnic.hovered').forEach(el => el.classList.remove('hovered'));
+            if (this.activeHoverCountry) {
+              const activeLayer = document.querySelector(`.map-ethnic.visible[data-country="${this.activeHoverCountry}"]`);
+              if (activeLayer) activeLayer.classList.add('hovered');
+            }
+            this.previousHoverCountry = this.activeHoverCountry;
+          }
         }
       });
   
-      // Map Click (Decoupled, triggers UI changes but NO zooming)
       this.mapViewport.addEventListener('click', () => {
+        if (this.hasDragged) return;
+
         if (this.activeHoverCountry) {
           SoundEngine.play('tick'); 
           UI.hideTopBanner(); 
@@ -203,9 +241,13 @@ const MapEngine = {
         } 
       });
   
-      // Zoom
       this.mapViewport.addEventListener('wheel', (e) => {
         e.preventDefault(); this.setTransitionEnabled(false);
+
+        this.isZooming = true;
+        clearTimeout(this.zoomTimeout);
+        this.zoomTimeout = setTimeout(() => { this.isZooming = false; }, 250);
+
         const rect = this.mapViewport.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
         const nextScale = Math.min(5, Math.max(1, this.scale + (e.deltaY > 0 ? -0.1 : 0.1)));
         if (nextScale !== this.scale) { this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; this.translateY = my - ((my - this.translateY) / this.scale) * nextScale; this.scale = nextScale; this.applyTransform(); }
@@ -218,10 +260,10 @@ const MapEngine = {
         }
       }, { passive: false });
   
-      // Touch (Mobile)
       this.mapViewport.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
           this.isDragging = true;
+          this.hasDragged = false; 
           this.dragStartX = e.touches[0].clientX;
           this.dragStartY = e.touches[0].clientY;
           this.translateStartX = this.translateX;
@@ -234,13 +276,31 @@ const MapEngine = {
             e.touches[0].clientY - e.touches[1].clientY
           );
           this.initialScale = this.scale;
+          
+          // 🔥 NEW: Calculate exactly where the user is pinching so we can center the zoom
+          const rect = this.mapViewport.getBoundingClientRect();
+          this.pinchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+          this.pinchCenterY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+          
+          this.initialTranslateX = this.translateX;
+          this.initialTranslateY = this.translateY;
+
           this.setTransitionEnabled(false);
         }
       }, { passive: false });
   
       this.mapViewport.addEventListener('touchmove', (e) => {
         e.preventDefault(); 
+        
+        this.isZooming = true;
+        clearTimeout(this.zoomTimeout);
+        this.zoomTimeout = setTimeout(() => { this.isZooming = false; }, 250);
+
         if (this.isDragging && e.touches.length === 1) {
+          if (Math.hypot(e.touches[0].clientX - this.dragStartX, e.touches[0].clientY - this.dragStartY) > 3) {
+            this.hasDragged = true;
+          }
+
           this.translateX = this.translateStartX + (e.touches[0].clientX - this.dragStartX);
           this.translateY = this.translateStartY + (e.touches[0].clientY - this.dragStartY);
           this.applyTransform();
@@ -250,7 +310,13 @@ const MapEngine = {
             e.touches[0].clientY - e.touches[1].clientY
           );
           const scaleChange = currentDistance / this.initialPinchDistance;
-          this.scale = Math.min(5, Math.max(1, this.initialScale * scaleChange));
+          const nextScale = Math.min(5, Math.max(1, this.initialScale * scaleChange));
+          
+          // 🔥 NEW: Mathematically adjust translation to keep the pinch perfectly centered
+          this.translateX = this.pinchCenterX - ((this.pinchCenterX - this.initialTranslateX) / this.initialScale) * nextScale;
+          this.translateY = this.pinchCenterY - ((this.pinchCenterY - this.initialTranslateY) / this.initialScale) * nextScale;
+          
+          this.scale = nextScale;
           this.applyTransform();
         }
       }, { passive: false });

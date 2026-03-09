@@ -101,8 +101,6 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 #map-viewport { width: 100%; height: 100%; position: relative; overflow: hidden; cursor: grab; touch-action: none; }
 #map-viewport:active { cursor: grabbing; }
 
-/* 🔥 NEW ASPECT-RATIO MAP WRAPPER 🔥 */
-/* Fixes the "Floating City Pins" on mobile */
 #map-wrapper {
   position: absolute;
   top: 50%;
@@ -110,15 +108,52 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
   transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
-  max-width: calc(100vh * (1536 / 864));
-  max-height: calc(100vw * (864 / 1536));
+  max-width: calc(100vh * (6194 / 3876));
+  max-height: calc(100vw * (3876 / 6194));
+  isolation: isolate; 
+  will-change: transform;
 }
 
-#map-content { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: 0 0; transition: transform 0.8s ease-in-out; }
-.map-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
-.map-base { z-index: 0; transition: filter 0.8s ease; }
-.map-ethnic { z-index: 1; opacity: 0; mix-blend-mode: multiply; transition: opacity 0.5s ease; pointer-events: none; }
+#map-content { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  transform-origin: 0 0; 
+  transition: transform 0.8s ease-in-out; 
+  will-change: transform; 
+  transform: translateZ(0);
+}
+
+.map-layer { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+.map-base { z-index: 0; }
+
+/* 🔥 BUG FIX: Removed will-change to prevent iOS Safari Color Washout Bug 🔥 */
+.map-ethnic { 
+  z-index: 1; 
+  opacity: 0; 
+  mix-blend-mode: multiply; 
+  -webkit-mix-blend-mode: multiply;
+  transition: opacity 0.5s ease, filter 0.3s ease; 
+  pointer-events: none; 
+}
 .map-ethnic.visible { opacity: 0.85; }
+
+@media (hover: hover) and (pointer: fine) {
+  .map-ethnic.visible.hovered {
+    opacity: 0.95;
+    filter: brightness(1.10) saturate(1.1); 
+  }
+}
+
 .map-label { z-index: 2; opacity: 0; pointer-events: none; transition: opacity 0.5s ease 0.2s, filter 0.5s ease 0.2s; filter: drop-shadow(0px 0px 0px rgba(0,0,0,0)); }
 .map-label.visible { opacity: 1; filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.7)); }
 .map-border { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 100; pointer-events: none; }
@@ -128,7 +163,7 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 /* NIGHT MODE CSS */
 body.night-mode { background: #050505; }
 body.night-mode .map-base { filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9); }
-body.night-mode .map-ethnic { mix-blend-mode: screen; }
+body.night-mode .map-ethnic { mix-blend-mode: screen; -webkit-mix-blend-mode: screen; }
 body.night-mode .map-ethnic.visible { opacity: 0.65; }
 body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 
@@ -177,10 +212,8 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 /* ========================================================================= */
 @media (max-width: 768px), (max-width: 950px) and (orientation: landscape) {
   
-  /* 1. Hide Minimap to save screen space on rotated phones */
   #minimap { display: none !important; }
   
-  /* 2. Move Donation Button to bottom left where minimap was */
   .donation-btn {
     left: 1.5rem;
     bottom: 1.5rem;
@@ -189,7 +222,6 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   }
   .donation-btn svg { width: 20px; height: 20px; }
 
-  /* Ensure the golden card doesn't overflow off the left side of the screen */
   .donation-callout-card {
     left: 0;
     transform: translateX(0) scale(0);
@@ -200,10 +232,8 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   }
   .donation-callout-card::after { left: 18px; }
 
-  /* 3. Adjust Compass Size */
   .compass-btn { top: 1.5rem; left: 1.5rem; width: 40px; height: 40px; }
 
-  /* 4. Transform Info Panel (Demographics) into a "Bottom Sheet" */
   .info-panel {
     top: auto;
     bottom: 5.5rem; 
@@ -215,7 +245,6 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   }
   .info-panel.active { transform: translateY(0); }
 
-  /* 5. Adjust City Dossier */
   #city-dossier {
     width: 90%;
     max-width: 340px;
@@ -224,27 +253,25 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   #city-dossier h2 { font-size: 1.4rem; }
   .dossier-image { max-height: 140px; }
 
-  /* 6. Top Title Banner Scaling */
   #top-title-banner { top: 1.5rem; width: 85%; padding: 0.75rem 1.5rem; gap: 1rem; }
   #top-title-banner h1 { font-size: 1.2rem; }
   #close-title-btn { width: 34px; height: 34px; font-size: 1.5rem; }
 
-  /* 7. Sidebar scaling */
   .sidebar { width: 280px; }
   .sidebar-title { font-size: 1.1rem; }
   
-  /* 9. Hide info panel completely if sidebar is open to prevent messy overlap */
   .sidebar:not(.collapsed) ~ .info-panel {
     transform: translateY(120%) !important;
     opacity: 0 !important;
     pointer-events: none !important;
   }
 
-  
+  .powered-by-badge { bottom: 1.5rem; right: 1.5rem; font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+  .development-badge { font-size: 0.75rem; padding: 0.3rem 1rem; }
 }
 
 
-/* --- NEW: CREDITS & DEVELOPMENT BADGES --- */
+/* --- CREDITS & DEVELOPMENT BADGES --- */
 .development-badge {
   position: absolute;
   top: 0;
