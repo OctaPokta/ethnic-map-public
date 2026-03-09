@@ -26,7 +26,6 @@ const MapEngine = {
       this.setupWrapper();
       this.setupEventListeners();
       
-      // 🔥 Ensure high-res snap right on page load
       setTimeout(() => this.setTransitionEnabled(true), 300);
     },
   
@@ -41,12 +40,19 @@ const MapEngine = {
       this.mapContent.style.transition = enabled ? 'transform 0.8s ease-in-out' : 'none'; 
       this.minimapRect.style.transition = enabled ? 'all 0.8s ease-in-out' : 'none';
       
-      // 🔥 FIX: Mobile Dynamic Resolution Engine 🔥
-      // While dragging/pinching (enabled = false), it uses low-res GPU cache for smooth 60fps.
-      // When letting go (enabled = true), it drops the lock and recalculates pure HD pixels.
       if (window.innerWidth <= 768) {
           this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
           this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
+          
+          if (enabled) {
+             // 🔥 FIX: The "Micro-Shake" to force Android/iOS to discard blurry cached textures
+             setTimeout(() => {
+                 this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale + 0.0001})`;
+                 setTimeout(() => {
+                     this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+                 }, 50);
+             }, 50);
+          }
       }
     },
   
@@ -258,7 +264,6 @@ const MapEngine = {
         clearTimeout(this.zoomTimeout);
         this.zoomTimeout = setTimeout(() => { 
             this.isZooming = false; 
-            // 🔥 Snap to HD on zoom end
             this.setTransitionEnabled(true);
         }, 250);
 
@@ -309,7 +314,6 @@ const MapEngine = {
         clearTimeout(this.zoomTimeout);
         this.zoomTimeout = setTimeout(() => { 
             this.isZooming = false; 
-            // 🔥 Snap to HD on pinch end
             this.setTransitionEnabled(true);
         }, 250);
 

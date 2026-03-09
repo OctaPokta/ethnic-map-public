@@ -50,7 +50,6 @@ const UI = {
       document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
       document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
   
-      // 🔥 NEW: INJECT BRANDING AND DEV BANNER 🔥
       document.getElementById('powered-by-prefix').textContent = DashboardData.ui.poweredByPrefix;
       document.getElementById('powered-by-brand').textContent = DashboardData.ui.poweredByBrand;
 
@@ -261,7 +260,6 @@ const UI = {
         e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick'); 
       });
       
-      // DROPDOWN EXCLUSIVE MENU - Zooms and teleports
       document.querySelectorAll('.custom-option').forEach(opt => {
         opt.addEventListener('click', () => {
           SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
@@ -275,22 +273,25 @@ const UI = {
           this.updateLayerVisibility(opt.dataset.value, true);
   
           this.showInfoPanel(opt.dataset.value); 
-          MapEngine.flyToView(opt.dataset.value); // This flies the camera
+          MapEngine.flyToView(opt.dataset.value);
           this.updateCityVisibility();
   
           if (window.innerWidth <= 768) { document.querySelector('.sidebar').classList.add('collapsed'); }
         });
       });
   
-      // CHECKBOX MULTI-SELECT - NO ZOOMING
       document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => {
         cb.addEventListener('change', () => {
           SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
           this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
           if (cb.checked) { 
-            this.showInfoPanel(cb.dataset.layer); 
-            // Removed flyToView here! Map will no longer teleport.
+            
+            // 🔥 FIX: Prevent the info panel from popping up on mobile when checking boxes!
+            if (window.innerWidth > 768) {
+                this.showInfoPanel(cb.dataset.layer); 
+            }
+            
             window.history.replaceState(null, null, '#' + cb.dataset.layer);
             const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
             if (opt) dropdownText.textContent = opt.textContent;
@@ -319,16 +320,13 @@ const UI = {
         window.history.replaceState(null, null, ' '); 
         MapEngine.resetView(); 
         
-        // 🔥 NEW: WATERFALL RENDER ENGINE 🔥
         const allCheckboxes = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]'));
         
         allCheckboxes.forEach((cb, index) => {
-            // Stagger each country rendering by 50 milliseconds
             setTimeout(() => {
                 cb.checked = true; 
                 this.updateLayerVisibility(cb.dataset.layer, true);
                 
-                // Only update the city pins once the very last layer has loaded
                 if (index === allCheckboxes.length - 1) {
                     this.updateCityVisibility();
                 }
