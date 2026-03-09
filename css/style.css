@@ -34,6 +34,7 @@ body {
   height: 100dvh; /* Locks to the exact dynamic screen height */
   display: flex; 
   overflow: hidden; 
+  z-index: 1; /* Ensures the app sits at the base layer */
 }
 
 .map-area { 
@@ -213,6 +214,19 @@ body {
 /* 4. Disable heavy shadow calculations on text while moving to guarantee 60 FPS */
 #map-wrapper.fast-pan .map-label.visible {
   filter: none !important;
+}
+
+/* 🔥 FIX: Restored to opacity-only so images stay cached in RAM for lag-free toggling 🔥 */
+.map-ethnic { 
+  z-index: 1; 
+  opacity: 0; 
+  mix-blend-mode: multiply; 
+  -webkit-mix-blend-mode: multiply;
+  transition: opacity 0.5s ease, filter 0.3s ease; 
+  pointer-events: none; 
+}
+.map-ethnic.visible { 
+  opacity: 0.85; 
 }
 
 @media (hover: hover) and (pointer: fine) {
