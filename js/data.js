@@ -36,7 +36,7 @@ const DashboardData = {
       ethnicImage: "images/countries-ethnic/ethnic-Armenia.webp",
       labelImage: "images/countries-labels/labels-Armenia.webp", 
       demographics: [
-        { name: "ארמנים", percent: 98.1, color: "#3b82f6", image: "https://he.wikipedia.org/wiki/%D7%90%D7%A8%D7%9E%D7%A0%D7%99%D7%9D#/media/%D7%A7%D7%95%D7%91%D7%A5:Armenian_collage.png" },
+        { name: "ארמנים", percent: 98.1, color: "#3b82f6", image: "images/ethnicities/Armenian.png" },
         { name: "יזידים", percent: 1.1, color: "#10b981", image: "images/ethnicities/yazidis.webp" },
         { name: "רוסים", percent: 0.3, color: "#f59e0b", image: "images/ethnicities/russians.webp" }
       ]
