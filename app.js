@@ -287,14 +287,11 @@ const UI = {
           
           if (cb.checked) { 
             
-            // 🔥 FIX: Prevent the info panel from popping up on mobile when checking boxes!
-            if (window.innerWidth > 768) {
-                this.showInfoPanel(cb.dataset.layer); 
-            }
-            
+            // 🔥 FIX: Removed showInfoPanel entirely here so it doesn't auto-open on ANY device! 🔥
             window.history.replaceState(null, null, '#' + cb.dataset.layer);
             const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
             if (opt) dropdownText.textContent = opt.textContent;
+
           } else { 
             const anyChecked = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]')).some(c => c.checked);
             if (!anyChecked) { 
