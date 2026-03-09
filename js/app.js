@@ -12,7 +12,7 @@ const UI = {
       this.injectData();
       this.setupLoadingScreen();
       this.setupEventListeners();
-      
+      this.setupPerformanceMonitor();
       // 🔥 NEW: Setup the Wake-Up Splash Screen for Tab Switching
       this.setupVisibilityHandler(); 
     },
@@ -34,18 +34,93 @@ const UI = {
         });
       }
     },
+    setupPerformanceMonitor() {
+      // 1. Create the elegant "Processing..." overlay (Always On)
+      const smoothLoader = document.createElement('div');
+      smoothLoader.id = 'smooth-fps-loader';
+      smoothLoader.style.cssText = `
+        position: fixed; top: 2.5rem; left: 50%; transform: translateX(-50%) translateY(-20px);
+        background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(99, 102, 241, 0.4);
+        color: #e2e8f0; padding: 8px 16px; border-radius: 30px; font-size: 0.85rem; font-weight: 600;
+        display: flex; align-items: center; gap: 10px; z-index: 999999;
+        opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      `;
+      smoothLoader.innerHTML = `
+        <div style="width: 14px; height: 14px; border: 2px solid #6366f1; border-top-color: transparent; border-radius: 50%; animation: spinLoader 0.8s linear infinite;"></div>
+        <span style="letter-spacing: 0.5px;">מעבד נתונים...</span>
+      `;
+      document.body.appendChild(smoothLoader);
+
+      const style = document.createElement('style');
+      style.innerHTML = `@keyframes spinLoader { to { transform: rotate(360deg); } }`;
+      document.head.appendChild(style);
+
+      // 2. Setup the Debug FPS Text (Only if DEBUG_MODE is true)
+      let fpsPanel = null;
+      if (this.DEBUG_MODE) {
+        fpsPanel = document.createElement('div');
+        fpsPanel.style.cssText = `
+          position: fixed; top: 90px; left: 30px; background: rgba(15, 23, 42, 0.9); color: #00ffcc;
+          padding: 8px 14px; border-radius: 8px; font-family: monospace; font-size: 16px; font-weight: bold;
+          z-index: 999999; pointer-events: none; border: 1px solid #00ffcc; direction: ltr; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        `;
+        document.body.appendChild(fpsPanel);
+      }
+
+      // 3. The Render Loop (Tracks frame drops dynamically)
+      let lastFrameTime = performance.now();
+      let secondStart = lastFrameTime;
+      let frames = 0; let lagSpikeCount = 0;
+
+      const renderLoop = (now) => {
+        const delta = now - lastFrameTime;
+        lastFrameTime = now;
+        frames++;
+
+        // If a single frame takes longer than ~45ms (massive stutter), trigger the mask!
+        if (delta > 45) {
+          lagSpikeCount += 2; 
+        } else {
+          lagSpikeCount = Math.max(0, lagSpikeCount - 1); 
+        }
+
+        // Beautifully fade the loader in and out based on the phone's struggle
+        if (lagSpikeCount > 4) {
+          smoothLoader.style.opacity = '1';
+          smoothLoader.style.visibility = 'visible';
+          smoothLoader.style.transform = 'translateX(-50%) translateY(0)';
+        } else if (lagSpikeCount === 0) {
+          smoothLoader.style.opacity = '0';
+          smoothLoader.style.visibility = 'hidden';
+          smoothLoader.style.transform = 'translateX(-50%) translateY(-20px)';
+        }
+
+        // Update FPS Panel (if debug mode is on)
+        if (now >= secondStart + 1000) {
+          if (fpsPanel) {
+            fpsPanel.innerText = `FPS: ${frames}`;
+            if (frames >= 45) fpsPanel.style.color = "#00ffcc";
+            else if (frames >= 30) fpsPanel.style.color = "#fbbf24";
+            else fpsPanel.style.color = "#ef4444";
+          }
+          frames = 0;
+          secondStart = now;
+        }
+        requestAnimationFrame(renderLoop);
+      };
+      requestAnimationFrame(renderLoop);
+    },
   
     injectData() {
       document.getElementById('loading-logo').src = DashboardData.images.watermark;
       document.getElementById('base-map-img').src = DashboardData.images.baseMap;
-      document.getElementById('borders-svg').src = DashboardData.images.borders;
+      document.getElementById('borders-img').src = DashboardData.images.borders;
       document.getElementById('minimap-bg').src = DashboardData.images.minimapBg;
   
       document.getElementById('sidebar-main-title').textContent = DashboardData.ui.mainTitle;
       document.getElementById('custom-select-text').textContent = DashboardData.ui.defaultDropdownText;
       document.getElementById('sidebar-dropdown-label').textContent = DashboardData.ui.dropdownLabel;
       document.getElementById('sidebar-checkboxes-label').textContent = DashboardData.ui.ethnicLayersTitle;
-      document.getElementById('select-all-btn').textContent = DashboardData.ui.selectAllBtn;
       document.getElementById('clear-map-btn').textContent = DashboardData.ui.clearMapBtn;
       document.getElementById('top-title-prefix').textContent = DashboardData.ui.distributionTitle;
       document.getElementById('dossier-pop-label').textContent = DashboardData.ui.populationLabel;
@@ -143,16 +218,28 @@ const UI = {
       const loadingScreen = document.getElementById('loading-screen');
       const loaderFill = document.getElementById('loading-bar-fill');
       const loaderContainer = document.getElementById('loading-bar-container');
+      const percentText = document.getElementById('loading-percentage'); // 🔥 Fetches the text
       const enterBtn = document.getElementById('enter-map-btn');
       const images = document.querySelectorAll('img'); 
       
       let loadedCount = 0; const totalImages = images.length;
       const updateLoading = () => {
-        loadedCount++; if (loaderFill) loaderFill.style.width = `${(loadedCount / totalImages) * 100}%`;
+        loadedCount++; 
+        const pct = Math.round((loadedCount / totalImages) * 100);
+        
+        // Update bar and text dynamically
+        if (loaderFill) loaderFill.style.width = `${pct}%`;
+        if (percentText) percentText.textContent = `${pct}%`;
+        
         if (loadedCount === totalImages) {
           setTimeout(() => {
             loaderContainer.style.opacity = '0';
-            setTimeout(() => { loaderContainer.style.display = 'none'; enterBtn.classList.remove('hidden'); }, 400);
+            if(percentText) percentText.style.opacity = '0';
+            setTimeout(() => { 
+                loaderContainer.style.display = 'none'; 
+                if(percentText) percentText.style.display = 'none';
+                enterBtn.classList.remove('hidden'); 
+            }, 400);
           }, 500);
         }
       };
@@ -163,7 +250,7 @@ const UI = {
         setTimeout(() => {
           const callout = document.getElementById('donation-callout');
           const btn = document.getElementById('donation-btn');
-          callout.classList.add('show'); btn.classList.add('pulsing'); SoundEngine.play('tick');
+          callout.classList.add('show'); btn.classList.add('pulsing'); SoundEngine.play('chime');
           setTimeout(() => { callout.classList.remove('show'); btn.classList.remove('pulsing'); }, 8000);
         }, 2000); 
       });
@@ -364,28 +451,7 @@ const UI = {
         dropdownText.textContent = DashboardData.ui.defaultDropdownText; infoPanel.classList.remove('active'); window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
       });
   
-      document.getElementById('select-all-btn').addEventListener('click', () => { 
-        SoundEngine.play('tick'); 
-        this.hideTopBanner(); 
-        this.cityDossier.classList.add('hidden'); 
-        dropdownText.textContent = DashboardData.ui.selectAllBtn; 
-        infoPanel.classList.remove('active'); 
-        window.history.replaceState(null, null, ' '); 
-        MapEngine.resetView(); 
-        
-        const allCheckboxes = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]'));
-        
-        allCheckboxes.forEach((cb, index) => {
-            setTimeout(() => {
-                cb.checked = true; 
-                this.updateLayerVisibility(cb.dataset.layer, true);
-                
-                if (index === allCheckboxes.length - 1) {
-                    this.updateCityVisibility();
-                }
-            }, index * 50); 
-        });
-      });
+     
   
       document.getElementById('theme-toggle-btn').addEventListener('click', () => { 
         document.body.classList.toggle('night-mode'); SoundEngine.play('tick'); 

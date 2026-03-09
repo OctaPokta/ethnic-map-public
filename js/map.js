@@ -34,15 +34,9 @@ const MapEngine = {
     },
   
     setTransitionEnabled(enabled) { 
-      // Simplified transition logic
+      // Pure, simple transitions without the CSS class hacks
       this.mapContent.style.transition = enabled ? 'transform 0.4s ease-out' : 'none'; 
       this.minimapRect.style.transition = enabled ? 'all 0.4s ease-out' : 'none';
-      
-      if (enabled) {
-          this.mapWrapper.classList.remove('fast-pan');
-      } else {
-          this.mapWrapper.classList.add('fast-pan');
-      }
     },
   
     updateMinimap() {

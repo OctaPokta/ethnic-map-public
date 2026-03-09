@@ -29,6 +29,7 @@
     <div class="loading-bar-container" id="loading-bar-container">
       <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
+    <div id="loading-percentage" style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">0%</div>
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
     
     <div class="powered-by-badge loading-powered-by" dir="ltr">
@@ -69,8 +70,7 @@
               <div id="dynamic-ethnic-layers"></div>
               <div id="dynamic-label-layers"></div>
               
-              <img id="borders-proxy" class="map-border map-border-proxy" src="images/Borders.webp" draggable="false">
-              <img id="borders-svg" class="map-border map-border-svg" src="images/Borders.svg" draggable="false">
+              <img id="borders-img" class="map-border" src="images/Borders.webp" draggable="false">
               
               
               <div id="city-pins"></div>
@@ -138,7 +138,6 @@
           <div class="checkbox-group" id="dynamic-checkboxes"></div>
         </div>
         <div class="sidebar-actions">
-          <button type="button" id="select-all-btn" class="action-btn select-all-btn"></button>
           <button type="button" id="clear-map-btn" class="action-btn clear-map-btn"></button>
         </div>
       </div> 
