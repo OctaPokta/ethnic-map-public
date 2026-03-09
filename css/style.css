@@ -136,8 +136,27 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
   width: 100%; 
   height: 100%; 
   object-fit: cover; 
+  /* 🔥 NEW: Force the GPU to flatten the math into fast textures */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 .map-base { z-index: 0; }
+
+/* 🔥 FAST PAN MODE (The Hybrid Architecture) 🔥 */
+
+/* 1. Completely nuke the giant border from the render tree to save CPU */
+#map-wrapper.fast-pan .map-border {
+  opacity: 0 !important; 
+  visibility: hidden !important; /* This guarantees zero lag */
+  transition: none !important;
+}
+
+/* 2. Keep active labels visible, but lock them as hardware-accelerated snapshots */
+#map-wrapper.fast-pan .map-label.visible {
+  will-change: transform !important;
+  /* Note: The browser automatically culls the labels currently off-screen! */
+}
 
 /* 🔥 FIX: Restored to opacity-only so images stay cached in RAM for lag-free toggling 🔥 */
 .map-ethnic { 
@@ -160,7 +179,7 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 }
 
 .map-label { 
-  z-index: 2; 
+  z-index: 101; /* 🔥 Pulled above the borders (100) but below city pins (105) */
   opacity: 0; 
   pointer-events: none; 
   transition: opacity 0.5s ease 0.2s, filter 0.5s ease 0.2s; 
@@ -170,7 +189,20 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
   opacity: 1; 
   filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.7)); 
 }
-.map-border { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 100; pointer-events: none; }
+.map-border { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  z-index: 100; 
+  pointer-events: none; 
+  /* 🔥 Force the GPU to render the SVG faster */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
 
 .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.8); z-index: 10; }
 
@@ -183,13 +215,19 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
 
 /* --- CITY PINS --- */
 #city-pins { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 105; pointer-events: none; }
-.city-pin { position: absolute; width: 14px; height: 14px; background-color: #ffd900; border-radius: 50%; transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px rgba(0, 0, 0, 0.9); pointer-events: auto; cursor: pointer; transition: opacity 0.4s ease; }
-.city-pin:hover { background-color: #fff; box-shadow: 0 0 20px #fff; }
+.city-pin { position: absolute; width: 22px; height: 22px; transform: translate(-50%, -50%) scale(1); pointer-events: auto; cursor: pointer; transition: opacity 0.4s ease; display: flex; align-items: center; justify-content: center; }
 .city-pin.dimmed { opacity: 0; pointer-events: none; }
-.city-pin::before { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 2px solid #ffd000; animation: pulse 2s infinite; pointer-events: none; }
+
+/* 🏙️ Styling the new Skyline Icon */
+.city-icon { width: 100%; height: 100%; color: #ffd900; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.9)); transition: all 0.3s ease; }
+.city-pin:hover .city-icon { color: #fff; transform: scale(1.15) translateY(-2px); filter: drop-shadow(0 6px 12px rgba(255,255,255,0.6)); }
+
+/* 🌟 Soft pulsing glow behind the city */
+.city-pin::before { content: ''; position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; border-radius: 50%; background-color: rgba(255, 217, 0, 0.4); animation: pulse 2s infinite; pointer-events: none; z-index: -1; }
 .city-pin.dimmed::before { animation: none; display: none; }
-@keyframes pulse { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
-.city-tooltip { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px); background: rgba(15, 23, 42, 0.9); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); }
+@keyframes pulse { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(3); opacity: 0; } }
+
+.city-tooltip { position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%) translateY(-5px); background: rgba(15, 23, 42, 0.9); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; border: 1px solid rgba(255, 255, 255, 0.1); }
 .city-pin:hover .city-tooltip { opacity: 1; }
 
 .toggle-sidebar-btn { position: absolute; top: 2rem; left: -32px; width: 32px; height: 48px; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-right: none; border-radius: 8px 0 0 8px; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; }

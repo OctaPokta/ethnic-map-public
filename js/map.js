@@ -41,6 +41,14 @@ const MapEngine = {
       this.mapContent.style.transition = enabled ? 'transform 0.8s ease-in-out' : 'none'; 
       this.minimapRect.style.transition = enabled ? 'all 0.8s ease-in-out' : 'none';
       
+      // 🔥 NEW: Toggle Fast Pan Mode!
+      // If enabled is false (we are dragging), add the fast-pan class.
+      if (enabled) {
+          this.mapWrapper.classList.remove('fast-pan');
+      } else {
+          this.mapWrapper.classList.add('fast-pan');
+      }
+      
       if (window.innerWidth <= 768) {
           this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
           this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
@@ -203,7 +211,11 @@ const MapEngine = {
           const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
   
           for (const layer of visibleLayers) {
-            const imgWidth = layer.naturalWidth; const imgHeight = layer.naturalHeight;
+            // 🔥 FIX: SVGs break layer.naturalWidth (often returning 0 or 300). 
+            // Force the engine to use the true 6194x3876 map dimensions!
+            const imgWidth = this.MAP_ORIGINAL_W; 
+            const imgHeight = this.MAP_ORIGINAL_H;
+  
             const pixelX = (wrapperX / this.mapWrapper.clientWidth) * imgWidth;
             const pixelY = (wrapperY / this.mapWrapper.clientHeight) * imgHeight;
   
@@ -211,6 +223,7 @@ const MapEngine = {
               hitCanvas.width = 1; hitCanvas.height = 1;
               hitCtx.drawImage(layer, pixelX, pixelY, 1, 1, 0, 0, 1, 1);
               const pixelData = hitCtx.getImageData(0, 0, 1, 1).data;
+              
               if (pixelData[3] > 10) { 
                 hitFound = true;
                 this.activeHoverCountry = layer.getAttribute('data-country');
@@ -284,7 +297,10 @@ const MapEngine = {
         }, 250);
 
         const rect = this.mapViewport.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
-        const nextScale = Math.min(5, Math.max(1, this.scale + (e.deltaY > 0 ? -0.1 : 0.1)));
+        
+        // 🔥 Normalized, fixed zoom step of 0.3 (No acceleration, no getting stuck)
+        const nextScale = Math.min(8, Math.max(1, this.scale + (e.deltaY > 0 ? -0.3 : 0.3)));
+        
         if (nextScale !== this.scale) { this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; this.translateY = my - ((my - this.translateY) / this.scale) * nextScale; this.scale = nextScale; this.applyTransform(); }
         
         if (UI.DEBUG_MODE) {

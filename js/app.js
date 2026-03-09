@@ -106,7 +106,13 @@ const UI = {
         const pin = document.createElement('div');
         pin.className = 'city-pin'; 
         pin.setAttribute('data-country', city.country);
-        pin.innerHTML = `<div class="city-tooltip">${city.name}</div>`;
+        // 🔥 NEW: High-resolution SVG City Skyline Icon
+        pin.innerHTML = `
+          <svg class="city-icon" viewBox="0 0 512 512" fill="currentColor">
+            <path d="M240 32c0-17.7 14.3-32 32-32h160c17.7 0 32 14.3 32 32v64h32c17.7 0 32 14.3 32 32v352H16V160c0-17.7 14.3-32 32-32h80c17.7 0 32 14.3 32 32v96h80V32zM128 224v-32H64v32h64zm0 96v-32H64v32h64zm0 96v-32H64v32h64zm192-256v-32h-64v32h64zm0 96v-32h-64v32h64zm0 96v-32h-64v32h64zM448 160v-32h-64v32h64zm0 96v-32h-64v32h64zm0 96v-32h-64v32h64z"/>
+          </svg>
+          <div class="city-tooltip">${city.name}</div>
+        `;
         
         pin.style.left = `${(city.x / MAP_ORIGINAL_W) * 100}%`;
         pin.style.top = `${(city.y / MAP_ORIGINAL_H) * 100}%`;

@@ -24,10 +24,10 @@ const DashboardData = {
 
   // --- 2. BASE IMAGE PATHS ---
   images: {
-    baseMap: "images/Background.svg",
+    baseMap: "images/Background.webp",
     watermark: "images/logo.png",
-    borders: "images/Borders.png",
-    minimapBg: "images/Background.svg"
+    borders: "images/Borders.svg",
+    minimapBg: "images/Background.webp"
   },
 
   // --- 3. COUNTRY CONFIGURATION ---
@@ -35,8 +35,8 @@ const DashboardData = {
     Armenia: {
       hebrewName: "ארמניה",
       view: { scale: 3.7, x: -2176, y: -8 },
-      ethnicImage: "images/countries-ethnic/ethnic-Armenia.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Armenia.webp",
+      labelImage: "images/countries-labels/labels-Armenia.svg", 
       demographics: [
         { name: "ארמנים", percent: 98.1, color: "#3b82f6" },
         { name: "יזידים", percent: 1.1, color: "#10b981" },
@@ -46,8 +46,8 @@ const DashboardData = {
     Azerbeijan: {
       hebrewName: "אזרבייג'ן",
       view: { scale: 4.00, x: -2635, y: -57 },
-      ethnicImage: "images/countries-ethnic/ethnic-Azerbeijan.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Azerbeijan.webp",
+      labelImage: "images/countries-labels/labels-Azerbeijan.svg", 
       demographics: [
         { name: "אזרים", percent: 91.6, color: "#10b981" },
         { name: "לזגינים", percent: 2.0, color: "#f59e0b" },
@@ -58,8 +58,8 @@ const DashboardData = {
     Iran: {
       hebrewName: "איראן",
       view: { scale: 1.50, x: -835, y: -125 },
-      ethnicImage: "images/countries-ethnic/ethnic-Iran.svg",
-      labelImage: "images/countries-labels/labels-Iran.png",
+      ethnicImage: "images/countries-ethnic/ethnic-Iran.webp",
+      labelImage: "images/countries-labels/labels-Iran.svg",
       demographics: [
         { name: "פרסים", percent: 61, color: "#0ea5e9" },
         { name: "אזרים", percent: 16, color: "#ef4444" },
@@ -71,8 +71,8 @@ const DashboardData = {
     Iraq: {
       hebrewName: "עיראק",
       view: { scale: 2.20, x: -903, y: -346 },
-      ethnicImage: "images/countries-ethnic/ethnic-Iraq.png",
-      labelImage: "images/countries-labels/labels-Iraq.png",
+      ethnicImage: "images/countries-ethnic/ethnic-Iraq.webp",
+      labelImage: "images/countries-labels/labels-Iraq.svg",
       demographics: [
         { name: "ערבים", percent: 78, color: "#22c55e" },
         { name: "כורדים", percent: 18, color: "#eab308" },
@@ -82,8 +82,8 @@ const DashboardData = {
     Israel: {
       hebrewName: "ישראל",
       view: { scale: 3.00, x: -709, y: -645 },
-      ethnicImage: "images/countries-ethnic/ethnic-Israel.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Israel.webp",
+      labelImage: "images/countries-labels/labels-Israel.svg", 
       demographics: [
         { name: "יהודים", percent: 73.5, color: "#3b82f6" },
         { name: "ערבים", percent: 21.0, color: "#22c55e" },
@@ -93,8 +93,8 @@ const DashboardData = {
     Jordan: {
       hebrewName: "ירדן",
       view: { scale: 3.00, x: -913, y: -709 },
-      ethnicImage: "images/countries-ethnic/ethnic-Jordan.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Jordan.webp",
+      labelImage: "images/countries-labels/labels-Jordan.svg", 
       demographics: [
         { name: "ערבים", percent: 98, color: "#22c55e" },
         { name: "צ'רקסים", percent: 1, color: "#f43f5e" },
@@ -104,8 +104,8 @@ const DashboardData = {
     Kuwait: {
       hebrewName: "כוויית",
       view: { scale: 3.20, x: -1903, y: -1066 },
-      ethnicImage: "images/countries-ethnic/ethnic-Kuwait.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Kuwait.webp",
+      labelImage: "images/countries-labels/labels-Kuwait.svg", 
       demographics: [
         { name: "אסייתים", percent: 40.3, color: "#8b5cf6" },
         { name: "כוויתים", percent: 30.4, color: "#22c55e" },
@@ -115,8 +115,8 @@ const DashboardData = {
     Lebanon: {
       hebrewName: "לבנון",
       view: { scale: 5.00, x: -2430, y: -1848 },
-      ethnicImage: "images/countries-ethnic/ethnic-Lebanon.png",
-      labelImage: "images/countries-labels/labels-Lebanon.png",
+      ethnicImage: "images/countries-ethnic/ethnic-Lebanon.webp",
+      labelImage: "images/countries-labels/labels-Lebanon.svg",
       demographics: [
         { name: "ערבים", percent: 95, color: "#22c55e" },
         { name: "ארמנים", percent: 4, color: "#3b82f6" },
@@ -126,8 +126,8 @@ const DashboardData = {
     SaudiArabia: {
       hebrewName: "ערב הסעודית",
       view: { scale: 1.60, x: -509, y: -542 },
-      ethnicImage: "images/countries-ethnic/ethnic-SaudiArabia.png",
-      labelImage: "images/countries-labels/labels-SaudiArabia.png",
+      ethnicImage: "images/countries-ethnic/ethnic-SaudiArabia.webp",
+      labelImage: "images/countries-labels/labels-SaudiArabia.svg",
       demographics: [
         { name: "סעודים", percent: 58.4, color: "#22c55e" },
         { name: "לא-סעודים", percent: 41.6, color: "#64748b" }
@@ -136,8 +136,8 @@ const DashboardData = {
     Syria: {
       hebrewName: "סוריה",
       view: { scale: 2.90, x: -1010, y: -395 },
-      ethnicImage: "images/countries-ethnic/ethnic-Syria.svg",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Syria.webp",
+      labelImage: "images/countries-labels/labels-Syria.svg", 
       demographics: [
         { name: "ערבים", percent: 50, color: "#22c55e" },
         { name: "עלווים", percent: 15, color: "#ec4899" },
@@ -149,8 +149,8 @@ const DashboardData = {
     Turkey: {
       hebrewName: "טורקיה",
       view: { scale: 1.90, x: -327, y: 169 },
-      ethnicImage: "images/countries-ethnic/ethnic-Turkey.png",
-      labelImage: "", 
+      ethnicImage: "images/countries-ethnic/ethnic-Turkey.webp",
+      labelImage: "images/countries-labels/labels-Turkey.svg", 
       demographics: [
         { name: "טורקים", percent: 73, color: "#ef4444" },
         { name: "כורדים", percent: 19, color: "#eab308" },
