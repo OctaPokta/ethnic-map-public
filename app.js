@@ -50,6 +50,18 @@ const UI = {
       document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
       document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
   
+      // 🔥 NEW: INJECT BRANDING AND DEV BANNER 🔥
+      document.getElementById('powered-by-prefix').textContent = DashboardData.ui.poweredByPrefix;
+      document.getElementById('powered-by-brand').textContent = DashboardData.ui.poweredByBrand;
+
+      const devBadge = document.getElementById('development-badge');
+      if (DashboardData.ui.showUnderDevelopment) {
+          document.getElementById('development-text').textContent = DashboardData.ui.underDevelopmentText;
+          devBadge.classList.remove('hidden');
+      } else {
+          devBadge.classList.add('hidden');
+      }
+
       const ethnicContainer = document.getElementById('dynamic-ethnic-layers');
       const labelContainer = document.getElementById('dynamic-label-layers');
       const dropdownContainer = document.getElementById('dynamic-dropdown-options');
@@ -83,7 +95,8 @@ const UI = {
         checkboxesContainer.appendChild(lbl);
       });
   
-      // Render Pins
+      const MAP_ORIGINAL_W = 6194;
+      const MAP_ORIGINAL_H = 3876;
       const cityPinsContainer = document.getElementById('city-pins');
       const dossierImageElement = document.getElementById('dossier-image');
   
@@ -93,6 +106,9 @@ const UI = {
         pin.setAttribute('data-country', city.country);
         pin.innerHTML = `<div class="city-tooltip">${city.name}</div>`;
         
+        pin.style.left = `${(city.x / MAP_ORIGINAL_W) * 100}%`;
+        pin.style.top = `${(city.y / MAP_ORIGINAL_H) * 100}%`;
+
         pin.addEventListener('click', (e) => {
           e.stopPropagation(); SoundEngine.play('tick');
           document.getElementById('dossier-title').textContent = city.name; 
@@ -245,6 +261,7 @@ const UI = {
         e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick'); 
       });
       
+      // DROPDOWN EXCLUSIVE MENU - Zooms and teleports
       document.querySelectorAll('.custom-option').forEach(opt => {
         opt.addEventListener('click', () => {
           SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
@@ -257,19 +274,23 @@ const UI = {
           document.querySelector(`input[data-layer="${opt.dataset.value}"]`).checked = true; 
           this.updateLayerVisibility(opt.dataset.value, true);
   
-          this.showInfoPanel(opt.dataset.value); MapEngine.flyToView(opt.dataset.value); this.updateCityVisibility();
+          this.showInfoPanel(opt.dataset.value); 
+          MapEngine.flyToView(opt.dataset.value); // This flies the camera
+          this.updateCityVisibility();
   
           if (window.innerWidth <= 768) { document.querySelector('.sidebar').classList.add('collapsed'); }
         });
       });
   
+      // CHECKBOX MULTI-SELECT - NO ZOOMING
       document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => {
         cb.addEventListener('change', () => {
           SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
           this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
           if (cb.checked) { 
-            this.showInfoPanel(cb.dataset.layer); MapEngine.flyToView(cb.dataset.layer); 
+            this.showInfoPanel(cb.dataset.layer); 
+            // Removed flyToView here! Map will no longer teleport.
             window.history.replaceState(null, null, '#' + cb.dataset.layer);
             const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
             if (opt) dropdownText.textContent = opt.textContent;

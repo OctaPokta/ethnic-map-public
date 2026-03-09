@@ -20,9 +20,6 @@ const MapEngine = {
   
       this.setupWrapper();
       this.setupEventListeners();
-      
-      window.addEventListener('resize', () => this.alignPinsToImage());
-      document.getElementById('base-map-img').addEventListener('load', () => this.alignPinsToImage());
     },
   
     setupWrapper() {
@@ -30,36 +27,6 @@ const MapEngine = {
       this.mapWrapper.style.height = '100%';
       this.mapWrapper.style.maxWidth = `calc(100vh * (${this.MAP_ORIGINAL_W} / ${this.MAP_ORIGINAL_H}))`;
       this.mapWrapper.style.maxHeight = `calc(100vw * (${this.MAP_ORIGINAL_H} / ${this.MAP_ORIGINAL_W}))`;
-    },
-  
-    alignPinsToImage() {
-      const viewW = this.mapViewport.clientWidth;
-      const viewH = this.mapViewport.clientHeight;
-      if (viewW === 0 || viewH === 0) return;
-  
-      const imgRatio = this.MAP_ORIGINAL_W / this.MAP_ORIGINAL_H; 
-      const viewRatio = viewW / viewH;
-  
-      let renderW, renderH, offsetX, offsetY;
-      if (viewRatio > imgRatio) {
-          renderH = viewH; renderW = viewH * imgRatio;
-          offsetX = (viewW - renderW) / 2; offsetY = 0;
-      } else {
-          renderW = viewW; renderH = viewW / imgRatio;
-          offsetX = 0; offsetY = (viewH - renderH) / 2;
-      }
-  
-      DashboardData.cities.forEach(cityData => {
-          const pin = document.querySelector(`.city-pin[data-country="${cityData.country}"]`);
-          if (pin) {
-              const origLeftPct = cityData.x / this.MAP_ORIGINAL_W;
-              const origTopPct = cityData.y / this.MAP_ORIGINAL_H;
-              const newLeftPx = offsetX + (origLeftPct * renderW);
-              const newTopPx = offsetY + (origTopPct * renderH);
-              pin.style.left = (newLeftPx / viewW * 100) + '%';
-              pin.style.top = (newTopPx / viewH * 100) + '%';
-          }
-      });
     },
   
     setTransitionEnabled(enabled) { 
@@ -200,7 +167,7 @@ const MapEngine = {
         }
       });
   
-      // Map Click (Decoupled, triggers UI changes)
+      // Map Click (Decoupled, triggers UI changes but NO zooming)
       this.mapViewport.addEventListener('click', () => {
         if (this.activeHoverCountry) {
           SoundEngine.play('tick'); 

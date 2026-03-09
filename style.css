@@ -239,4 +239,55 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
     opacity: 0 !important;
     pointer-events: none !important;
   }
+
+  
+}
+
+
+/* --- NEW: CREDITS & DEVELOPMENT BADGES --- */
+.development-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  padding: 0.4rem 1.5rem;
+  border-radius: 0 0 12px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  z-index: 9999;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-top: none;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.development-badge.hidden {
+  opacity: 0;
+  display: none;
+}
+
+.powered-by-badge {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.powered-by-badge strong {
+  color: #249afb;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
