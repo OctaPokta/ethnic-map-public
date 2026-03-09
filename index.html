@@ -30,6 +30,10 @@
       <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
+    
+    <div class="powered-by-badge loading-powered-by" dir="ltr">
+      <span id="powered-by-prefix-loading">Powered by</span> <strong>The Security Front</strong>
+    </div>
   </div>
 
   <div class="app">
@@ -67,7 +71,7 @@
               
               <img id="borders-proxy" class="map-border map-border-proxy" src="images/Borders.webp" draggable="false">
               <img id="borders-svg" class="map-border map-border-svg" src="images/Borders.svg" draggable="false">
-              <img id="borders-img" class="map-border" alt="Map border" draggable="false">
+              
               
               <div id="city-pins"></div>
             </div>
@@ -84,12 +88,13 @@
         </button>
 
         <a id="donation-btn" class="donation-btn" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-            <line x1="6" y1="1" x2="6" y2="4"></line>
-            <line x1="10" y1="1" x2="10" y2="4"></line>
-            <line x1="14" y1="1" x2="14" y2="4"></line>
+          <svg class="coffee-svg" viewBox="0 0 512 512" fill="currentColor">
+            <path d="M400 192H160a16 16 0 0 0 -16 16v192a64.07 64.07 0 0 0 64 64h128a64.07 64.07 0 0 0 64-64V208A16 16 0 0 0 400 192zm-32 192a32 32 0 0 1 -32 32H192a32 32 0 0 1 -32-32V240h176z"/>
+            <path d="M112 192H96a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 112 192z"/>
+            <path d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z"/>
+            <path class="aroma-path-1" d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
+            <path class="aroma-path-2" d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
+            <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
           </svg>
           
           <div class="donation-callout-card" id="donation-callout">

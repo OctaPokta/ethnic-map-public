@@ -50,8 +50,8 @@ const MapEngine = {
       }
       
       if (window.innerWidth <= 768) {
-          this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
-          this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
+          // 🔥 REMOVED: willChange commands. 
+          // Forcing massively zoomed elements into the mobile GPU causes chunky texture crashes!
           
           // 🔥 FIX: Clear any pending micro-shakes to prevent Phantom Transitions
           clearTimeout(this.shakeTimeout1);

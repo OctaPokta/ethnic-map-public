@@ -38,7 +38,7 @@ const UI = {
     injectData() {
       document.getElementById('loading-logo').src = DashboardData.images.watermark;
       document.getElementById('base-map-img').src = DashboardData.images.baseMap;
-      document.getElementById('borders-img').src = DashboardData.images.borders;
+      document.getElementById('borders-svg').src = DashboardData.images.borders;
       document.getElementById('minimap-bg').src = DashboardData.images.minimapBg;
   
       document.getElementById('sidebar-main-title').textContent = DashboardData.ui.mainTitle;
@@ -50,7 +50,8 @@ const UI = {
       document.getElementById('top-title-prefix').textContent = DashboardData.ui.distributionTitle;
       document.getElementById('dossier-pop-label').textContent = DashboardData.ui.populationLabel;
       
-      document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
+      // 🔥 Play a subtle tick when hovering over the coffee button
+     document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
       document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
   
       document.getElementById('powered-by-prefix').textContent = DashboardData.ui.poweredByPrefix;
@@ -169,30 +170,44 @@ const UI = {
     },
 
     // 🔥 NEW: Tab Switch Wake-Up Manager
+    // 🔥 NEW: Tab Switch Wake-Up Manager (With Percentage Bar)
     setupVisibilityHandler() {
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
-                // If a wake mask is already running, don't spawn another one
                 if (document.getElementById('wake-mask')) return;
 
-                // Create a temporary dark mask
                 const wakeMask = document.createElement('div');
                 wakeMask.id = 'wake-mask';
-                wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.6s ease;';
+                wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.5s ease;';
                 
-                // Add the pulsing logo to it
-                const logo = document.createElement('img');
-                logo.src = DashboardData.images.watermark;
-                logo.style.cssText = 'width: 150px; height: auto; animation: pulseLogo 1.5s infinite alternate;';
-                
-                wakeMask.appendChild(logo);
+                // Inject logo, progress bar, and percentage text
+                wakeMask.innerHTML = `
+                    <img src="${DashboardData.images.watermark}" style="width: 150px; margin-bottom: 24px; animation: pulseLogo 1.5s infinite alternate;">
+                    <div style="width: 220px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div id="wake-bar-fill" style="height: 100%; width: 0%; background: #6366f1; transition: width 0.08s linear;"></div>
+                    </div>
+                    <div id="wake-bar-text" style="color: #94a3b8; font-size: 0.85rem; font-weight: 700; font-family: monospace; margin-top: 10px; letter-spacing: 1px;">0%</div>
+                `;
                 document.body.appendChild(wakeMask);
                 
-                // Give the browser roughly 1 second to load memory back into the GPU before fading out
-                setTimeout(() => {
-                    wakeMask.style.opacity = '0';
-                    setTimeout(() => wakeMask.remove(), 600);
-                }, 900);
+                let progress = 0;
+                const barFill = document.getElementById('wake-bar-fill');
+                const barText = document.getElementById('wake-bar-text');
+                
+                // Rapidly count up to 100%
+                const wakeInterval = setInterval(() => {
+                    progress += Math.floor(Math.random() * 15) + 5; // Jump by 5-20%
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(wakeInterval);
+                        setTimeout(() => {
+                            wakeMask.style.opacity = '0';
+                            setTimeout(() => wakeMask.remove(), 500);
+                        }, 150); // Pause for a split second at 100%
+                    }
+                    barFill.style.width = `${progress}%`;
+                    barText.textContent = `${progress}%`;
+                }, 40); // Updates very fast (simulating memory caching)
             }
         });
     },
@@ -291,7 +306,11 @@ const UI = {
       const dropdownText = document.getElementById('custom-select-text');
       const infoPanel = document.getElementById('info-panel');
   
-      document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('tick'); });
+      // 🔥 Play the new steam hiss & bubble sound when hovering over the coffee button
+      document.getElementById('donation-btn').addEventListener('mouseenter', () => { SoundEngine.play('coffee-hover'); });
+      
+      // 🔥 Play a magical, rewarding chime when they actually click it!
+      document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
       document.getElementById('close-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.cityDossier.classList.add('hidden'); });
       document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
       document.getElementById('close-title-btn').addEventListener('click', () => { SoundEngine.play('tick'); document.getElementById('clear-map-btn').click(); });
