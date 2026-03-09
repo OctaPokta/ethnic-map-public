@@ -1,379 +1,360 @@
 // ==========================================
-// 🗺️ MAP PHYSICS & GESTURE ENGINE
+// 💻 UI & APPLICATION CONTROLLER
 // ==========================================
-const MapEngine = {
-    scale: 1, translateX: 0, translateY: 0,
-    isDragging: false, isMinimapDragging: false,
-    dragStartX: 0, dragStartY: 0, translateStartX: 0, translateStartY: 0,
-    initialPinchDistance: null, initialScale: 1,
-    activeHoverCountry: null, previousHoverCountry: null, debugScrollTimeout: null, 
+const UI = {
+    DEBUG_MODE: false, 
+    countryViews: {}, demographicData: {}, countryNamesHebrew: {},
     
-    isZooming: false, zoomTimeout: null, lastHitTestTime: 0,
-    hasDragged: false,
-    
-    shakeTimeout1: null, shakeTimeout2: null, // 🔥 NEW: Track delayed redraws
-    pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
-    
-    MAP_ORIGINAL_W: 6194,
-    MAP_ORIGINAL_H: 3876,
-  
     init() {
-      this.mapViewport = document.getElementById('map-viewport');
-      this.mapContent = document.getElementById('map-content');
-      this.minimap = document.getElementById('minimap');
-      this.minimapRect = document.getElementById('minimap-rect');
-      this.mapWrapper = document.getElementById('map-wrapper');
-  
-      this.setupWrapper();
+      this.cityDossier = document.getElementById('city-dossier');
+      
+      this.buildDebugPanel();
+      this.injectData();
+      this.setupLoadingScreen();
       this.setupEventListeners();
-      
-      setTimeout(() => this.setTransitionEnabled(true), 300);
     },
   
-    setupWrapper() {
-      this.mapWrapper.style.width = '100%';
-      this.mapWrapper.style.height = '100%';
-      this.mapWrapper.style.maxWidth = `calc(100vh * (${this.MAP_ORIGINAL_W} / ${this.MAP_ORIGINAL_H}))`;
-      this.mapWrapper.style.maxHeight = `calc(100vw * (${this.MAP_ORIGINAL_H} / ${this.MAP_ORIGINAL_W}))`;
-    },
-  
-    setTransitionEnabled(enabled) { 
-      this.mapContent.style.transition = enabled ? 'transform 0.8s ease-in-out' : 'none'; 
-      this.minimapRect.style.transition = enabled ? 'all 0.8s ease-in-out' : 'none';
-      
-      if (window.innerWidth <= 768) {
-          this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
-          this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
-          
-          // 🔥 FIX: Clear any pending micro-shakes to prevent Phantom Transitions
-          clearTimeout(this.shakeTimeout1);
-          clearTimeout(this.shakeTimeout2);
-
-          if (enabled) {
-             this.shakeTimeout1 = setTimeout(() => {
-                 // Double check we haven't started dragging again before shaking!
-                 if (this.isDragging || this.initialPinchDistance !== null) return;
-                 
-                 this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale + 0.0001})`;
-                 this.shakeTimeout2 = setTimeout(() => {
-                     if (this.isDragging || this.initialPinchDistance !== null) return;
-                     this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
-                 }, 50);
-             }, 50);
-          }
+    buildDebugPanel() {
+      if (this.DEBUG_MODE) {
+        this.debugPanel = document.createElement('div');
+        this.debugPanel.style.cssText = `
+          position: fixed; bottom: 20px; right: 20px; background: rgba(15, 23, 42, 0.9); color: #00ffcc;
+          padding: 12px 20px; border-radius: 8px; font-family: monospace; font-size: 16px; font-weight: bold;
+          z-index: 999999; cursor: pointer; pointer-events: auto; border: 1px solid #00ffcc; direction: ltr; transition: all 0.2s ease;
+        `;
+        this.debugPanel.title = "Click to copy coordinates!";
+        document.body.appendChild(this.debugPanel);
+        this.debugPanel.addEventListener('click', () => {
+          navigator.clipboard.writeText(this.debugPanel.innerText);
+          this.debugPanel.style.background = "#00ffcc"; this.debugPanel.style.color = "#0f172a";
+          setTimeout(() => { this.debugPanel.style.background = "rgba(15, 23, 42, 0.9)"; this.debugPanel.style.color = "#00ffcc"; }, 300);
+        });
       }
     },
   
-    updateMinimap() {
-      const vw = this.mapViewport.clientWidth; const vh = this.mapViewport.clientHeight;
-      this.minimapRect.style.width = `${(100 / this.scale)}%`; 
-      this.minimapRect.style.height = `${(100 / this.scale)}%`;
-      this.minimapRect.style.left = `${(-this.translateX / (vw * this.scale)) * 100}%`; 
-      this.minimapRect.style.top = `${(-this.translateY / (vh * this.scale)) * 100}%`;
-    },
-    
-    applyTransform() { 
-      this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`; 
-      this.updateMinimap(); 
+    injectData() {
+      document.getElementById('loading-logo').src = DashboardData.images.watermark;
+      document.getElementById('base-map-img').src = DashboardData.images.baseMap;
+      document.getElementById('borders-img').src = DashboardData.images.borders;
+      document.getElementById('minimap-bg').src = DashboardData.images.minimapBg;
+  
+      document.getElementById('sidebar-main-title').textContent = DashboardData.ui.mainTitle;
+      document.getElementById('custom-select-text').textContent = DashboardData.ui.defaultDropdownText;
+      document.getElementById('sidebar-dropdown-label').textContent = DashboardData.ui.dropdownLabel;
+      document.getElementById('sidebar-checkboxes-label').textContent = DashboardData.ui.ethnicLayersTitle;
+      document.getElementById('select-all-btn').textContent = DashboardData.ui.selectAllBtn;
+      document.getElementById('clear-map-btn').textContent = DashboardData.ui.clearMapBtn;
+      document.getElementById('top-title-prefix').textContent = DashboardData.ui.distributionTitle;
+      document.getElementById('dossier-pop-label').textContent = DashboardData.ui.populationLabel;
       
-      document.querySelectorAll('.city-pin').forEach(pin => {
-        pin.style.transform = `translate(-50%, -50%) scale(${1 / this.scale})`;
+      document.getElementById('donation-btn').href = DashboardData.ui.donationLink;
+      document.getElementById('callout-title-text').textContent = DashboardData.ui.donationTooltip;
+  
+      document.getElementById('powered-by-prefix').textContent = DashboardData.ui.poweredByPrefix;
+      document.getElementById('powered-by-brand').textContent = DashboardData.ui.poweredByBrand;
+
+      const devBadge = document.getElementById('development-badge');
+      if (DashboardData.ui.showUnderDevelopment) {
+          document.getElementById('development-text').textContent = DashboardData.ui.underDevelopmentText;
+          devBadge.classList.remove('hidden');
+      } else {
+          devBadge.classList.add('hidden');
+      }
+
+      const ethnicContainer = document.getElementById('dynamic-ethnic-layers');
+      const labelContainer = document.getElementById('dynamic-label-layers');
+      const dropdownContainer = document.getElementById('dynamic-dropdown-options');
+      const checkboxesContainer = document.getElementById('dynamic-checkboxes');
+  
+      Object.entries(DashboardData.countries).forEach(([key, data]) => {
+        this.countryViews[key] = data.view;
+        this.demographicData[key] = data.demographics;
+        this.countryNamesHebrew[key] = data.hebrewName;
+  
+        if (data.ethnicImage) {
+          const img = document.createElement('img');
+          img.src = data.ethnicImage; img.className = 'map-layer map-ethnic';
+          img.setAttribute('data-country', key); img.draggable = false; img.crossOrigin = "anonymous";
+          ethnicContainer.appendChild(img);
+        }
+        if (data.labelImage) {
+          const img = document.createElement('img');
+          img.src = data.labelImage; img.className = 'map-layer map-label';
+          img.setAttribute('data-country', key); img.draggable = false;
+          labelContainer.appendChild(img);
+        }
+  
+        const opt = document.createElement('span');
+        opt.className = 'custom-option'; opt.setAttribute('data-value', key); opt.textContent = data.hebrewName;
+        dropdownContainer.appendChild(opt);
+  
+        const lbl = document.createElement('label');
+        lbl.className = 'checkbox-label';
+        lbl.innerHTML = `<input type="checkbox" data-layer="${key}"><span class="checkbox-custom"></span>${data.hebrewName}`;
+        checkboxesContainer.appendChild(lbl);
       });
   
-      if (UI.DEBUG_MODE && UI.debugPanel) {
-        UI.debugPanel.innerText = `{ scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`;
-      }
+      const MAP_ORIGINAL_W = 6194;
+      const MAP_ORIGINAL_H = 3876;
+      const cityPinsContainer = document.getElementById('city-pins');
+      const dossierImageElement = document.getElementById('dossier-image');
+  
+      DashboardData.cities.forEach(city => {
+        const pin = document.createElement('div');
+        pin.className = 'city-pin'; 
+        pin.setAttribute('data-country', city.country);
+        pin.innerHTML = `<div class="city-tooltip">${city.name}</div>`;
+        
+        pin.style.left = `${(city.x / MAP_ORIGINAL_W) * 100}%`;
+        pin.style.top = `${(city.y / MAP_ORIGINAL_H) * 100}%`;
+
+        pin.addEventListener('click', (e) => {
+          // 🔥 FIX: Check if the user was dragging the map, and ignore the click if they were!
+          if (MapEngine.hasDragged) return;
+
+          e.stopPropagation(); SoundEngine.play('tick');
+          document.getElementById('dossier-title').textContent = city.name; 
+          document.getElementById('dossier-pop').textContent = city.pop; 
+          document.getElementById('dossier-desc').textContent = city.desc;
+          
+          if (city.imageUrl && dossierImageElement) {
+              dossierImageElement.src = city.imageUrl;
+              dossierImageElement.alt = city.imageAlt || city.name;
+              dossierImageElement.style.display = 'block';
+          } else if (dossierImageElement) {
+              dossierImageElement.style.display = 'none';
+          }
+          this.cityDossier.classList.remove('hidden');
+        });
+        cityPinsContainer.appendChild(pin);
+      });
     },
   
-    flyToView(countryKey) { 
-      const view = UI.countryViews[countryKey];
-      if(!view) return;
-  
-      const BASE_W = 1536; const BASE_H = 864;  
-      const IMG_RATIO = this.MAP_ORIGINAL_W / this.MAP_ORIGINAL_H;
-      const baseViewRatio = BASE_W / BASE_H;
-  
-      let baseWrapperW, baseWrapperH, baseOffsetX, baseOffsetY;
-      if (baseViewRatio > IMG_RATIO) {
-          baseWrapperH = BASE_H; baseWrapperW = BASE_H * IMG_RATIO;
-          baseOffsetX = (BASE_W - baseWrapperW) / 2; baseOffsetY = 0;
-      } else {
-          baseWrapperW = BASE_W; baseWrapperH = BASE_W / IMG_RATIO;
-          baseOffsetX = 0; baseOffsetY = (BASE_H - baseWrapperH) / 2;
-      }
-  
-      const focalX_base = ((BASE_W / 2) - view.x) / view.scale;
-      const focalY_base = ((BASE_H / 2) - view.y) / view.scale;
-      const pctFocalX = (focalX_base - baseOffsetX) / baseWrapperW;
-      const pctFocalY = (focalY_base - baseOffsetY) / baseWrapperH;
-  
-      const currentW = this.mapViewport.clientWidth;
-      const currentH = this.mapViewport.clientHeight;
-      const currentViewRatio = currentW / currentH;
-  
-      let currWrapperW, currWrapperH, currOffsetX, currOffsetY;
-      if (currentViewRatio > IMG_RATIO) {
-          currWrapperH = currentH; currWrapperW = currentH * IMG_RATIO;
-          currOffsetX = (currentW - currWrapperW) / 2; currOffsetY = 0;
-      } else {
-          currWrapperW = currentW; currWrapperH = currentW / IMG_RATIO;
-          currOffsetX = 0; currOffsetY = (currentH - currWrapperH) / 2;
-      }
-  
-      const newFocalX = currOffsetX + (pctFocalX * currWrapperW);
-      const newFocalY = currOffsetY + (pctFocalY * currWrapperH);
-  
-      const isMobile = window.innerWidth <= 768;
+    setupLoadingScreen() {
+      const loadingScreen = document.getElementById('loading-screen');
+      const loaderFill = document.getElementById('loading-bar-fill');
+      const loaderContainer = document.getElementById('loading-bar-container');
+      const enterBtn = document.getElementById('enter-map-btn');
+      const images = document.querySelectorAll('img'); 
       
-      let newScale = isMobile ? view.scale * 1.15 : view.scale;
-      let targetCenterY = isMobile ? currentH * 0.35 : currentH / 2;
-  
-      this.setTransitionEnabled(true); 
-      this.scale = newScale; 
-      this.translateX = (currentW / 2) - (newFocalX * newScale); 
-      this.translateY = targetCenterY - (newFocalY * newScale); 
-      this.applyTransform(); 
+      let loadedCount = 0; const totalImages = images.length;
+      const updateLoading = () => {
+        loadedCount++; if (loaderFill) loaderFill.style.width = `${(loadedCount / totalImages) * 100}%`;
+        if (loadedCount === totalImages) {
+          setTimeout(() => {
+            loaderContainer.style.opacity = '0';
+            setTimeout(() => { loaderContainer.style.display = 'none'; enterBtn.classList.remove('hidden'); }, 400);
+          }, 500);
+        }
+      };
+      images.forEach(img => { if (img.complete) updateLoading(); else { img.addEventListener('load', updateLoading); img.addEventListener('error', updateLoading); } });
+      
+      enterBtn.addEventListener('click', () => { 
+        SoundEngine.init(); SoundEngine.play('swoosh'); loadingScreen.style.opacity = '0'; setTimeout(() => loadingScreen.remove(), 800); 
+        setTimeout(() => {
+          const callout = document.getElementById('donation-callout');
+          const btn = document.getElementById('donation-btn');
+          callout.classList.add('show'); btn.classList.add('pulsing'); SoundEngine.play('tick');
+          setTimeout(() => { callout.classList.remove('show'); btn.classList.remove('pulsing'); }, 8000);
+        }, 2000); 
+      });
     },
   
-    resetView() { 
-        this.setTransitionEnabled(true); this.scale = 1; this.translateX = 0; this.translateY = 0; this.applyTransform(); 
+    updateLayerVisibility(country, visible) { 
+      document.querySelectorAll(`[data-country="${country}"]`).forEach(el => el.classList.toggle('visible', visible)); 
     },
   
-    moveMapFromMinimap(e) {
-      const rect = this.minimap.getBoundingClientRect();
-      let xPercent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      let yPercent = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-      this.translateX = -(xPercent * this.mapViewport.clientWidth * this.scale) + (this.mapViewport.clientWidth / 2);
-      this.translateY = -(yPercent * this.mapViewport.clientHeight * this.scale) + (this.mapViewport.clientHeight / 2);
-      this.applyTransform();
+    updateCityVisibility() {
+      const checkboxes = document.querySelectorAll('.checkbox-label input[data-layer]');
+      const allPins = document.querySelectorAll('.city-pin');
+      const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+      if (checkedBoxes.length === 0) {
+        allPins.forEach(pin => pin.classList.add('dimmed'));
+      } else {
+        const activeCountries = checkedBoxes.map(cb => cb.dataset.layer);
+        allPins.forEach(pin => {
+          if (activeCountries.includes(pin.getAttribute('data-country'))) pin.classList.remove('dimmed');
+          else pin.classList.add('dimmed');
+        });
+      }
+    },
+  
+    highlightCrossBorder(ethnicName) {
+      const checkboxes = document.querySelectorAll('.checkbox-label input[data-layer]');
+      checkboxes.forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); });
+      let found = 0;
+      Object.keys(this.demographicData).forEach(country => {
+        if (this.demographicData[country].some(d => d.name === ethnicName)) {
+          document.querySelector(`input[data-layer="${country}"]`).checked = true;
+          this.updateLayerVisibility(country, true); found++;
+        }
+      });
+      if (found > 0) {
+        document.getElementById('top-title-text').textContent = ethnicName; 
+        document.getElementById('top-title-banner').classList.remove('hidden');
+        document.getElementById('info-panel').classList.remove('active'); 
+        MapEngine.resetView(); 
+        SoundEngine.play('swoosh'); 
+        this.updateCityVisibility();
+      }
+    },
+  
+    hideTopBanner() { 
+      const banner = document.getElementById('top-title-banner');
+      if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden'); 
+    },
+  
+    showInfoPanel(country) {
+      const data = this.demographicData[country]; if (!data) return;
+      const hebrewName = this.countryNamesHebrew[country] || country;
+      let html = `<h3>${DashboardData.ui.demographicsTitle} - ${hebrewName}</h3>`;
+      
+      const radius = 15.9155; 
+      let svg = `<div class="donut-container"><svg viewBox="0 0 100 100" class="donut-chart">`;
+      let cumulativePercent = 0;
+  
+      data.forEach(item => {
+          const strokeDasharray = `${item.percent} ${100 - item.percent}`;
+          const strokeDashoffset = 100 - cumulativePercent;
+          svg += `<circle class="donut-slice" r="${radius}" cx="50" cy="50" fill="transparent" 
+                  stroke="${item.color}" stroke-width="12" stroke-dasharray="${strokeDasharray}" 
+                  stroke-dashoffset="${strokeDashoffset}" data-ethnic="${item.name}">
+                  <title>${item.name}: ${item.percent}%</title></circle>`;
+          cumulativePercent += item.percent;
+      });
+      svg += `</svg></div>`; html += svg;
+  
+      data.forEach(item => {
+        html += `<div class="demo-item" data-ethnic="${item.name}" title="לחץ לראות תפוצה אזורית">
+            <div class="demo-label"><span>${item.name}</span><span dir="ltr">${item.percent}%</span></div>
+            <div class="demo-bar-bg"><div class="demo-bar-fill" style="--target-width: ${item.percent}%; background-color: ${item.color};"></div></div>
+          </div>`;
+      });
+  
+      const infoContent = document.getElementById('info-panel-content');
+      infoContent.innerHTML = html;
+      infoContent.querySelectorAll('.demo-item, .donut-slice').forEach(el => el.addEventListener('click', () => {
+          SoundEngine.play('tick'); this.highlightCrossBorder(el.dataset.ethnic);
+      }));
+      
+      const infoPanel = document.getElementById('info-panel');
+      if (!infoPanel.classList.contains('active')) SoundEngine.play('tick'); 
+      infoPanel.classList.add('active');
+    },
+  
+    handleUrlHash() { 
+      const hash = window.location.hash.substring(1); 
+      if (hash && UI.countryViews[hash]) { 
+        const option = document.querySelector(`.custom-option[data-value="${hash}"]`); 
+        if (option) option.click(); 
+      } 
     },
   
     setupEventListeners() {
-      this.minimap.addEventListener('mousedown', (e) => { if (e.button === 0) { e.preventDefault(); this.isMinimapDragging = true; this.setTransitionEnabled(false); this.moveMapFromMinimap(e); } });
+      const dropdownText = document.getElementById('custom-select-text');
+      const infoPanel = document.getElementById('info-panel');
+  
+      document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('tick'); });
+      document.getElementById('close-dossier-btn').addEventListener('click', () => { SoundEngine.play('tick'); this.cityDossier.classList.add('hidden'); });
+      document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
+      document.getElementById('close-title-btn').addEventListener('click', () => { SoundEngine.play('tick'); document.getElementById('clear-map-btn').click(); });
       
-      this.mapViewport.addEventListener('mousedown', (e) => { 
-        if (e.button === 0) { 
-          e.preventDefault(); 
-          this.isDragging = true; 
-          this.hasDragged = false; 
-          this.dragStartX = e.clientX; 
-          this.dragStartY = e.clientY; 
-          this.translateStartX = this.translateX; 
-          this.translateStartY = this.translateY; 
-          
-          // 🔥 FIX: Instantly kill pending zoom transitions
-          clearTimeout(this.zoomTimeout);
-          this.setTransitionEnabled(false); 
-        } 
+      document.querySelector('.custom-select-trigger').addEventListener('click', (e) => { 
+        e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick'); 
       });
       
-      document.addEventListener('mousemove', (e) => { 
-        if (this.isDragging) { 
-          e.preventDefault(); 
+      document.querySelectorAll('.custom-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+          dropdownText.textContent = opt.textContent;
+          window.history.replaceState(null, null, '#' + opt.dataset.value);
           
-          if (Math.hypot(e.clientX - this.dragStartX, e.clientY - this.dragStartY) > 3) {
-            this.hasDragged = true;
-          }
-
-          this.translateX = this.translateStartX + (e.clientX - this.dragStartX); 
-          this.translateY = this.translateStartY + (e.clientY - this.dragStartY); 
-          this.applyTransform(); 
-        } 
-        else if (this.isMinimapDragging) { e.preventDefault(); this.moveMapFromMinimap(e); } 
-        else {
-          if (this.isZooming) return; 
-          const now = Date.now();
-          if (now - this.lastHitTestTime < 50) return; 
-          this.lastHitTestTime = now;
-
-          const rect = this.mapViewport.getBoundingClientRect();
-          const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
-          const visibleLayers = Array.from(document.querySelectorAll('.map-ethnic.visible')).reverse();
-          let hitFound = false;
+          document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => { 
+              cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); 
+          });
+          document.querySelector(`input[data-layer="${opt.dataset.value}"]`).checked = true; 
+          this.updateLayerVisibility(opt.dataset.value, true);
   
-          const contentX = (mouseX - this.translateX) / this.scale;
-          const contentY = (mouseY - this.translateY) / this.scale;
-          const wrapperLeft = (this.mapViewport.clientWidth - this.mapWrapper.clientWidth) / 2;
-          const wrapperTop = (this.mapViewport.clientHeight - this.mapWrapper.clientHeight) / 2;
-          
-          const wrapperX = contentX - wrapperLeft;
-          const wrapperY = contentY - wrapperTop;
+          this.showInfoPanel(opt.dataset.value); 
+          MapEngine.flyToView(opt.dataset.value);
+          this.updateCityVisibility();
   
-          const hitCanvas = document.createElement('canvas');
-          const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
-  
-          for (const layer of visibleLayers) {
-            const imgWidth = layer.naturalWidth; const imgHeight = layer.naturalHeight;
-            const pixelX = (wrapperX / this.mapWrapper.clientWidth) * imgWidth;
-            const pixelY = (wrapperY / this.mapWrapper.clientHeight) * imgHeight;
-  
-            if (pixelX >= 0 && pixelX < imgWidth && pixelY >= 0 && pixelY < imgHeight) {
-              hitCanvas.width = 1; hitCanvas.height = 1;
-              hitCtx.drawImage(layer, pixelX, pixelY, 1, 1, 0, 0, 1, 1);
-              const pixelData = hitCtx.getImageData(0, 0, 1, 1).data;
-              if (pixelData[3] > 10) { 
-                hitFound = true;
-                this.activeHoverCountry = layer.getAttribute('data-country');
-                break;
-              }
-            }
-          }
-          if (!hitFound) { this.activeHoverCountry = null; }
-          
-          if (this.activeHoverCountry !== this.previousHoverCountry) {
-            document.querySelectorAll('.map-ethnic.hovered').forEach(el => el.classList.remove('hovered'));
-            if (this.activeHoverCountry) {
-              const activeLayer = document.querySelector(`.map-ethnic.visible[data-country="${this.activeHoverCountry}"]`);
-              if (activeLayer) activeLayer.classList.add('hovered');
-            }
-            this.previousHoverCountry = this.activeHoverCountry;
-          }
-        }
+          if (window.innerWidth <= 768) { document.querySelector('.sidebar').classList.add('collapsed'); }
+        });
       });
   
-      this.mapViewport.addEventListener('click', () => {
-        if (this.hasDragged) return;
-
-        if (this.activeHoverCountry) {
-          SoundEngine.play('tick'); 
-          UI.hideTopBanner(); 
-          UI.cityDossier.classList.add('hidden'); 
+      document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => {
+        cb.addEventListener('change', () => {
+          SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+          this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
-          const opt = document.querySelector(`.custom-option[data-value="${this.activeHoverCountry}"]`);
-          if (opt) document.getElementById('custom-select-text').textContent = opt.textContent;
-          
-          window.history.replaceState(null, null, '#' + this.activeHoverCountry);
-    
-          const targetCb = document.querySelector(`input[data-layer="${this.activeHoverCountry}"]`);
-          if (targetCb && !targetCb.checked) {
-              targetCb.checked = true;
-              UI.updateLayerVisibility(this.activeHoverCountry, true);
+          if (cb.checked) { 
+            window.history.replaceState(null, null, '#' + cb.dataset.layer);
+            const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
+            if (opt) dropdownText.textContent = opt.textContent;
+          } else { 
+            const anyChecked = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]')).some(c => c.checked);
+            if (!anyChecked) { 
+              infoPanel.classList.remove('active'); dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, ' '); 
+            } 
           }
-          
-          UI.showInfoPanel(this.activeHoverCountry); 
-          UI.updateCityVisibility();
-    
-          if (window.innerWidth <= 768) {
-              document.querySelector('.sidebar').classList.add('collapsed');
-          }
-        }
+          this.updateCityVisibility();
+        });
+      });
+  
+      document.getElementById('clear-map-btn').addEventListener('click', () => { 
+        SoundEngine.play('tick'); this.hideTopBanner(); this.cityDossier.classList.add('hidden'); 
+        document.querySelectorAll('.checkbox-label input[data-layer]').forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); }); 
+        dropdownText.textContent = DashboardData.ui.defaultDropdownText; infoPanel.classList.remove('active'); window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility(); 
+      });
+  
+      document.getElementById('select-all-btn').addEventListener('click', () => { 
+        SoundEngine.play('tick'); 
+        this.hideTopBanner(); 
+        this.cityDossier.classList.add('hidden'); 
+        dropdownText.textContent = DashboardData.ui.selectAllBtn; 
+        infoPanel.classList.remove('active'); 
+        window.history.replaceState(null, null, ' '); 
+        MapEngine.resetView(); 
+        
+        const allCheckboxes = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]'));
+        
+        allCheckboxes.forEach((cb, index) => {
+            setTimeout(() => {
+                cb.checked = true; 
+                this.updateLayerVisibility(cb.dataset.layer, true);
+                
+                if (index === allCheckboxes.length - 1) {
+                    this.updateCityVisibility();
+                }
+            }, index * 50); 
+        });
+      });
+  
+      document.getElementById('theme-toggle-btn').addEventListener('click', () => { 
+        document.body.classList.toggle('night-mode'); SoundEngine.play('tick'); 
+        document.getElementById('theme-toggle-btn').textContent = document.body.classList.contains('night-mode') ? '☀️' : '🌙'; 
+      });
+  
+      document.getElementById('toggle-sidebar-btn').addEventListener('click', () => { 
+        document.querySelector('.sidebar').classList.toggle('collapsed'); SoundEngine.play('swoosh'); 
+      });
+  
+      document.getElementById('close-info-btn').addEventListener('click', () => { 
+        infoPanel.classList.remove('active'); SoundEngine.play('tick'); 
       });
       
-      document.addEventListener('mouseup', (e) => { 
-        if (e.button === 0) { 
-          if (this.isDragging || this.isMinimapDragging) { 
-            this.isDragging = false; this.isMinimapDragging = false; 
-            
-            // 🔥 FIX: Instantly kill pending zoom transitions
-            clearTimeout(this.zoomTimeout);
-            this.setTransitionEnabled(true); 
-            
-            if (UI.DEBUG_MODE) { console.log(`📍 View Settled: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`); }
-          } 
-        } 
-      });
-  
-      this.mapViewport.addEventListener('wheel', (e) => {
-        e.preventDefault(); this.setTransitionEnabled(false);
-
-        this.isZooming = true;
-        clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { 
-            this.isZooming = false; 
-            this.setTransitionEnabled(true);
-        }, 250);
-
-        const rect = this.mapViewport.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
-        const nextScale = Math.min(5, Math.max(1, this.scale + (e.deltaY > 0 ? -0.1 : 0.1)));
-        if (nextScale !== this.scale) { this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; this.translateY = my - ((my - this.translateY) / this.scale) * nextScale; this.scale = nextScale; this.applyTransform(); }
-        
-        if (UI.DEBUG_MODE) {
-          clearTimeout(this.debugScrollTimeout);
-          this.debugScrollTimeout = setTimeout(() => {
-            console.log(`📍 Zoom Settled: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`);
-          }, 500);
-        }
-      }, { passive: false });
-  
-      this.mapViewport.addEventListener('touchstart', (e) => {
-        // 🔥 FIX: The "Kill Switch" to stop phantom panning logic instantly
-        clearTimeout(this.zoomTimeout); 
-        
-        if (e.touches.length === 1) {
-          this.isDragging = true;
-          this.hasDragged = false; 
-          this.dragStartX = e.touches[0].clientX;
-          this.dragStartY = e.touches[0].clientY;
-          this.translateStartX = this.translateX;
-          this.translateStartY = this.translateY;
-          this.setTransitionEnabled(false);
-        } else if (e.touches.length === 2) {
-          this.isDragging = false; 
-          this.initialPinchDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          this.initialScale = this.scale;
-          
-          const rect = this.mapViewport.getBoundingClientRect();
-          this.pinchCenterX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
-          this.pinchCenterY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
-          
-          this.initialTranslateX = this.translateX;
-          this.initialTranslateY = this.translateY;
-
-          this.setTransitionEnabled(false);
-        }
-      }, { passive: false });
-  
-      this.mapViewport.addEventListener('touchmove', (e) => {
-        e.preventDefault(); 
-        
-        this.isZooming = true;
-        clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { 
-            this.isZooming = false; 
-            // 🔥 FIX: ONLY transition if the user has physically removed their fingers
-            if (!this.isDragging && this.initialPinchDistance === null) {
-                this.setTransitionEnabled(true);
-            }
-        }, 250);
-
-        if (this.isDragging && e.touches.length === 1) {
-          if (Math.hypot(e.touches[0].clientX - this.dragStartX, e.touches[0].clientY - this.dragStartY) > 3) {
-            this.hasDragged = true;
-          }
-
-          this.translateX = this.translateStartX + (e.touches[0].clientX - this.dragStartX);
-          this.translateY = this.translateStartY + (e.touches[0].clientY - this.dragStartY);
-          this.applyTransform();
-        } else if (e.touches.length === 2 && this.initialPinchDistance) {
-          const currentDistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-          const scaleChange = currentDistance / this.initialPinchDistance;
-          const nextScale = Math.min(5, Math.max(1, this.initialScale * scaleChange));
-          
-          this.translateX = this.pinchCenterX - ((this.pinchCenterX - this.initialTranslateX) / this.initialScale) * nextScale;
-          this.translateY = this.pinchCenterY - ((this.pinchCenterY - this.initialTranslateY) / this.initialScale) * nextScale;
-          
-          this.scale = nextScale;
-          this.applyTransform();
-        }
-      }, { passive: false });
-  
-      this.mapViewport.addEventListener('touchend', (e) => {
-        if (e.touches.length < 2) { this.initialPinchDistance = null; }
-        if (e.touches.length === 0) {
-          this.isDragging = false;
-          
-          // 🔥 FIX: Immediately kill pending transition blocks and handle them cleanly here
-          clearTimeout(this.zoomTimeout);
-          this.isZooming = false;
-          
-          this.setTransitionEnabled(true);
-        }
-      });
+      if (window.innerWidth < 1024) document.querySelector('.sidebar').classList.add('collapsed');
     }
 };
+  
+// ==========================================
+// 🚀 APPLICATION BOOTSTRAP
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    UI.init();
+    MapEngine.init();
+    MapEngine.applyTransform(); 
+    UI.updateCityVisibility();
+    setTimeout(() => UI.handleUrlHash(), 200);
+});
