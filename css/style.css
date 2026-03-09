@@ -188,45 +188,35 @@ body {
   transition: none;
 }
 
-/* 🔥 FAST PAN MODE: The Proxy Swap & Anti-Crash Fix 🔥 */
-
-/* 1. Nuke the heavy border SVG from the GPU while dragging */
+/* 🔥 FAST PAN MODE: Stripped down to prevent memory flushes 🔥 */
 #map-wrapper.fast-pan .map-border-svg {
   opacity: 0 !important; 
   visibility: hidden !important; 
   transition: none !important;
 }
 
-/* 2. Instantly show the flat pixel proxy while dragging */
 #map-wrapper.fast-pan .map-border-proxy {
   opacity: 1 !important; 
   visibility: visible !important;
 }
 
-/* 3. 🔥 THE CRASH & FLICKER FIX 🔥 
-   Temporarily disable "multiply" math to stop the screen blinking. 
-   (We deleted "will-change" so the phone's memory never crashes!) */
-#map-wrapper.fast-pan .map-ethnic.visible {
-  mix-blend-mode: normal !important;
-  -webkit-mix-blend-mode: normal !important;
-}
-
-/* 4. Disable heavy shadow calculations on text while moving to guarantee 60 FPS */
 #map-wrapper.fast-pan .map-label.visible {
   filter: none !important;
 }
 
-/* 🔥 FIX: Restored to opacity-only so images stay cached in RAM for lag-free toggling 🔥 */
+/* 🔥 FIX: Added 'visibility' to purge inactive layers from RAM instantly! 🔥 */
 .map-ethnic { 
   z-index: 1; 
   opacity: 0; 
+  visibility: hidden; 
   mix-blend-mode: multiply; 
   -webkit-mix-blend-mode: multiply;
-  transition: opacity 0.5s ease, filter 0.3s ease; 
+  transition: opacity 0.4s ease, visibility 0.4s; 
   pointer-events: none; 
 }
 .map-ethnic.visible { 
   opacity: 0.85; 
+  visibility: visible;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -469,4 +459,16 @@ body.night-mode .vignette { box-shadow: inset 0 0 250px rgba(0, 0, 0, 1); }
   border: none;
   box-shadow: none;
   opacity: 0.7;
+}
+
+
+/* 🔥 THE OUTSMART FIX: Disable heavy GPU multiply math on mobile only 🔥 */
+@media (max-width: 768px) {
+  .map-ethnic {
+    mix-blend-mode: normal !important;
+    -webkit-mix-blend-mode: normal !important;
+  }
+  .map-ethnic.visible {
+    opacity: 0.7; /* Slightly higher transparency mimics multiply without the CPU cost */
+  }
 }

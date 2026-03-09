@@ -1,17 +1,14 @@
 // ==========================================
-// 🗺️ MAP PHYSICS & GESTURE ENGINE
+// 🗺️ MAP PHYSICS & GESTURE ENGINE (CLEANED)
 // ==========================================
 const MapEngine = {
     scale: 1, translateX: 0, translateY: 0,
     isDragging: false, isMinimapDragging: false,
     dragStartX: 0, dragStartY: 0, translateStartX: 0, translateStartY: 0,
     initialPinchDistance: null, initialScale: 1,
-    activeHoverCountry: null, previousHoverCountry: null, debugScrollTimeout: null, 
+    activeHoverCountry: null, previousHoverCountry: null,
     
-    isZooming: false, zoomTimeout: null, lastHitTestTime: 0,
-    hasDragged: false,
-    
-    shakeTimeout1: null, shakeTimeout2: null, // 🔥 NEW: Track delayed redraws
+    hasDragged: false, lastHitTestTime: 0,
     pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
     
     MAP_ORIGINAL_W: 6194,
@@ -27,48 +24,24 @@ const MapEngine = {
       this.setupWrapper();
       this.setupEventListeners();
       
-      setTimeout(() => this.setTransitionEnabled(true), 300);
+      this.setTransitionEnabled(false);
+      this.applyTransform();
     },
   
     setupWrapper() {
       this.mapWrapper.style.width = '100%';
       this.mapWrapper.style.height = '100%';
-      // 🔥 DELETED the buggy JS height calculations! 
-      // We are now letting style.css handle the bounds dynamically.
     },
   
     setTransitionEnabled(enabled) { 
-      this.mapContent.style.transition = enabled ? 'transform 0.8s ease-in-out' : 'none'; 
-      this.minimapRect.style.transition = enabled ? 'all 0.8s ease-in-out' : 'none';
+      // Simplified transition logic
+      this.mapContent.style.transition = enabled ? 'transform 0.4s ease-out' : 'none'; 
+      this.minimapRect.style.transition = enabled ? 'all 0.4s ease-out' : 'none';
       
-      // 🔥 NEW: Toggle Fast Pan Mode!
-      // If enabled is false (we are dragging), add the fast-pan class.
       if (enabled) {
           this.mapWrapper.classList.remove('fast-pan');
       } else {
           this.mapWrapper.classList.add('fast-pan');
-      }
-      
-      if (window.innerWidth <= 768) {
-          // 🔥 REMOVED: willChange commands. 
-          // Forcing massively zoomed elements into the mobile GPU causes chunky texture crashes!
-          
-          // 🔥 FIX: Clear any pending micro-shakes to prevent Phantom Transitions
-          clearTimeout(this.shakeTimeout1);
-          clearTimeout(this.shakeTimeout2);
-
-          if (enabled) {
-             this.shakeTimeout1 = setTimeout(() => {
-                 // Double check we haven't started dragging again before shaking!
-                 if (this.isDragging || this.initialPinchDistance !== null) return;
-                 
-                 this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale + 0.0001})`;
-                 this.shakeTimeout2 = setTimeout(() => {
-                     if (this.isDragging || this.initialPinchDistance !== null) return;
-                     this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
-                 }, 50);
-             }, 50);
-          }
       }
     },
   
@@ -81,16 +54,13 @@ const MapEngine = {
     },
     
     applyTransform() { 
-      this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`; 
+      // 🔥 THE SECRET WEAPON: translate3d forces the phone's GPU to take over instantly
+      this.mapContent.style.transform = `translate3d(${this.translateX}px, ${this.translateY}px, 0) scale(${this.scale})`; 
       this.updateMinimap(); 
       
       document.querySelectorAll('.city-pin').forEach(pin => {
         pin.style.transform = `translate(-50%, -50%) scale(${1 / this.scale})`;
       });
-  
-      if (UI.DEBUG_MODE && UI.debugPanel) {
-        UI.debugPanel.innerText = `{ scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`;
-      }
     },
   
     flyToView(countryKey) { 
@@ -132,7 +102,6 @@ const MapEngine = {
       const newFocalY = currOffsetY + (pctFocalY * currWrapperH);
   
       const isMobile = window.innerWidth <= 768;
-      
       let newScale = isMobile ? view.scale * 1.15 : view.scale;
       let targetCenterY = isMobile ? currentH * 0.35 : currentH / 2;
   
@@ -168,9 +137,6 @@ const MapEngine = {
           this.dragStartY = e.clientY; 
           this.translateStartX = this.translateX; 
           this.translateStartY = this.translateY; 
-          
-          // 🔥 FIX: Instantly kill pending zoom transitions
-          clearTimeout(this.zoomTimeout);
           this.setTransitionEnabled(false); 
         } 
       });
@@ -178,18 +144,15 @@ const MapEngine = {
       document.addEventListener('mousemove', (e) => { 
         if (this.isDragging) { 
           e.preventDefault(); 
-          
           if (Math.hypot(e.clientX - this.dragStartX, e.clientY - this.dragStartY) > 3) {
             this.hasDragged = true;
           }
-
           this.translateX = this.translateStartX + (e.clientX - this.dragStartX); 
           this.translateY = this.translateStartY + (e.clientY - this.dragStartY); 
           this.applyTransform(); 
         } 
         else if (this.isMinimapDragging) { e.preventDefault(); this.moveMapFromMinimap(e); } 
         else {
-          if (this.isZooming) return; 
           const now = Date.now();
           if (now - this.lastHitTestTime < 50) return; 
           this.lastHitTestTime = now;
@@ -211,8 +174,6 @@ const MapEngine = {
           const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
   
           for (const layer of visibleLayers) {
-            // 🔥 FIX: SVGs break layer.naturalWidth (often returning 0 or 300). 
-            // Force the engine to use the true 6194x3876 map dimensions!
             const imgWidth = this.MAP_ORIGINAL_W; 
             const imgHeight = this.MAP_ORIGINAL_H;
   
@@ -276,45 +237,29 @@ const MapEngine = {
         if (e.button === 0) { 
           if (this.isDragging || this.isMinimapDragging) { 
             this.isDragging = false; this.isMinimapDragging = false; 
-            
-            // 🔥 FIX: Instantly kill pending zoom transitions
-            clearTimeout(this.zoomTimeout);
             this.setTransitionEnabled(true); 
-            
-            if (UI.DEBUG_MODE) { console.log(`📍 View Settled: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`); }
           } 
         } 
       });
   
       this.mapViewport.addEventListener('wheel', (e) => {
-        e.preventDefault(); this.setTransitionEnabled(false);
-
-        this.isZooming = true;
-        clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { 
-            this.isZooming = false; 
-            this.setTransitionEnabled(true);
-        }, 250);
-
-        const rect = this.mapViewport.getBoundingClientRect(); const mx = e.clientX - rect.left; const my = e.clientY - rect.top;
+        e.preventDefault(); 
+        this.setTransitionEnabled(true); // Smooth scroll instantly
+        const rect = this.mapViewport.getBoundingClientRect(); 
+        const mx = e.clientX - rect.left; 
+        const my = e.clientY - rect.top;
         
-        // 🔥 Normalized, fixed zoom step of 0.3 (No acceleration, no getting stuck)
-        const nextScale = Math.min(8, Math.max(1, this.scale + (e.deltaY > 0 ? -0.3 : 0.3)));
+        const nextScale = Math.min(8, Math.max(1, this.scale + (e.deltaY > 0 ? -0.4 : 0.4)));
         
-        if (nextScale !== this.scale) { this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; this.translateY = my - ((my - this.translateY) / this.scale) * nextScale; this.scale = nextScale; this.applyTransform(); }
-        
-        if (UI.DEBUG_MODE) {
-          clearTimeout(this.debugScrollTimeout);
-          this.debugScrollTimeout = setTimeout(() => {
-            console.log(`📍 Zoom Settled: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`);
-          }, 500);
+        if (nextScale !== this.scale) { 
+          this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; 
+          this.translateY = my - ((my - this.translateY) / this.scale) * nextScale; 
+          this.scale = nextScale; 
+          this.applyTransform(); 
         }
       }, { passive: false });
   
       this.mapViewport.addEventListener('touchstart', (e) => {
-        // 🔥 FIX: The "Kill Switch" to stop phantom panning logic instantly
-        clearTimeout(this.zoomTimeout); 
-        
         if (e.touches.length === 1) {
           this.isDragging = true;
           this.hasDragged = false; 
@@ -337,29 +282,16 @@ const MapEngine = {
           
           this.initialTranslateX = this.translateX;
           this.initialTranslateY = this.translateY;
-
           this.setTransitionEnabled(false);
         }
       }, { passive: false });
   
       this.mapViewport.addEventListener('touchmove', (e) => {
         e.preventDefault(); 
-        
-        this.isZooming = true;
-        clearTimeout(this.zoomTimeout);
-        this.zoomTimeout = setTimeout(() => { 
-            this.isZooming = false; 
-            // 🔥 FIX: ONLY transition if the user has physically removed their fingers
-            if (!this.isDragging && this.initialPinchDistance === null) {
-                this.setTransitionEnabled(true);
-            }
-        }, 250);
-
         if (this.isDragging && e.touches.length === 1) {
           if (Math.hypot(e.touches[0].clientX - this.dragStartX, e.touches[0].clientY - this.dragStartY) > 3) {
             this.hasDragged = true;
           }
-
           this.translateX = this.translateStartX + (e.touches[0].clientX - this.dragStartX);
           this.translateY = this.translateStartY + (e.touches[0].clientY - this.dragStartY);
           this.applyTransform();
@@ -369,7 +301,7 @@ const MapEngine = {
             e.touches[0].clientY - e.touches[1].clientY
           );
           const scaleChange = currentDistance / this.initialPinchDistance;
-          const nextScale = Math.min(5, Math.max(1, this.initialScale * scaleChange));
+          const nextScale = Math.min(6, Math.max(1, this.initialScale * scaleChange));
           
           this.translateX = this.pinchCenterX - ((this.pinchCenterX - this.initialTranslateX) / this.initialScale) * nextScale;
           this.translateY = this.pinchCenterY - ((this.pinchCenterY - this.initialTranslateY) / this.initialScale) * nextScale;
@@ -383,11 +315,6 @@ const MapEngine = {
         if (e.touches.length < 2) { this.initialPinchDistance = null; }
         if (e.touches.length === 0) {
           this.isDragging = false;
-          
-          // 🔥 FIX: Immediately kill pending transition blocks and handle them cleanly here
-          clearTimeout(this.zoomTimeout);
-          this.isZooming = false;
-          
           this.setTransitionEnabled(true);
         }
       });
