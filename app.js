@@ -109,6 +109,9 @@ const UI = {
         pin.style.top = `${(city.y / MAP_ORIGINAL_H) * 100}%`;
 
         pin.addEventListener('click', (e) => {
+          // 🔥 FIX: Check if the user was dragging the map, and ignore the click if they were!
+          if (MapEngine.hasDragged) return;
+
           e.stopPropagation(); SoundEngine.play('tick');
           document.getElementById('dossier-title').textContent = city.name; 
           document.getElementById('dossier-pop').textContent = city.pop; 
@@ -286,12 +289,9 @@ const UI = {
           this.updateLayerVisibility(cb.dataset.layer, cb.checked);
           
           if (cb.checked) { 
-            
-            // 🔥 FIX: Removed showInfoPanel entirely here so it doesn't auto-open on ANY device! 🔥
             window.history.replaceState(null, null, '#' + cb.dataset.layer);
             const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`); 
             if (opt) dropdownText.textContent = opt.textContent;
-
           } else { 
             const anyChecked = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]')).some(c => c.checked);
             if (!anyChecked) { 
