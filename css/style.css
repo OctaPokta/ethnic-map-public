@@ -24,6 +24,27 @@ body {
   }
 }
 
+/* Main App */
+.app { 
+  position: absolute; /* 🔥 FIX: Completely bypasses Android height-collapse bugs */
+  top: 0;
+  left: 0;
+  width: 100vw; 
+  height: 100vh; 
+  height: 100dvh; /* Locks to the exact dynamic screen height */
+  display: flex; 
+  overflow: hidden; 
+}
+
+.map-area { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  z-index: 1; 
+}
+
 #loading-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s; }
 .loading-logo { width: 180px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); animation: pulseLogo 2s infinite alternate; }
 @keyframes pulseLogo { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.05); opacity: 1; } }
@@ -33,14 +54,7 @@ body {
 .enter-map-btn:hover { background: #4f46e5; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6); }
 .enter-map-btn.hidden { opacity: 0; visibility: hidden; transform: translateY(10px); position: absolute; }
 
-/* Main App */
-.app { 
-  position: relative; 
-  width: 100%; 
-  height: 100%; /* Safely inherits the locked height from body */
-  display: flex; 
-  overflow: hidden; 
-}
+
 .glass-panel { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 
 /* --- TOP FLOATING ETHNICITY TITLE --- */
@@ -122,14 +136,7 @@ body {
 .demo-bar-fill { height: 100%; border-radius: 4px; width: 0%; animation: slideBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.2s; }
 @keyframes slideBar { from { width: 0%; } to { width: var(--target-width); } }
 
-.map-area { 
-  position: absolute; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 100%; /* Safely inherits the locked height from body */
-  z-index: 1; 
-}
+
 .map-container { width: 100%; height: 100%; position: relative; }
 #map-viewport { width: 100%; height: 100%; position: relative; overflow: hidden; cursor: grab; touch-action: none; }
 #map-viewport:active { cursor: grabbing; }
