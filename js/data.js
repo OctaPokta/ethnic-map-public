@@ -13,12 +13,12 @@ const DashboardData = {
     
     // NEW: Donation Link Config! Paste your real link here:
     donationLink: "https://www.buymeacoffee.com/thesecurityfront", // URL for the donation button
-    donationTooltip: "קנו לי קפה ☕", // Text that appears when hovering
+    donationTooltip: "☕אהבתם את המפה?", // Text that appears when hovering
   
     poweredByPrefix: "Powered by",
     poweredByBrand: "The Security Front",
     showUnderDevelopment: true, // Change to false to instantly hide the banner
-    underDevelopmentText: "🚧 תחת פיתוח - גרסת בטא 🚧"
+    underDevelopmentText: "🚧 תחת פיתוח - גרסת אלפא 🚧"
   
   },
 
