@@ -33,8 +33,8 @@ const MapEngine = {
     setupWrapper() {
       this.mapWrapper.style.width = '100%';
       this.mapWrapper.style.height = '100%';
-      this.mapWrapper.style.maxWidth = `calc(100vh * (${this.MAP_ORIGINAL_W} / ${this.MAP_ORIGINAL_H}))`;
-      this.mapWrapper.style.maxHeight = `calc(100vw * (${this.MAP_ORIGINAL_H} / ${this.MAP_ORIGINAL_W}))`;
+      // 🔥 DELETED the buggy JS height calculations! 
+      // We are now letting style.css handle the bounds dynamically.
     },
   
     setTransitionEnabled(enabled) { 

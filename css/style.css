@@ -1,6 +1,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e4e4e7; min-height: 100vh; min-height: 100dvh; overflow: hidden; transition: background 0.5s ease; }
+html {
+  height: -webkit-fill-available;
+}
+
+body { 
+  font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+  background: #0f172a; 
+  color: #e4e4e7; 
+  min-height: 100vh; 
+  min-height: 100dvh; 
+  min-height: -webkit-fill-available; /* Prevents address bar cut-offs */
+  overflow: hidden; 
+  transition: background 0.5s ease; 
+}
 
 #loading-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; background: #0f172a; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s; }
 .loading-logo { width: 180px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); animation: pulseLogo 2s infinite alternate; }
@@ -12,7 +25,15 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 .enter-map-btn.hidden { opacity: 0; visibility: hidden; transform: translateY(10px); position: absolute; }
 
 /* Main App */
-.app { position: relative; width: 100vw; height: 100vh; height: 100dvh; display: flex; overflow: hidden; }
+.app { 
+  position: relative; 
+  width: 100vw; 
+  height: 100vh; 
+  height: 100dvh; 
+  height: -webkit-fill-available; 
+  display: flex; 
+  overflow: hidden; 
+}
 .glass-panel { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 
 /* --- TOP FLOATING ETHNICITY TITLE --- */
@@ -95,7 +116,16 @@ body { font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
 @keyframes slideBar { from { width: 0%; } to { width: var(--target-width); } }
 
 /* Map Layers */
-.map-area { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: 1; }
+.map-area { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  height: 100dvh; 
+  height: -webkit-fill-available; 
+  z-index: 1; 
+}
 .map-container { width: 100%; height: 100%; position: relative; }
 #map-viewport { width: 100%; height: 100%; position: relative; overflow: hidden; cursor: grab; touch-action: none; }
 #map-viewport:active { cursor: grabbing; }
