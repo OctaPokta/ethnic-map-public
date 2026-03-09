@@ -12,6 +12,9 @@ const UI = {
       this.injectData();
       this.setupLoadingScreen();
       this.setupEventListeners();
+      
+      // 🔥 NEW: Setup the Wake-Up Splash Screen for Tab Switching
+      this.setupVisibilityHandler(); 
     },
   
     buildDebugPanel() {
@@ -109,7 +112,6 @@ const UI = {
         pin.style.top = `${(city.y / MAP_ORIGINAL_H) * 100}%`;
 
         pin.addEventListener('click', (e) => {
-          // 🔥 FIX: Check if the user was dragging the map, and ignore the click if they were!
           if (MapEngine.hasDragged) return;
 
           e.stopPropagation(); SoundEngine.play('tick');
@@ -158,6 +160,35 @@ const UI = {
           setTimeout(() => { callout.classList.remove('show'); btn.classList.remove('pulsing'); }, 8000);
         }, 2000); 
       });
+    },
+
+    // 🔥 NEW: Tab Switch Wake-Up Manager
+    setupVisibilityHandler() {
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                // If a wake mask is already running, don't spawn another one
+                if (document.getElementById('wake-mask')) return;
+
+                // Create a temporary dark mask
+                const wakeMask = document.createElement('div');
+                wakeMask.id = 'wake-mask';
+                wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.6s ease;';
+                
+                // Add the pulsing logo to it
+                const logo = document.createElement('img');
+                logo.src = DashboardData.images.watermark;
+                logo.style.cssText = 'width: 150px; height: auto; animation: pulseLogo 1.5s infinite alternate;';
+                
+                wakeMask.appendChild(logo);
+                document.body.appendChild(wakeMask);
+                
+                // Give the browser roughly 1 second to load memory back into the GPU before fading out
+                setTimeout(() => {
+                    wakeMask.style.opacity = '0';
+                    setTimeout(() => wakeMask.remove(), 600);
+                }, 900);
+            }
+        });
     },
   
     updateLayerVisibility(country, visible) { 
