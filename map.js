@@ -11,6 +11,7 @@ const MapEngine = {
     isZooming: false, zoomTimeout: null, lastHitTestTime: 0,
     hasDragged: false,
     
+    shakeTimeout1: null, shakeTimeout2: null, // 🔥 NEW: Track delayed redraws
     pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
     
     MAP_ORIGINAL_W: 6194,
@@ -44,11 +45,18 @@ const MapEngine = {
           this.mapWrapper.style.willChange = enabled ? 'auto' : 'transform';
           this.mapContent.style.willChange = enabled ? 'auto' : 'transform';
           
+          // 🔥 FIX: Clear any pending micro-shakes to prevent Phantom Transitions
+          clearTimeout(this.shakeTimeout1);
+          clearTimeout(this.shakeTimeout2);
+
           if (enabled) {
-             // 🔥 FIX: The "Micro-Shake" to force Android/iOS to discard blurry cached textures
-             setTimeout(() => {
+             this.shakeTimeout1 = setTimeout(() => {
+                 // Double check we haven't started dragging again before shaking!
+                 if (this.isDragging || this.initialPinchDistance !== null) return;
+                 
                  this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale + 0.0001})`;
-                 setTimeout(() => {
+                 this.shakeTimeout2 = setTimeout(() => {
+                     if (this.isDragging || this.initialPinchDistance !== null) return;
                      this.mapContent.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
                  }, 50);
              }, 50);
@@ -152,6 +160,9 @@ const MapEngine = {
           this.dragStartY = e.clientY; 
           this.translateStartX = this.translateX; 
           this.translateStartY = this.translateY; 
+          
+          // 🔥 FIX: Instantly kill pending zoom transitions
+          clearTimeout(this.zoomTimeout);
           this.setTransitionEnabled(false); 
         } 
       });
@@ -251,7 +262,12 @@ const MapEngine = {
       document.addEventListener('mouseup', (e) => { 
         if (e.button === 0) { 
           if (this.isDragging || this.isMinimapDragging) { 
-            this.isDragging = false; this.isMinimapDragging = false; this.setTransitionEnabled(true); 
+            this.isDragging = false; this.isMinimapDragging = false; 
+            
+            // 🔥 FIX: Instantly kill pending zoom transitions
+            clearTimeout(this.zoomTimeout);
+            this.setTransitionEnabled(true); 
+            
             if (UI.DEBUG_MODE) { console.log(`📍 View Settled: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`); }
           } 
         } 
@@ -280,6 +296,9 @@ const MapEngine = {
       }, { passive: false });
   
       this.mapViewport.addEventListener('touchstart', (e) => {
+        // 🔥 FIX: The "Kill Switch" to stop phantom panning logic instantly
+        clearTimeout(this.zoomTimeout); 
+        
         if (e.touches.length === 1) {
           this.isDragging = true;
           this.hasDragged = false; 
@@ -314,7 +333,10 @@ const MapEngine = {
         clearTimeout(this.zoomTimeout);
         this.zoomTimeout = setTimeout(() => { 
             this.isZooming = false; 
-            this.setTransitionEnabled(true);
+            // 🔥 FIX: ONLY transition if the user has physically removed their fingers
+            if (!this.isDragging && this.initialPinchDistance === null) {
+                this.setTransitionEnabled(true);
+            }
         }, 250);
 
         if (this.isDragging && e.touches.length === 1) {
@@ -345,6 +367,11 @@ const MapEngine = {
         if (e.touches.length < 2) { this.initialPinchDistance = null; }
         if (e.touches.length === 0) {
           this.isDragging = false;
+          
+          // 🔥 FIX: Immediately kill pending transition blocks and handle them cleanly here
+          clearTimeout(this.zoomTimeout);
+          this.isZooming = false;
+          
           this.setTransitionEnabled(true);
         }
       });
