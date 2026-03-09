@@ -187,42 +187,32 @@ body {
   transition: none;
 }
 
-/* 🔥 FAST PAN MODE: The Proxy Swap 🔥 */
-/* 🔥 The Ultimate Mobile Flicker Fix 🔥 */
-#map-wrapper.fast-pan {
-  /* Snapshots the map container at screen-size during movement.
-     Prevents VRAM crashes AND stops the map from disappearing! */
-  will-change: transform !important;
-}
+/* 🔥 FAST PAN MODE: The Proxy Swap & Anti-Crash Fix 🔥 */
+
+/* 1. Nuke the heavy border SVG from the GPU while dragging */
 #map-wrapper.fast-pan .map-border-svg {
-  /* Nuke the heavy SVG from the GPU while dragging */
   opacity: 0 !important; 
   visibility: hidden !important; 
   transition: none !important;
 }
 
+/* 2. Instantly show the flat pixel proxy while dragging */
 #map-wrapper.fast-pan .map-border-proxy {
-  /* Instantly show the flat pixel proxy while dragging! */
-  opacity: 1 !important; /* Make it slightly transparent so it looks cool during movement */
+  opacity: 1 !important; 
   visibility: visible !important;
 }
 
-/* Keep active labels visible and locked */
-#map-wrapper.fast-pan .map-label.visible {
-  will-change: transform !important;
+/* 3. 🔥 THE CRASH & FLICKER FIX 🔥 
+   Temporarily disable "multiply" math to stop the screen blinking. 
+   (We deleted "will-change" so the phone's memory never crashes!) */
+#map-wrapper.fast-pan .map-ethnic.visible {
+  mix-blend-mode: normal !important;
+  -webkit-mix-blend-mode: normal !important;
 }
 
-/* 🔥 FIX: Restored to opacity-only so images stay cached in RAM for lag-free toggling 🔥 */
-.map-ethnic { 
-  z-index: 1; 
-  opacity: 0; 
-  mix-blend-mode: multiply; 
-  -webkit-mix-blend-mode: multiply;
-  transition: opacity 0.5s ease, filter 0.3s ease; 
-  pointer-events: none; 
-}
-.map-ethnic.visible { 
-  opacity: 0.85; 
+/* 4. Disable heavy shadow calculations on text while moving to guarantee 60 FPS */
+#map-wrapper.fast-pan .map-label.visible {
+  filter: none !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
