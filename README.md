@@ -1,3 +1,5 @@
+<img width="640" height="320" alt="banner-ethnicmap" src="https://github.com/user-attachments/assets/b1365c2f-6764-422d-afcd-09bbc78ecd35" />
+
 # Middle East Ethnic Map
 
 A high-performance, interactive demographic mapping engine built with vanilla web technologies. This application visualizes complex ethnographic data across the Middle East using a custom-built, hardware-accelerated viewport.
