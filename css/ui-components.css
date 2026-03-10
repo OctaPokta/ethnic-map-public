@@ -252,6 +252,10 @@
     }
 }
 
+.donation-btn:hover svg {
+    transform: rotate(-15deg) scale(1.1);
+}
+
 .donation-callout-card {
     position: absolute;
     bottom: calc(100% + 20px);
@@ -297,10 +301,12 @@
     opacity: 0.95;
 }
 
+/* 🔥 Ensure the card becomes clickable when shown */
 .donation-callout-card.show,
 .donation-btn:hover .donation-callout-card {
     transform: translateX(-20%) scale(1);
     opacity: 1;
+    pointer-events: auto;
 }
 
 @keyframes spinAura {
@@ -346,6 +352,7 @@
     display: none;
 }
 
+/* 🔥 NEW: Version text styling */
 .version-separator {
     margin: 0 8px;
     opacity: 0.6;

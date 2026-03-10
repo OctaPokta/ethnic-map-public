@@ -31,9 +31,17 @@
         transform-origin: bottom left;
     }
 
-    .donation-callout-card.show,
-    .donation-btn:hover .donation-callout-card {
-        transform: translateX(0) scale(1);
+    /* 🔥 MOBILE ONLY: Disable sticky tap-hover and rely exclusively on JS .show class */
+    .donation-btn:hover .donation-callout-card:not(.show) {
+        transform: translateX(0) scale(0);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .donation-callout-card.show {
+        transform: translateX(0) scale(1) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
     }
 
     .donation-callout-card::after {

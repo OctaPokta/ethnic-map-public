@@ -7,8 +7,47 @@ Object.assign(window.UI, {
     const dropdownText = document.getElementById('custom-select-text');
     const infoPanel = document.getElementById('info-panel');
 
-    document.getElementById('donation-btn').addEventListener('mouseenter', () => { SoundEngine.play('coffee-hover'); });
-    document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
+    // 🔥 NEW: Smart Mobile Donation Button Logic
+    const donationBtn = document.getElementById('donation-btn');
+    const donationCallout = document.getElementById('donation-callout');
+
+    donationBtn.addEventListener('mouseenter', () => {
+      if (window.innerWidth > 768) SoundEngine.play('coffee-hover');
+    });
+
+    donationBtn.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        // If they clicked the coffee icon, NOT the popup card
+        if (!donationCallout.contains(e.target)) {
+          e.preventDefault(); // Stop from jumping to link immediately
+
+          const isShowing = donationCallout.classList.contains('show');
+          if (!isShowing) {
+            donationCallout.classList.add('show');
+            SoundEngine.play('coffee-hover'); // Play the pop sound
+          } else {
+            donationCallout.classList.remove('show');
+          }
+        } else {
+          // They clicked the popup card itself - allow navigation!
+          SoundEngine.play('chime');
+          setTimeout(() => donationCallout.classList.remove('show'), 500);
+        }
+      } else {
+        // PC: Normal click anywhere on button or popup opens link
+        SoundEngine.play('chime');
+      }
+    });
+
+    // Close mobile popup if clicking anywhere else on the screen
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 && donationCallout.classList.contains('show')) {
+        if (!donationBtn.contains(e.target)) {
+          donationCallout.classList.remove('show');
+        }
+      }
+    });
+
     document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
 
     const mobileSettingsToggle = document.getElementById('mobile-settings-toggle');
