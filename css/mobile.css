@@ -229,4 +229,23 @@
         font-size: 0.75rem;
         padding: 0.3rem 1rem;
     }
+
+    /* 🔥 NEW: Massive Mobile Background Overrides */
+  .globe {
+    width: 150vw !important; /* Makes the globe overflow the edges impressively */
+    max-width: none !important;
+    opacity: 0.15 !important; /* Slightly dimmer so the text remains easy to read */
+  }
+
+  .loading-bg-network::before {
+    width: 250vw !important;
+    height: 250vw !important;
+    margin-top: -125vw !important;
+    margin-left: -125vw !important;
+    /* Expands the visible area of the rays on mobile screens */
+    -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 65%) !important;
+    mask-image: radial-gradient(circle at center, black 10%, transparent 65%) !important;
+  }
+
+
 }

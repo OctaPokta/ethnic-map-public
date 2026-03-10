@@ -1,0 +1,208 @@
+/* ==========================================
+   LOADING SCREEN & WELCOME UI
+   ========================================== */
+#loading-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh; height: 100dvh;
+  background: #0f172a;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+/* 🔥 The master background wrapper that tilts */
+#network-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  z-index: -1; overflow: hidden;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.4) 0%, #0f172a 70%);
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+}
+
+/* The wrapper that JS moves to track the mouse */
+#rays-container {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+/* The actual rotating rays */
+#rays-container::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 150vw; height: 150vw;
+  margin-top: -75vw; margin-left: -75vw;
+  background: repeating-conic-gradient(
+    from 0deg,
+    transparent 0deg, transparent 4deg,
+    rgba(99, 102, 241, 0.15) 4deg, rgba(99, 102, 241, 0.15) 4.5deg
+  );
+  animation: rotateNetwork 150s linear infinite;
+  
+  /* The spotlight mask tracks the mouse softly */
+  -webkit-mask-image: radial-gradient(circle at calc(50% + var(--mouse-x, 0) * 15%) calc(50% + var(--mouse-y, 0) * 15%), black 10%, transparent 45%);
+  mask-image: radial-gradient(circle at calc(50% + var(--mouse-x, 0) * 15%) calc(50% + var(--mouse-y, 0) * 15%), black 10%, transparent 45%);
+  will-change: transform;
+}
+
+/* PURE ROTATION - No buggy variables here! */
+@keyframes rotateNetwork {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 3D Globe Wrapper */
+#globe-container {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  perspective: 1200px;
+  opacity: 0.5; /* Bright enough to see clearly */
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.globe {
+  position: relative;
+  width: 90vw; max-width: 500px;
+  aspect-ratio: 1 / 1;
+  transform-style: preserve-3d;
+  animation: spinGlobe 25s linear infinite;
+  border-radius: 50%;
+  box-shadow: inset 0 0 80px rgba(99, 102, 241, 0.6), 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
+.globe::after {
+  content: ''; position: absolute;
+  top: 50%; left: 50%; width: 50%; height: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.3), transparent 70%);
+  filter: blur(20px);
+}
+
+.globe-meridian {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%; border: 1px solid rgba(99, 102, 241, 0.4);
+}
+.m1 { transform: rotateY(0deg); }
+.m2 { transform: rotateY(30deg); }
+.m3 { transform: rotateY(60deg); }
+.m4 { transform: rotateY(90deg); }
+.m5 { transform: rotateY(120deg); }
+.m6 { transform: rotateY(150deg); }
+
+.globe-equator {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 50%; border: 2px solid rgba(99, 102, 241, 0.6);
+  transform: rotateX(90deg);
+}
+.globe-lat-top {
+  position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+  border-radius: 50%; border: 1px solid rgba(99, 102, 241, 0.4);
+  transform: rotateX(90deg) translateZ(120px);
+}
+.globe-lat-bottom {
+  position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;
+  border-radius: 50%; border: 1px solid rgba(99, 102, 241, 0.4);
+  transform: rotateX(90deg) translateZ(-120px);
+}
+
+@keyframes spinGlobe {
+  0% { transform: rotateX(20deg) rotateY(0deg); }
+  100% { transform: rotateX(20deg) rotateY(360deg); }
+}
+
+.loading-logo {
+  width: 180px; height: auto;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+  animation: pulseLogo 2s infinite alternate;
+}
+
+.welcome-text-container {
+  text-align: center;
+  max-width: 460px; /* 🔥 FIXED: Narrowed for better visual alignment */
+  margin: 0 1.5rem 2.5rem;
+  opacity: 0; transform: translateY(10px);
+  animation: fadeUpWelcome 1s ease 0.3s forwards;
+}
+
+.welcome-text-container h2 {
+  color: #fff; font-size: 1.6rem; font-weight: 700;
+  margin-bottom: 0.75rem; letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
+
+.welcome-text-container p {
+  color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
+
+/* Styling for the Telegram Link */
+.welcome-text-container p a {
+  color: #818cf8;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 100;
+}
+
+.welcome-text-container p a:hover {
+  color: #a5b4fc;
+  text-decoration: underline;
+  text-shadow: 0 0 10px rgba(129, 140, 248, 0.6);
+}
+
+@keyframes fadeUpWelcome { to { opacity: 1; transform: translateY(0); } }
+
+.loading-bar-container {
+  width: 250px; height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px; overflow: hidden; position: relative;
+  transition: opacity 0.4s ease;
+}
+
+.loading-bar-fill {
+  height: 100%; width: 0%; background: #6366f1;
+  transition: width 0.3s ease-out;
+}
+
+.enter-map-btn {
+  margin-top: -6px; padding: 0.75rem 2rem;
+  background: #6366f1; color: #fff;
+  font-family: inherit; font-weight: 600; font-size: 1rem;
+  border: none; border-radius: 8px; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  transition: all 0.3s ease; opacity: 1; transform: translateY(0);
+}
+
+.enter-map-btn:hover {
+  background: #4f46e5; transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+}
+
+.enter-map-btn.hidden {
+  opacity: 0; visibility: hidden; transform: translateY(10px); position: absolute;
+}
+
+@keyframes pulseLogo {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .globe-lat-top { transform: rotateX(90deg) translateZ(80px); }
+  .globe-lat-bottom { transform: rotateX(90deg) translateZ(-80px); }
+}
