@@ -6,11 +6,12 @@ const MapEngine = {
     isDragging: false, isMinimapDragging: false,
     dragStartX: 0, dragStartY: 0, translateStartX: 0, translateStartY: 0,
     initialPinchDistance: null, initialScale: 1,
-    activeHoverCountry: null, previousHoverCountry: null,
     
-    hasDragged: false, lastHitTestTime: 0,
+    hasDragged: false,
     pinchCenterX: 0, pinchCenterY: 0, initialTranslateX: 0, initialTranslateY: 0,
     
+    MAP_ORIGINAL_W: 6194,
+    MAP_ORIGINAL_H: 3876,
     MAP_ORIGINAL_W: 6194,
     MAP_ORIGINAL_H: 3876,
   
@@ -21,6 +22,9 @@ const MapEngine = {
       this.minimapRect = document.getElementById('minimap-rect');
       this.mapWrapper = document.getElementById('map-wrapper');
   
+      // Cache city pins to avoid querying DOM every frame
+      this.cityPins = Array.from(document.querySelectorAll('.city-pin'));
+
       this.setupWrapper();
       this.setupEventListeners();
       
@@ -50,8 +54,9 @@ const MapEngine = {
       this.mapContent.style.transform = `translate3d(${this.translateX}px, ${this.translateY}px, 0) scale(${this.scale})`; 
       this.updateMinimap(); 
       
-      document.querySelectorAll('.city-pin').forEach(pin => {
-        pin.style.transform = `translate(-50%, -50%) scale(${1 / this.scale})`;
+      const invScale = 1 / this.scale;
+      this.cityPins.forEach(pin => {
+        pin.style.transform = `translate(-50%, -50%) scale(${invScale})`;
       });
     },
   
@@ -144,88 +149,11 @@ const MapEngine = {
           this.applyTransform(); 
         } 
         else if (this.isMinimapDragging) { e.preventDefault(); this.moveMapFromMinimap(e); } 
-        else {
-          const now = Date.now();
-          if (now - this.lastHitTestTime < 50) return; 
-          this.lastHitTestTime = now;
-
-          const rect = this.mapViewport.getBoundingClientRect();
-          const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top;
-          const visibleLayers = Array.from(document.querySelectorAll('.map-ethnic.visible')).reverse();
-          let hitFound = false;
-  
-          const contentX = (mouseX - this.translateX) / this.scale;
-          const contentY = (mouseY - this.translateY) / this.scale;
-          const wrapperLeft = (this.mapViewport.clientWidth - this.mapWrapper.clientWidth) / 2;
-          const wrapperTop = (this.mapViewport.clientHeight - this.mapWrapper.clientHeight) / 2;
-          
-          const wrapperX = contentX - wrapperLeft;
-          const wrapperY = contentY - wrapperTop;
-  
-          const hitCanvas = document.createElement('canvas');
-          const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
-  
-          for (const layer of visibleLayers) {
-            const imgWidth = this.MAP_ORIGINAL_W; 
-            const imgHeight = this.MAP_ORIGINAL_H;
-  
-            const pixelX = (wrapperX / this.mapWrapper.clientWidth) * imgWidth;
-            const pixelY = (wrapperY / this.mapWrapper.clientHeight) * imgHeight;
-  
-            if (pixelX >= 0 && pixelX < imgWidth && pixelY >= 0 && pixelY < imgHeight) {
-              hitCanvas.width = 1; hitCanvas.height = 1;
-              hitCtx.drawImage(layer, pixelX, pixelY, 1, 1, 0, 0, 1, 1);
-              const pixelData = hitCtx.getImageData(0, 0, 1, 1).data;
-              
-              if (pixelData[3] > 10) { 
-                hitFound = true;
-                this.activeHoverCountry = layer.getAttribute('data-country');
-                break;
-              }
-            }
-          }
-          if (!hitFound) { this.activeHoverCountry = null; }
-          
-          if (this.activeHoverCountry !== this.previousHoverCountry) {
-            document.querySelectorAll('.map-ethnic.hovered').forEach(el => el.classList.remove('hovered'));
-            if (this.activeHoverCountry) {
-              const activeLayer = document.querySelector(`.map-ethnic.visible[data-country="${this.activeHoverCountry}"]`);
-              if (activeLayer) activeLayer.classList.add('hovered');
-            }
-            this.previousHoverCountry = this.activeHoverCountry;
-          }
-        }
       });
   
       this.mapViewport.addEventListener('click', () => {
         if (this.hasDragged) return;
-
-        if (this.activeHoverCountry) {
-          SoundEngine.play('tick'); 
-          
-          // 🔥 FIX: Safely close dossiers without calling deleted functions
-          document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
-          if (UI.cityDossier) UI.cityDossier.classList.add('hidden'); 
-          if (UI.ethnicDossier) UI.ethnicDossier.classList.add('hidden');
-          
-          const opt = document.querySelector(`.custom-option[data-value="${this.activeHoverCountry}"]`);
-          if (opt) document.getElementById('custom-select-text').textContent = opt.textContent;
-          
-          window.history.replaceState(null, null, '#' + this.activeHoverCountry);
-    
-          const targetCb = document.querySelector(`input[data-layer="${this.activeHoverCountry}"]`);
-          if (targetCb && !targetCb.checked) {
-              targetCb.checked = true;
-              UI.updateLayerVisibility(this.activeHoverCountry, true);
-          }
-          
-          UI.showInfoPanel(this.activeHoverCountry); 
-          UI.updateCityVisibility();
-    
-          if (window.innerWidth <= 768) {
-              document.querySelector('.sidebar').classList.add('collapsed');
-          }
-        }
+        // Map clicks without drag will no longer do anything since hover detection is removed
       });
       
       document.addEventListener('mouseup', (e) => { 
