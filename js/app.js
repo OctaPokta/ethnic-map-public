@@ -177,6 +177,8 @@ const UI = {
     const devBadge = document.getElementById('development-badge');
     if (DashboardData.ui.showUnderDevelopment) {
       document.getElementById('development-text').textContent = DashboardData.ui.underDevelopmentText;
+      const versionTextEl = document.getElementById('version-text');
+      if (versionTextEl) versionTextEl.textContent = DashboardData.ui.versionText || 'Alpha';
       devBadge.classList.remove('hidden');
     } else {
       devBadge.classList.add('hidden');
@@ -600,7 +602,6 @@ const UI = {
     document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
     document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
 
-    // 🔥 NEW: Mobile Settings Toggle Logic
     const mobileSettingsToggle = document.getElementById('mobile-settings-toggle');
     const mobileSettingsMenu = document.getElementById('mobile-settings-menu');
     if (mobileSettingsToggle && mobileSettingsMenu) {
@@ -657,12 +658,7 @@ const UI = {
           const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`);
           if (opt) dropdownText.textContent = opt.textContent;
 
-          this.showInfoPanel(cb.dataset.layer);
-
-          if (window.innerWidth <= 768) {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar) sidebar.classList.add('collapsed');
-          }
+          // 🔥 REMOVED: Auto-opening the info panel here allows the user to freely toggle multiple layers!
         } else {
           const anyChecked = this.cachedCheckboxes.some(c => c.checked);
           if (!anyChecked) {
@@ -685,7 +681,6 @@ const UI = {
       window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility();
     });
 
-    // 🔥 NEW: Apply logic to multiple Mute buttons globally
     document.querySelectorAll('.action-mute-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         SoundEngine.isMuted = !SoundEngine.isMuted;
@@ -694,7 +689,6 @@ const UI = {
       });
     });
 
-    // 🔥 NEW: Apply logic to multiple Theme buttons globally
     document.querySelectorAll('.action-theme-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.body.classList.toggle('night-mode');

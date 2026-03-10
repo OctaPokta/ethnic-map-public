@@ -1,6 +1,7 @@
 /* ==========================================
    1. BASE & RESETS
    ========================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -1209,11 +1210,25 @@ body.night-mode .vignette {
   white-space: nowrap;
   pointer-events: none;
   transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
 }
 
 .development-badge.hidden {
   opacity: 0;
   display: none;
+}
+
+/* 🔥 NEW: Version text styling */
+.version-separator {
+  margin: 0 8px;
+  opacity: 0.6;
+}
+
+#version-text {
+  font-family: monospace;
+  letter-spacing: 0.5px;
+  color: #fef08a;
 }
 
 .powered-by-badge {
