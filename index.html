@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="color-scheme" content="light dark">
-  
+
   <title>מפה אתנית - המזרח התיכון</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="preload" as="image" href="images/Background.webp">
   <link rel="preload" as="image" href="images/Borders.webp">
-  
+
   <link rel="stylesheet" href="css/style.css">
-  
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-39E16DGBMF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-39E16DGBMF');
   </script>
 </head>
+
 <body>
 
   <div id="loading-screen">
@@ -30,7 +32,9 @@
     <div class="loading-bar-container" id="loading-bar-container">
       <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
-    <div id="loading-percentage" style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">0%</div>
+    <div id="loading-percentage"
+      style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">
+      0%</div>
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
     <div class="powered-by-badge loading-powered-by" dir="ltr">
       <span id="powered-by-prefix-loading">Powered by</span> <strong>The Security Front</strong>
@@ -45,7 +49,7 @@
 
       <div class="map-container">
         <div id="map-viewport">
-          <div id="map-content">       
+          <div id="map-content">
             <div id="map-wrapper">
               <img draggable="false" id="base-map-img" class="map-layer map-base">
               <div id="dynamic-ethnic-layers"></div>
@@ -58,20 +62,35 @@
         </div>
 
         <button id="compass-btn" class="glass-panel compass-btn" title="אפס תצוגה">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
           </svg>
         </button>
 
+        <div id="mobile-settings-container" class="mobile-only">
+          <button id="mobile-settings-toggle" class="glass-panel" title="הגדרות">⚙️</button>
+          <div id="mobile-settings-menu" class="glass-panel">
+            <button type="button" class="theme-toggle-btn action-mute-btn" title="השתק קול">🔊</button>
+            <button type="button" class="theme-toggle-btn action-theme-btn" title="החלף עיצוב">🌙</button>
+          </div>
+        </div>
+
         <a id="donation-btn" class="donation-btn" target="_blank" rel="noopener noreferrer">
           <svg class="coffee-svg" viewBox="0 0 512 512" fill="currentColor">
-            <path d="M400 192H160a16 16 0 0 0 -16 16v192a64.07 64.07 0 0 0 64 64h128a64.07 64.07 0 0 0 64-64V208A16 16 0 0 0 400 192zm-32 192a32 32 0 0 1 -32 32H192a32 32 0 0 1 -32-32V240h176z"/>
-            <path d="M112 192H96a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 112 192z"/>
-            <path d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z"/>
-            <path class="aroma-path-1" d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
-            <path class="aroma-path-2" d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
-            <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
+            <path
+              d="M400 192H160a16 16 0 0 0 -16 16v192a64.07 64.07 0 0 0 64 64h128a64.07 64.07 0 0 0 64-64V208A16 16 0 0 0 400 192zm-32 192a32 32 0 0 1 -32 32H192a32 32 0 0 1 -32-32V240h176z" />
+            <path
+              d="M112 192H96a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 112 192z" />
+            <path
+              d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z" />
+            <path class="aroma-path-1"
+              d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
+            <path class="aroma-path-2"
+              d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
+            <path class="aroma-path-3"
+              d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
           </svg>
           <div class="donation-callout-card" id="donation-callout">
             <div class="callout-title"><span id="callout-title-text"></span></div>
@@ -89,7 +108,7 @@
         </div>
       </div>
     </main>
-    
+
     <aside class="sidebar glass-panel">
       <button type="button" id="toggle-sidebar-btn" class="toggle-sidebar-btn">
         <span class="arrow-icon"></span>
@@ -97,9 +116,9 @@
       <div class="sidebar-scrollable">
         <div class="sidebar-header">
           <h1 class="sidebar-title" id="sidebar-main-title"></h1>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" id="mute-toggle-btn" class="theme-toggle-btn" title="השתק קול">🔊</button>
-            <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="החלף עיצוב">🌙</button>
+          <div style="display: flex; gap: 8px;" class="desktop-header-settings">
+            <button type="button" class="theme-toggle-btn action-mute-btn" title="השתק קול">🔊</button>
+            <button type="button" class="theme-toggle-btn action-theme-btn" title="החלף עיצוב">🌙</button>
           </div>
         </div>
         <div class="sidebar-section">
@@ -119,7 +138,7 @@
         <div class="sidebar-actions">
           <button type="button" id="clear-map-btn" class="action-btn clear-map-btn"></button>
         </div>
-      </div> 
+      </div>
     </aside>
 
     <aside class="info-panel glass-panel" id="info-panel">
@@ -133,4 +152,5 @@
   <script src="js/map.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>

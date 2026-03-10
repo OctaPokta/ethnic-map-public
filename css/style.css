@@ -33,6 +33,11 @@ body {
   -webkit-backdrop-filter: blur(16px);
 }
 
+/* Base utility for hiding mobile elements on desktop */
+.mobile-only {
+  display: none;
+}
+
 /* ==========================================
    2. APP LAYOUT
    ========================================== */
@@ -1252,6 +1257,11 @@ body.night-mode .vignette {
 @media (max-width: 768px),
 (max-width: 950px) and (orientation: landscape) {
 
+  /* Make mobile-only elements visible */
+  .mobile-only {
+    display: block;
+  }
+
   #minimap {
     display: none !important;
   }
@@ -1283,12 +1293,62 @@ body.night-mode .vignette {
     left: 18px;
   }
 
-  /* 🔥 Optimized Touch Target for Reset View */
+  /* 🔥 Push Compass down to make room for Mobile Settings */
   .compass-btn {
-    top: 1.5rem;
+    top: 5rem;
     left: 1.5rem;
     width: 44px;
     height: 44px;
+  }
+
+  /* 🔥 NEW: Mobile Settings UI */
+  #mobile-settings-container {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 2100;
+  }
+
+  #mobile-settings-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  #mobile-settings-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+
+  #mobile-settings-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Hide Desktop settings inside sidebar */
+  .desktop-header-settings {
+    display: none !important;
   }
 
   /* 🔥 Centered Info Panel to avoid bottom screen clutter */
@@ -1308,6 +1368,24 @@ body.night-mode .vignette {
   .info-panel.active {
     transform: translate(-50%, -50%) scale(1) !important;
     opacity: 1 !important;
+  }
+
+  /* 🔥 OVERLAP FIX: Push list down when dossier is active */
+  .info-panel.hidden-by-dossier {
+    transform: translate(-50%, 150%) scale(0.9) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  /* 🔥 UX Upgrades: Bigger X button and Hidden Pie Chart */
+  .close-info-btn {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.8rem !important;
+  }
+
+  .donut-container {
+    display: none !important;
   }
 
   /* 🔥 LOCK DYNAMIC DOSSIERS ON MOBILE */
@@ -1376,7 +1454,7 @@ body.night-mode .vignette {
   }
 
   /* Make sure panel covers gracefully if sidebar is accidentally opened */
-  .sidebar:not(.collapsed)~.info-panel,
+  .sidebar:not(.collapsed)~.info-panel:not(.hidden-by-dossier),
   .sidebar:not(.collapsed)~.dynamic-dossier {
     transform: translate(-50%, 150%) scale(0.9) !important;
     opacity: 0 !important;

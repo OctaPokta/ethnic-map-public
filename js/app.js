@@ -271,6 +271,9 @@ const UI = {
           if (sidebar && !sidebar.classList.contains('collapsed')) {
             sidebar.classList.add('collapsed');
           }
+          // 🔥 MOBILE OVERLAP FIX: Hide Info Panel
+          const infoP = document.getElementById('info-panel');
+          if (infoP) infoP.classList.add('hidden-by-dossier');
         } else {
           const existing = document.getElementById(`city-dossier-${city.name}`);
           if (existing) { UI.bringToFront(existing); return; }
@@ -288,7 +291,14 @@ const UI = {
         }
 
         dossier.innerHTML = `
-              <button class="close-info-btn" onclick="this.parentElement.remove(); SoundEngine.play('tick');">&times;</button>
+              <button class="close-info-btn" onclick="
+                  this.parentElement.remove(); 
+                  SoundEngine.play('tick');
+                  if(window.innerWidth <= 768) {
+                      const p = document.getElementById('info-panel');
+                      if(p) p.classList.remove('hidden-by-dossier');
+                  }
+              ">&times;</button>
               <h2 class="dossier-drag-handle" style="cursor: grab;">${city.name}</h2>
               <div class="dossier-stats"><span class="stat-label">${DashboardData.ui.populationLabel}</span><span class="stat-value">${city.pop}</span></div>
               <img class="dossier-image" src="${city.imageUrl}" alt="${city.imageAlt || city.name}" style="display: ${city.imageUrl ? 'block' : 'none'};">
@@ -472,6 +482,9 @@ const UI = {
           document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
           const sidebar = document.querySelector('.sidebar');
           if (sidebar) sidebar.classList.add('collapsed');
+          // 🔥 MOBILE OVERLAP FIX: Hide Info Panel
+          const infoP = document.getElementById('info-panel');
+          if (infoP) infoP.classList.add('hidden-by-dossier');
         } else {
           const existing = document.getElementById(`dossier-${ethnicDataObj.name}`);
           if (existing) { UI.bringToFront(existing); return; }
@@ -497,7 +510,14 @@ const UI = {
         }
 
         dossier.innerHTML = `
-                <button class="close-info-btn" onclick="this.parentElement.remove(); SoundEngine.play('tick');">&times;</button>
+                <button class="close-info-btn" onclick="
+                    this.parentElement.remove(); 
+                    SoundEngine.play('tick');
+                    if(window.innerWidth <= 768) {
+                        const p = document.getElementById('info-panel');
+                        if(p) p.classList.remove('hidden-by-dossier');
+                    }
+                ">&times;</button>
                 <h2 class="dossier-drag-handle" style="margin-bottom: 1rem; color: #fff; font-size: 1.8rem; cursor: grab;">${ethnicDataObj.name}</h2>
                 <img class="dossier-image" src="${ethnicDataObj.image || ''}" alt="Ethnicity photo" style="max-height: 250px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: ${ethnicDataObj.image ? 'block' : 'none'};">
                 ${badgesHtml}
@@ -580,6 +600,22 @@ const UI = {
     document.getElementById('donation-btn').addEventListener('click', () => { SoundEngine.play('chime'); });
     document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
 
+    // 🔥 NEW: Mobile Settings Toggle Logic
+    const mobileSettingsToggle = document.getElementById('mobile-settings-toggle');
+    const mobileSettingsMenu = document.getElementById('mobile-settings-menu');
+    if (mobileSettingsToggle && mobileSettingsMenu) {
+      mobileSettingsToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileSettingsMenu.classList.toggle('active');
+        SoundEngine.play('tick');
+      });
+      document.addEventListener('click', (e) => {
+        if (!mobileSettingsToggle.contains(e.target) && !mobileSettingsMenu.contains(e.target)) {
+          mobileSettingsMenu.classList.remove('active');
+        }
+      });
+    }
+
     document.querySelector('.custom-select-trigger').addEventListener('click', (e) => {
       e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick');
     });
@@ -589,6 +625,7 @@ const UI = {
         SoundEngine.play('tick');
 
         document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
         dropdownText.textContent = opt.textContent;
         window.history.replaceState(null, null, '#' + opt.dataset.value);
@@ -611,6 +648,7 @@ const UI = {
       cb.addEventListener('change', () => {
         SoundEngine.play('tick');
         document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
         this.updateLayerVisibility(cb.dataset.layer, cb.checked);
 
@@ -621,7 +659,6 @@ const UI = {
 
           this.showInfoPanel(cb.dataset.layer);
 
-          // 🔥 Auto-close sidebar on mobile to reveal the info panel
           if (window.innerWidth <= 768) {
             const sidebar = document.querySelector('.sidebar');
             if (sidebar) sidebar.classList.add('collapsed');
@@ -640,6 +677,7 @@ const UI = {
     document.getElementById('clear-map-btn').addEventListener('click', () => {
       SoundEngine.play('tick');
       document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+      if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
       this.cachedCheckboxes.forEach(cb => { cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false); });
       dropdownText.textContent = DashboardData.ui.defaultDropdownText;
@@ -647,15 +685,23 @@ const UI = {
       window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility();
     });
 
-    document.getElementById('mute-toggle-btn').addEventListener('click', (e) => {
-      SoundEngine.isMuted = !SoundEngine.isMuted;
-      e.currentTarget.textContent = SoundEngine.isMuted ? '🔇' : '🔊';
-      if (!SoundEngine.isMuted) SoundEngine.play('tick');
+    // 🔥 NEW: Apply logic to multiple Mute buttons globally
+    document.querySelectorAll('.action-mute-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        SoundEngine.isMuted = !SoundEngine.isMuted;
+        document.querySelectorAll('.action-mute-btn').forEach(b => b.textContent = SoundEngine.isMuted ? '🔇' : '🔊');
+        if (!SoundEngine.isMuted) SoundEngine.play('tick');
+      });
     });
 
-    document.getElementById('theme-toggle-btn').addEventListener('click', () => {
-      document.body.classList.toggle('night-mode'); SoundEngine.play('tick');
-      document.getElementById('theme-toggle-btn').textContent = document.body.classList.contains('night-mode') ? '☀️' : '🌙';
+    // 🔥 NEW: Apply logic to multiple Theme buttons globally
+    document.querySelectorAll('.action-theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('night-mode');
+        SoundEngine.play('tick');
+        const isNight = document.body.classList.contains('night-mode');
+        document.querySelectorAll('.action-theme-btn').forEach(b => b.textContent = isNight ? '☀️' : '🌙');
+      });
     });
 
     document.getElementById('toggle-sidebar-btn').addEventListener('click', () => {
@@ -666,6 +712,7 @@ const UI = {
       infoPanel.style.transform = '';
       infoPanel.style.transition = '';
       infoPanel.classList.remove('active');
+      infoPanel.classList.remove('hidden-by-dossier');
       SoundEngine.play('tick');
       setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
     });
