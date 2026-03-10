@@ -83,7 +83,13 @@ window.UI = {
     if (DashboardData.ui.showUnderDevelopment) {
       document.getElementById('development-text').textContent = DashboardData.ui.underDevelopmentText;
       const versionTextEl = document.getElementById('version-text');
-      if (versionTextEl) versionTextEl.textContent = DashboardData.ui.versionText || 'Alpha';
+      if (versionTextEl) {
+        versionTextEl.textContent = DashboardData.ui.versionText || 'Alpha';
+        // 🔥 NEW: Attach the release notes URL
+        if (DashboardData.ui.releaseNotesLink) {
+            versionTextEl.href = DashboardData.ui.releaseNotesLink;
+        }
+      }
       devBadge.classList.remove('hidden');
     } else {
       devBadge.classList.add('hidden');

@@ -275,6 +275,15 @@
   font-family: monospace;
   letter-spacing: 0.5px;
   color: #fef08a;
+  text-decoration: none;
+  pointer-events: auto; /* 🔥 Allows this specific text to be clicked */
+  transition: all 0.2s ease;
+}
+
+#version-text:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-shadow: 0 0 8px rgba(254, 240, 138, 0.8);
 }
 
 .powered-by-badge {
