@@ -1,4 +1,5 @@
-<img width="640" height="320" alt="banner-ethnicmap" src="https://github.com/user-attachments/assets/b1365c2f-6764-422d-afcd-09bbc78ecd35" />
+
+<img width="1082" height="542" alt="image" src="https://github.com/user-attachments/assets/131ccb1f-efc1-40ad-aa06-4da1100ea82f" />
 
 # Middle East Ethnic Map
 
