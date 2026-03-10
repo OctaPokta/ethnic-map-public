@@ -1,0 +1,224 @@
+/* ==========================================
+   📱 MOBILE RESPONSIVENESS
+   ========================================================================= */
+@media (max-width: 768px),
+(max-width: 950px) and (orientation: landscape) {
+
+    /* Make mobile-only elements visible */
+    .mobile-only {
+        display: block;
+    }
+
+    #minimap {
+        display: none !important;
+    }
+
+    .donation-btn {
+        left: 1.5rem;
+        bottom: 1.5rem;
+        width: 44px;
+        height: 44px;
+    }
+
+    .donation-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .donation-callout-card {
+        left: 0;
+        transform: translateX(0) scale(0);
+        transform-origin: bottom left;
+    }
+
+    .donation-callout-card.show,
+    .donation-btn:hover .donation-callout-card {
+        transform: translateX(0) scale(1);
+    }
+
+    .donation-callout-card::after {
+        left: 18px;
+    }
+
+    /* 🔥 Push Compass down to make room for Mobile Settings */
+    .compass-btn {
+        top: 5rem;
+        left: 1.5rem;
+        width: 44px;
+        height: 44px;
+    }
+
+    /* 🔥 NEW: Mobile Settings UI */
+    #mobile-settings-container {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 2100;
+    }
+
+    #mobile-settings-toggle {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    #mobile-settings-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    #mobile-settings-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* Hide Desktop settings inside sidebar */
+    .desktop-header-settings {
+        display: none !important;
+    }
+
+    /* 🔥 Centered Info Panel to avoid bottom screen clutter */
+    .info-panel {
+        top: 50% !important;
+        bottom: auto !important;
+        left: 50% !important;
+        right: auto !important;
+        width: 90% !important;
+        max-width: 340px !important;
+        max-height: 70vh !important;
+        max-height: 70dvh !important;
+        transform: translate(-50%, 150%) scale(0.9) !important;
+        opacity: 0 !important;
+    }
+
+    .info-panel.active {
+        transform: translate(-50%, -50%) scale(1) !important;
+        opacity: 1 !important;
+    }
+
+    /* 🔥 OVERLAP FIX: Push list down when dossier is active */
+    .info-panel.hidden-by-dossier {
+        transform: translate(-50%, 150%) scale(0.9) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 🔥 UX Upgrades: Bigger X button and Hidden Pie Chart */
+    .close-info-btn {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.8rem !important;
+    }
+
+    .donut-container {
+        display: none !important;
+    }
+
+    /* 🔥 LOCK DYNAMIC DOSSIERS ON MOBILE */
+    .dynamic-dossier {
+        width: 90% !important;
+        max-width: 340px !important;
+        padding: 1.25rem !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .dossier-drag-handle {
+        font-size: 1.4rem !important;
+        cursor: default !important;
+    }
+
+    .dossier-image {
+        max-height: 140px;
+    }
+
+    /* 🔥 Optimized Sidebar & Touch Targets (44px rule applied) */
+    .sidebar {
+        width: 85%;
+        max-width: 340px;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+    }
+
+    .sidebar-scrollable {
+        padding: 1.2rem 1rem;
+        gap: 1.2rem;
+    }
+
+    .checkbox-label {
+        min-height: 44px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        flex-grow: 1;
+    }
+
+    /* 🔥 MOBILE ONLY: Display Info Button */
+    .sidebar-info-btn {
+        display: flex;
+        width: 44px;
+        height: 44px;
+    }
+
+    .sidebar-info-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .theme-toggle-btn {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .toggle-sidebar-btn {
+        width: 44px;
+        height: 56px;
+        left: -44px;
+    }
+
+    /* Make sure panel covers gracefully if sidebar is accidentally opened */
+    .sidebar:not(.collapsed)~.info-panel:not(.hidden-by-dossier),
+    .sidebar:not(.collapsed)~.dynamic-dossier {
+        transform: translate(-50%, 150%) scale(0.9) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    .powered-by-badge {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .development-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 1rem;
+    }
+}

@@ -7,6 +7,19 @@
   <meta name="color-scheme" content="light dark">
 
   <title>מפה אתנית - המזרח התיכון</title>
+
+  <meta property="og:title" content="מפה אתנית - המזרח התיכון">
+  <meta property="og:description" content="מפה אתנית אינטראקטיבית המציגה את ההרכב הדמוגרפי והעדות השונות במזרח התיכון.">
+  <meta property="og:image" content="https://the-security-front.online/images/social-preview.jpg">
+  <meta property="og:url" content="https://the-security-front.online/">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="מפה אתנית - המזרח התיכון">
+  <meta name="twitter:description"
+    content="מפה אתנית אינטראקטיבית המציגה את ההרכב הדמוגרפי והעדות השונות במזרח התיכון.">
+  <meta name="twitter:image" content="https://the-security-front.online/images/social-preview.jpg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,7 +27,14 @@
   <link rel="preload" as="image" href="images/Background.webp">
   <link rel="preload" as="image" href="images/Borders.webp">
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/ui-components.css">
+
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/panels.css">
+
+  <link rel="stylesheet" href="css/mobile.css">
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-39E16DGBMF"></script>
   <script>
@@ -149,9 +169,17 @@
     </aside>
   </div>
 
-  <script src="js/data.js"></script>
+  <script src="js/data-config.js"></script>
+  <script src="js/data-countries.js"></script>
+  <script src="js/data-cities.js"></script>
+
   <script src="js/audio.js"></script>
   <script src="js/map.js"></script>
+
+  <script src="js/ui-core.js"></script>
+  <script src="js/ui-utils.js"></script>
+  <script src="js/ui-panels.js"></script>
+
   <script src="js/app.js"></script>
 </body>
 

@@ -1,0 +1,12 @@
+// ==========================================
+// 🏙️ CITIES & DOSSIER DATA
+// ==========================================
+window.DashboardData.cities = [
+    { name: "טהרן", x: 3765, y: 1200, country: "Iran", pop: "9.0 מיליון", desc: "בירת איראן והמרכז הפוליטי, הכלכלי והתרבותי של הרפובליקה האסלאמית.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/North_of_Tehran_Skyline_view.jpg/960px-North_of_Tehran_Skyline_view.jpg?_=20190419160131", imageAlt: "Dossier photo of Tehran panoramic sunset" },
+    { name: "בגדאד", x: 2930, y: 1512, country: "Iraq", pop: "7.3 מיליון", desc: "בירת עיראק, אחת הערים העתיקות והמשמעותיות בעולם הערבי הממוקמת על נהר החידקל.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4b/5628442718_b10fc2c47f_o.jpg", imageAlt: "Dossier photo of Tigris river in Baghdad" },
+    { name: "אנקרה", x: 1982, y: 380, country: "Turkey", pop: "5.7 מיליון", desc: "בירת טורקיה ומרכז השלטון, ממוקמת בלב רמת אנטוליה.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/ANKARA_KOCATEPE_CAM%C4%B0%C4%B0.jpg/1920px-ANKARA_KOCATEPE_CAM%C4%B0%C4%B0.jpg", imageAlt: "Dossier photo of Ankara Citadel view" },
+    { name: "ריאד", x: 3122, y: 2829, country: "SaudiArabia", pop: "7.6 מיליון", desc: "בירת ערב הסעודית והעיר הגדולה בחצי האי ערב, מרכז פיננסי עולמי.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Riyadh_Skyline.jpg/1920px-Riyadh_Skyline.jpg", imageAlt: "Dossier photo of modern Riyadh skyline at night" },
+    { name: "דמשק", x: 1934, y: 1362, country: "Syria", pop: "2.5 מיליון", desc: "בירת סוריה, נחשבת לאחת הערים המיושבות ברציפות העתיקות בעולם.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Umayyad_Square%2C_Damascus.jpg/1280px-Umayyad_Square%2C_Damascus.jpg", imageAlt: "Dossier photo of a detailed view in the Old City of Damascus" },
+    { name: "עמאן", x: 1820, y: 1580, country: "Jordan", pop: "4.0 מיליון", desc: "בירת ירדן והעיר הגדולה בה, משמשת כמרכז הפוליטי והתרבותי של הממלכה.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/2/24/New_Abdali_2024.png", imageAlt: "Dossier photo of Roman Theatre view from Amman Citadel" },
+    { name: "ירושלים", x: 1735, y: 1626, country: "Israel", pop: "0.9 מיליון", desc: "בירת ישראל, עיר בעלת חשיבות היסטורית ודתית עצומה לשלוש הדתות.", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Jerusalem-1712855.jpg/1920px-Jerusalem-1712855.jpg", imageAlt: "Dossier photo of Jerusalem old city walls and Dome" }
+];

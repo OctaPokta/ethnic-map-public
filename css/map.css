@@ -1,0 +1,233 @@
+/* ==========================================
+   MAP CORE & LAYERS
+   ========================================== */
+.map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+#map-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+}
+
+#map-viewport:active {
+    cursor: grabbing;
+}
+
+#map-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    max-width: calc(100vh * (6194 / 3876));
+    max-width: calc(100dvh * (6194 / 3876));
+    max-height: calc(100vw * (3876 / 6194));
+}
+
+@media (min-width: 769px) {
+    #map-wrapper {
+        isolation: isolate;
+    }
+}
+
+#map-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;
+    transition: transform 0.8s ease-in-out;
+    will-change: transform;
+}
+
+.map-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-base {
+    z-index: 0;
+}
+
+.map-ethnic {
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+    mix-blend-mode: multiply;
+    -webkit-mix-blend-mode: multiply;
+    transition: opacity 0.4s ease, visibility 0.4s;
+    pointer-events: none;
+}
+
+.map-ethnic.visible {
+    opacity: 0.85;
+    visibility: visible;
+}
+
+.map-label {
+    z-index: 101;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease 0.2s, filter 0.5s ease 0.2s;
+    filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0));
+}
+
+.map-label.visible {
+    opacity: 1;
+    filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.map-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+}
+
+body.night-mode {
+    background: #050505;
+}
+
+body.night-mode .map-base {
+    filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9);
+}
+
+body.night-mode .map-ethnic {
+    mix-blend-mode: screen;
+    -webkit-mix-blend-mode: screen;
+}
+
+body.night-mode .map-ethnic.visible {
+    opacity: 0.65;
+}
+
+body.night-mode .vignette {
+    box-shadow: inset 0 0 250px rgba(0, 0, 0, 1);
+}
+
+/* ==========================================
+   CITY PINS
+   ========================================== */
+#city-pins {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 105;
+    pointer-events: none;
+}
+
+.city-pin {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+    cursor: pointer;
+    transition: opacity 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity;
+}
+
+.city-pin.dimmed {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.city-icon {
+    width: 100%;
+    height: 100%;
+    color: #ffd900;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9));
+    transition: all 0.3s ease;
+}
+
+.city-pin:hover .city-icon {
+    color: #fff;
+    transform: scale(1.15) translateY(-2px);
+    filter: drop-shadow(0 6px 12px rgba(255, 255, 255, 0.6));
+}
+
+.city-pin::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: rgba(255, 217, 0, 0.4);
+    animation: pulse 2s infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.city-pin.dimmed::before {
+    animation: none;
+    display: none;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+    }
+}
+
+.city-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+    background: rgba(15, 23, 42, 0.9);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.city-pin:hover .city-tooltip {
+    opacity: 1;
+}

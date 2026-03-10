@@ -1,0 +1,220 @@
+/* ==========================================
+   DATA PANELS & DOSSIERS
+   ========================================== */
+.info-panel {
+    position: absolute;
+    top: 6rem;
+    left: 2rem;
+    width: 320px;
+    max-height: calc(100vh - 8rem);
+    max-height: calc(100dvh - 8rem);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.4);
+    padding: 1.5rem;
+    z-index: 2000;
+    transform: translateX(-120%);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+    overflow-y: auto;
+}
+
+.info-panel.active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.info-panel h3 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-info-btn {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.close-info-btn:hover {
+    color: #fff;
+    background: rgba(239, 68, 68, 0.8);
+    border-color: rgba(239, 68, 68, 1);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Dynamic Multi-Window Classes */
+.dossier-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem !important;
+    position: absolute;
+    width: 350px;
+    border-radius: 16px;
+    z-index: 2500;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
+}
+
+.dossier-stats {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem !important;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.stat-label {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    color: #6366f1;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.dossier-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    max-height: 180px;
+}
+
+.dossier-desc {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    overflow-y: auto;
+    max-height: 250px;
+}
+
+/* Ethnicity Badges Styles */
+.ethnic-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ethnic-badge {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.donut-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.donut-chart {
+    width: 140px;
+    height: 140px;
+    transform: rotate(-90deg);
+    animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popIn {
+    0% {
+        transform: rotate(-90deg) scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: rotate(-90deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.donut-slice {
+    transition: stroke-width 0.2s ease, filter 0.2s ease;
+    cursor: pointer;
+}
+
+.donut-slice:hover {
+    stroke-width: 18;
+    filter: brightness(1.3);
+}
+
+.demo-item {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.demo-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(-4px);
+}
+
+.demo-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: #e2e8f0;
+    margin-bottom: 0.375rem;
+    pointer-events: none;
+}
+
+.demo-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.demo-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0%;
+    animation: slideBar 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.2s;
+}
+
+@keyframes slideBar {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: var(--target-width);
+    }
+}
