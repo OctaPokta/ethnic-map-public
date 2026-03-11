@@ -93,7 +93,7 @@ window.DashboardData.countries = {
     },
     Lebanon: {
         hebrewName: "לבנון 🇱🇧",
-        view: { scale: 5.00, x: -2430, y: -1848 },
+        view: { scale: 4.40, x: -1556, y: -961 },
         ethnicImage: "images/countries-ethnic/ethnic-Lebanon.webp",
         labelImage: "images/countries-labels/labels-Lebanon.webp",
         demographics: [

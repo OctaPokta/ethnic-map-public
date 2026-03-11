@@ -58,6 +58,10 @@ const MapEngine = {
       this.cityPins.forEach(pin => {
         pin.style.transform = `translate(-50%, -50%) scale(${invScale})`;
       });
+
+      if (window.UI && UI.debugPanel) {
+          UI.debugPanel.innerText = `view: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`;
+      }
     },
   
     flyToView(countryKey) { 
