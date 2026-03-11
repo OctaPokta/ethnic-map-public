@@ -66,8 +66,7 @@ window.UI = {
         arabs: '#22c55e', kurds: '#eab308', persians: '#2dd4bf',
         turks: '#15803d', azeris: '#dc2626', armenians: '#3b82f6',
         jews: '#2563eb', druze: '#a855f7', maronites: '#9f1239',
-        lurs: '#4338ca', baloch: '#92400e', turkmens: '#145014',
-        bedouins: '#d97706'
+        lurs: '#4338ca', baloch: '#92400e', turkmens: '#145014'
     },
 
     cachedVisibleLayers: [],
