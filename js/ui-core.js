@@ -6,10 +6,15 @@ window.toggleRegionalModal = () => {
     const modal = document.getElementById('regional-ethnic-modal');
     if (modal) {
         if (!modal.classList.contains('active')) {
-            modal.style.transform = '';
-            modal.style.top = '';
-            modal.style.left = '';
             if (window.SoundEngine) window.SoundEngine.play('swoosh');
+            
+            // Mobile Interference Shield: Hide sidebar if opening Regional Menu
+            if (window.matchMedia("(max-width: 950px)").matches) {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar && !sidebar.classList.contains('collapsed')) {
+                    sidebar.classList.add('collapsed');
+                }
+            }
         } else {
             if (window.SoundEngine) window.SoundEngine.play('tick');
         }
@@ -25,11 +30,6 @@ window.closeRegionalModal = () => {
     if (modal) {
         modal.classList.remove('active');
         if (window.SoundEngine) window.SoundEngine.play('tick');
-        
-        setTimeout(() => { 
-            modal.style.top = ''; 
-            modal.style.left = ''; 
-        }, 500);
     }
 };
 
@@ -241,6 +241,7 @@ window.UI = {
         dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
 
         if (!isMobile) {
+          // 🔥 REVERTED: Back to original central staggered positions
           const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
           dossier.style.top = `calc(50% + ${offset}px)`;
           dossier.style.left = `calc(50% + ${offset}px)`;
@@ -273,7 +274,7 @@ window.UI = {
     });
 
     const regionalGrid = document.getElementById('regional-ethnic-grid');
-    const regionalLayer = document.getElementById('regional-ethnic-layer');
+    const container = document.getElementById('regional-layers-container');
     const clearRegionalBtn = document.getElementById('clear-regional-btn');
 
     if (DashboardData.regionalEthnicities) {
@@ -284,21 +285,88 @@ window.UI = {
             
             btn.addEventListener('click', () => {
                 SoundEngine.play('tick');
+                const isMobile = window.matchMedia("(max-width: 950px)").matches;
                 const isActive = btn.classList.contains('active');
                 
-                document.querySelectorAll('.regional-grid-item').forEach(el => el.classList.remove('active'));
-                
-                if (isActive) {
-                    regionalLayer.classList.remove('visible');
-                    clearRegionalBtn.style.display = 'none';
-                    setTimeout(() => { if (!regionalLayer.classList.contains('visible')) regionalLayer.src = ''; }, 500);
-                } else {
-                    btn.classList.add('active');
-                    regionalLayer.src = `images/regional/${eth.id}.webp`;
-                    regionalLayer.classList.add('visible');
-                    clearRegionalBtn.style.display = 'block';
+                if (isMobile) {
+                    document.querySelectorAll('.regional-grid-item').forEach(el => el.classList.remove('active'));
                     
-                    // 🔥 AUTO-CLOSE REMOVED HERE: The menu now stays beautifully open!
+                    Array.from(container.children).forEach(layer => {
+                        layer.classList.remove('visible');
+                        setTimeout(() => layer.remove(), 500);
+                    });
+                    
+                    document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
+                    
+                    if (isActive) {
+                        clearRegionalBtn.style.display = 'none';
+                    } else {
+                        btn.classList.add('active');
+                        
+                        const img = document.createElement('img');
+                        img.src = `images/regional/${eth.id}.webp`;
+                        img.className = 'map-layer regional-ethnic';
+                        img.setAttribute('data-regional-id', eth.id);
+                        img.draggable = false;
+                        container.appendChild(img);
+                        
+                        void img.offsetWidth;
+                        img.classList.add('visible');
+                        
+                        clearRegionalBtn.style.display = 'block';
+                        
+                        this.cachedCheckboxes.forEach(cb => { 
+                            if (cb.checked) {
+                                cb.checked = false; 
+                                this.updateLayerVisibility(cb.dataset.layer, false); 
+                            }
+                        });
+                        this.updateLimitUI();
+                        
+                        const infoP = document.getElementById('info-panel');
+                        if (infoP) infoP.classList.add('hidden-by-dossier');
+                        
+                        window.closeRegionalModal();
+                        
+                        if (typeof this.showRegionalDossier === 'function') {
+                            this.showRegionalDossier(eth);
+                        }
+                    }
+                } else {
+                    if (isActive) {
+                        btn.classList.remove('active');
+                        
+                        const layer = container.querySelector(`img[data-regional-id="${eth.id}"]`);
+                        if (layer) {
+                            layer.classList.remove('visible');
+                            setTimeout(() => layer.remove(), 500);
+                        }
+                        
+                        const dossier = document.getElementById(`regional-dossier-${eth.id}`);
+                        if (dossier) dossier.remove();
+                        
+                        if (document.querySelectorAll('.regional-grid-item.active').length === 0) {
+                            clearRegionalBtn.style.display = 'none';
+                        }
+                    } else {
+                        btn.classList.add('active');
+                        
+                        const img = document.createElement('img');
+                        img.src = `images/regional/${eth.id}.webp`;
+                        img.className = 'map-layer regional-ethnic';
+                        img.setAttribute('data-regional-id', eth.id);
+                        img.draggable = false;
+                        container.appendChild(img);
+                        
+                        void img.offsetWidth; 
+                        img.classList.add('visible');
+                        
+                        clearRegionalBtn.style.display = 'block';
+                        
+                        if (typeof this.showRegionalDossier === 'function') {
+                            this.showRegionalDossier(eth);
+                        }
+                    }
                 }
             });
             
@@ -310,11 +378,14 @@ window.UI = {
         clearRegionalBtn.addEventListener('click', () => {
             SoundEngine.play('tick');
             document.querySelectorAll('.regional-grid-item').forEach(el => el.classList.remove('active'));
-            regionalLayer.classList.remove('visible');
-            clearRegionalBtn.style.display = 'none';
-            setTimeout(() => regionalLayer.src = '', 500);
             
-            // 🔥 AUTO-CLOSE REMOVED HERE TOO
+            Array.from(container.children).forEach(layer => {
+                layer.classList.remove('visible');
+                setTimeout(() => layer.remove(), 500);
+            });
+            
+            document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
+            clearRegionalBtn.style.display = 'none';
         });
     }
 
@@ -540,7 +611,7 @@ window.UI = {
       opt.addEventListener('click', () => {
         SoundEngine.play('tick');
 
-        document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        document.querySelectorAll('.dynamic-dossier:not(.regional-dossier)').forEach(el => el.remove());
         if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
         dropdownText.textContent = opt.textContent;
@@ -575,10 +646,24 @@ window.UI = {
                 this.updateLimitUI(); 
                 return; 
             }
+            
+            if (cb.checked) {
+                const container = document.getElementById('regional-layers-container');
+                if (container && container.children.length > 0) {
+                    document.querySelectorAll('.regional-grid-item').forEach(el => el.classList.remove('active'));
+                    Array.from(container.children).forEach(layer => {
+                        layer.classList.remove('visible');
+                        setTimeout(() => layer.remove(), 500);
+                    });
+                    document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
+                    const clrRBtn = document.getElementById('clear-regional-btn');
+                    if (clrRBtn) clrRBtn.style.display = 'none';
+                }
+            }
         }
 
         SoundEngine.play('tick');
-        document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        document.querySelectorAll('.dynamic-dossier:not(.regional-dossier)').forEach(el => el.remove());
         if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
         this.updateLayerVisibility(cb.dataset.layer, cb.checked);
@@ -605,7 +690,7 @@ window.UI = {
 
     document.getElementById('clear-map-btn').addEventListener('click', () => {
       SoundEngine.play('tick');
-      document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+      document.querySelectorAll('.dynamic-dossier:not(.regional-dossier)').forEach(el => el.remove());
       if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
 
       this.cachedCheckboxes.forEach(cb => { 
@@ -618,12 +703,6 @@ window.UI = {
       dropdownText.textContent = DashboardData.ui.defaultDropdownText;
       infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
       window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility();
-
-      document.querySelectorAll('.regional-grid-item').forEach(el => el.classList.remove('active'));
-      const rLayer = document.getElementById('regional-ethnic-layer');
-      if (rLayer) rLayer.classList.remove('visible');
-      const clrRBtn = document.getElementById('clear-regional-btn');
-      if (clrRBtn) clrRBtn.style.display = 'none';
     });
 
     document.querySelectorAll('.action-mute-btn').forEach(btn => {

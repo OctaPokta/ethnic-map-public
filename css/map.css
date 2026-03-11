@@ -102,24 +102,26 @@
   visibility: visible;
 }
 
-/* 🔥 FIXED: Pure Image Rendering (No Opacity Caps, No Blending Modes) */
+/* 🔥 FIXED: Restored blend-modes to allow terrain to bleed through! */
 .regional-ethnic {
   z-index: 2; /* Sits right above country ethnic layers */
   opacity: 0;
   visibility: hidden;
+  mix-blend-mode: multiply;
+  -webkit-mix-blend-mode: multiply;
   transition: opacity 0.5s ease, visibility 0.5s;
   pointer-events: none;
 }
 
 .regional-ethnic.visible {
-  opacity: 1; /* Pure 100% visibility, completely respects your original .webp file! */
+  opacity: 1; /* Remains 100% solid, allowing you to control alpha inside the webp */
   visibility: visible;
 }
 
-/* Overrides completely removed for Night Mode so your image colors remain 100% pure */
+/* Restored Night Mode screen blending */
 body.night-mode .regional-ethnic {
-  mix-blend-mode: normal;
-  -webkit-mix-blend-mode: normal;
+  mix-blend-mode: screen;
+  -webkit-mix-blend-mode: screen;
 }
 
 body.night-mode .regional-ethnic.visible {

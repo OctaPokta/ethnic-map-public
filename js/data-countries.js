@@ -101,7 +101,7 @@ window.DashboardData.countries = {
             { name: "ערבים (סונים)", percent: 31, color: "#84cc16", image: "images/ethnicities/sunni-lebanon.webp", desc: "הקהילה הסונית מתרכזת ברובה בערים הגדולות לאורך החוף (טריפולי, ביירות, צידון) ובאזורים ספציפיים בצפון המדינה.", language: "ערבית", religion: "אסלאם סוני" },
             { name: "נוצרים (מרונים)", percent: 21, color: "#dc2626", image: "images/ethnicities/maronites.webp", desc: "קהילה נוצרית-קתולית מזרחית בעלת חשיבות היסטורית עצומה בהקמת לבנון המודרנית. ריכוזם המרכזי הוא באזור הר הלבנון.", language: "ערבית", religion: "נצרות (מרונית)" },
             { name: "נוצרים (יוונים-קתולים ואורתודוקסים)", percent: 8, color: "#ca8a04", image: "images/ethnicities/greek-orthodox-lebanon.webp", desc: "קהילות נוצריות עתיקות, המתרכזות במספר מובלעות ברחבי המדינה, בעלות השפעה תרבותית וכלכלית רבה.", language: "ערבית", religion: "נצרות (אורתודוקסית וקתולית)" },
-            { name: "דרוזים", percent: 5, color: "#a855f7", image: "images/ethnicities/druze-lebanon.webp", desc: "עדה סודית וייחודית המהווה כוח פוליטי חשוב בלבנון, מתרכזת בעיקר באזור הרי השוף שבהר הלבנון.", language: "ערבית", religion: "דת הדרוזים" },
+            { name: "דרוזים", percent: 5, color: "#a855f7", image: "images/ethnicities/druze.webp", desc: "עדה סודית וייחודית המהווה כוח פוליטי חשוב בלבנון, מתרכזת בעיקר באזור הרי השוף שבהר הלבנון.", language: "ערבית", religion: "דת הדרוזים" },
             { name: "ארמנים", percent: 4, color: "#3b82f6", image: "images/ethnicities/armenians.webp", desc: "קהילה חשובה שהתיישבה בלבנון בעיקר לאחר מלחמת העולם הראשונה, המתרכזת ברובה בשכונת בורג' חמוד בביירות.", language: "ארמנית", religion: "נצרות (הכנסייה האפוסטולית)" }
         ]
     },
@@ -142,21 +142,18 @@ window.DashboardData.countries = {
     }
 };
 
-// 🔥 NEW: Regional Ethnicity Config Data
+// 🔥 NEW: Regional Ethnicity Config Data (with dedicated pan-regional descriptions!)
 window.DashboardData.regionalEthnicities = [
-    { id: "arabs", name: "ערבים" },
-    { id: "kurds", name: "כורדים" },
-    { id: "persians", name: "פרסים" },
-    { id: "turks", name: "טורקים" },
-    { id: "azeris", name: "אזרים" },
-    { id: "armenians", name: "ארמנים" },
-    { id: "jews", name: "יהודים" },
-    { id: "druze", name: "דרוזים" },
-    { id: "maronites", name: "מרונים" },
-    { id: "lurs", name: "לורים" },
-    { id: "baloch", name: "בלוצ'ים" },
-    { id: "turkmens", name: "טורקמנים" },
-    { id: "bedouins", name: "בדואים" }
+    { id: "arabs", name: "ערבים", image: "images/ethnicities/arabs.webp", desc: "הערבים הם הקבוצה האתנו-לשונית הגדולה ביותר במזרח התיכון ובצפון אפריקה. הם חולקים קשרים תרבותיים, היסטוריים ולשוניים עמוקים תחת השפה הערבית, ומתפלגים למגוון רחב של קהילות אזוריות וזרמים דתיים." },
+    { id: "kurds", name: "כורדים", image: "images/ethnicities/kurds.webp", desc: "הכורדים הם עם איראני עתיק המהווה את אחד המיעוטים הגדולים במזרח התיכון ללא מדינת לאום עצמאית. תפוצתם מתפרסת על פני 'כורדיסטן' ההיסטורית - אזור הררי המחולק בין טורקיה, עיראק, איראן וסוריה." },
+    { id: "persians", name: "פרסים", image: "images/ethnicities/persians.webp", desc: "הפרסים הם הקבוצה האתנית המרכזית באיראן ויורשיה של היסטוריה אימפריאלית מפוארת. הם דוברי השפה הפרסית ומהווים את עמוד השדרה התרבותי, הכלכלי והפוליטי של איראן." },
+    { id: "turks", name: "טורקים", image: "images/ethnicities/turks.webp", desc: "הטורקים האנטוליים הם העם המרכזי בטורקיה וממשיכי דרכה של האימפריה העות'מאנית. תרבותם משלבת באופן ייחודי השפעות ממרכז אסיה, המזרח התיכון, הים התיכון והבלקן." },
+    { id: "azeris", name: "אזרים", image: "images/ethnicities/azeris.webp", desc: "האזרים הם קבוצה ממוצא טורקי המהווה את הרוב המוחלט באזרבייג'ן ואת המיעוט הגדול ביותר באיראן. זהותם ותרבותם מהוות גשר היסטורי בין העולם הטורקי לפרסי." },
+    { id: "armenians", name: "ארמנים", image: "images/ethnicities/armenians.webp", desc: "הארמנים הם אומה וקבוצה אתנית הודית-אירופית עתיקה שמקורה ברמת ארמניה. קהילות ארמניות היסטוריות וחשובות פזורות כיום גם ברחבי הלבנט (כגון לבנון, סוריה וירושלים)." },
+    { id: "jews", name: "יהודים", image: "images/ethnicities/jews.webp", desc: "היהודים הם קבוצה אתנו-דתית שצמחה באזור הלבנט בימי קדם. לאחר אלפי שנות גלות ותפוצה, שבו היהודים מכל רחבי העולם למולדתם ההיסטורית, ישראל, שם הם מהווים את הרוב המוחלט." },
+    { id: "druze", name: "דרוזים", image: "images/ethnicities/druze.webp", desc: "הדרוזים הם קבוצה אתנו-דתית ייחודית, סודית ומלוכדת שהתפצלה מן האסלאם השיעי (האיסמאעיליה). קהילותיהם מרוכזות בעיקר באזורים הרריים אסטרטגיים בסוריה, לבנון וישראל." },
+    { id: "maronites", name: "מרונים", image: "images/ethnicities/maronites.webp", desc: "המרונים הם קהילה נוצרית-קתולית מזרחית, המהווה את הקבוצה הנוצרית הגדולה והמשפיעה ביותר בלבנון, עם היסטוריה עמוקה של אוטונומיה אזורית ופוליטית בהר הלבנון." },
+    { id: "lurs", name: "לורים", image: "images/ethnicities/lurs.webp", desc: "הלורים הם קבוצה איראנית מסורתית, בעלת מורשת נוודית ושבטית עמוקה. הם מתגוררים בעיקר לאורך רכס הרי הזגרוס במערב ודרום-מערב איראן." },
+    { id: "baloch", name: "בלוצ'ים", image: "images/ethnicities/baloch.webp", desc: "הבלוצ'ים הם קבוצה אתנית החיה באזורים המדבריים והצחיחים של דרום-מזרח איראן, דרום פקיסטן ואפגניסטן. הם שומרים על שפתם ועל מבנה חברתי שבטי מובהק." },
+    { id: "turkmens", name: "טורקמנים", image: "images/ethnicities/turkmens.webp", desc: "הטורקמנים הפזורים ברחבי המזרח התיכון (כגון בסוריה, עיראק ואיראן) הם קבוצות ממוצא טורקי, המשמרות מסורות תרבותיות עצמאיות וקשרים היסטוריים עמוקים לטורקיה ולמרכז אסיה." }
 ];
-
-

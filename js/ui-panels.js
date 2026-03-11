@@ -7,21 +7,23 @@ Object.assign(window.UI, {
         // Clear all first
         this.cachedCheckboxes.forEach(cb => { 
             cb.checked = false; 
-            cb.closest('.sidebar-item-wrapper').classList.remove('disabled-limit');
+            cb.closest('.checkbox-label').classList.remove('disabled-limit');
             this.updateLayerVisibility(cb.dataset.layer, false); 
         });
         
         let toCheck = [];
         let ethnicDataObj = null;
 
+        // Gather all countries that have this ethnicity
         Object.keys(this.demographicData).forEach(country => {
             const ethnicData = this.demographicData[country].find(d => d.name === ethnicName);
             if (ethnicData) toCheck.push({ country, data: ethnicData });
         });
 
+        // Strict Limit perfectly synced with CSS media query (950px)
         const isMobile = window.matchMedia("(max-width: 950px)").matches;
         if (isMobile && toCheck.length > 5) {
-            toCheck = toCheck.slice(0, 5); 
+            toCheck = toCheck.slice(0, 5); // Cap to 5 nations
             this.showMobileToast(`מציג 5 מדינות בלבד (מגבלת טלפון). לחוויה מלאה, השתמשו במחשב.`);
         }
 
@@ -32,7 +34,7 @@ Object.assign(window.UI, {
                 if (!ethnicDataObj) ethnicDataObj = item.data;
             });
 
-            this.updateLimitUI(); 
+            this.updateLimitUI(); // Refresh grayed-out menus
             MapEngine.resetView();
             SoundEngine.play('swoosh');
             this.updateCityVisibility();
@@ -54,6 +56,7 @@ Object.assign(window.UI, {
                 dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
 
                 if (!isMobile) {
+                    // 🔥 REVERTED: Back to original central staggered positions
                     const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
                     dossier.style.top = `calc(50% + ${offset}px)`;
                     dossier.style.left = `calc(50% + ${offset}px)`;
@@ -91,6 +94,65 @@ Object.assign(window.UI, {
                 UI.makeDraggable(dossier, handle);
             }
         }
+    },
+
+    showRegionalDossier(ethObj) {
+        const isMobile = window.matchMedia("(max-width: 950px)").matches;
+        
+        if (isMobile) {
+            // Mobile stays single-view to protect memory
+            document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
+        } else {
+            // PC allows multiple! Just bring an existing one to the front if clicked twice.
+            const existing = document.getElementById(`regional-dossier-${ethObj.id}`);
+            if (existing) {
+                this.bringToFront(existing);
+                return;
+            }
+        }
+
+        const dossier = document.createElement('div');
+        dossier.id = `regional-dossier-${ethObj.id}`;
+        dossier.className = 'glass-panel dossier-panel dynamic-dossier regional-dossier active';
+
+        if (!isMobile) {
+            // 🔥 REVERTED: Back to original central staggered positions
+            const dossierCount = document.querySelectorAll('.regional-dossier').length;
+            const offset = (dossierCount * 35) % 210; 
+            dossier.style.top = `calc(50% + ${offset}px)`;
+            dossier.style.left = `calc(65% + ${offset}px)`; 
+            dossier.style.transform = 'translate(-50%, -50%)';
+        }
+
+        const closeBtnHtml = isMobile 
+            ? `<button class="dossier-back-btn regional-dossier-back" onclick="
+                    this.parentElement.remove(); 
+                    SoundEngine.play('tick');
+                    window.toggleRegionalModal();
+                ">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg> 
+                    חזור לתפריט
+                </button>`
+            : `<button class="close-info-btn" onclick="
+                    SoundEngine.play('tick');
+                    this.parentElement.remove();
+                " style="color: #22d3ee;">&times;</button>`;
+
+        dossier.innerHTML = `
+        ${closeBtnHtml}
+        <h2 class="dossier-drag-handle" style="margin-bottom: 1rem; color: #22d3ee; font-size: 1.8rem; cursor: grab; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+            ${ethObj.name} <span style="font-size:1.1rem; opacity:0.8; font-weight: 500;">(אזורי)</span>
+        </h2>
+        <img class="dossier-image" src="${ethObj.image}" alt="${ethObj.name}" style="max-height: 250px; width: 100%; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: ${ethObj.image ? 'block' : 'none'}; border: 1px solid rgba(6, 182, 212, 0.4);">
+        <p class="dossier-desc" style="margin-top: 1rem; font-size: 1rem; line-height: 1.6; color: #e2e8f0;">${ethObj.desc}</p>
+        `;
+
+        document.body.appendChild(dossier);
+        this.bringToFront(dossier);
+        dossier.addEventListener('mousedown', () => this.bringToFront(dossier));
+
+        const handle = dossier.querySelector('.dossier-drag-handle');
+        this.makeDraggable(dossier, handle);
     },
 
     showInfoPanel(country) {
