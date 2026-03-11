@@ -7,7 +7,7 @@ A high-performance, interactive demographic mapping engine built with vanilla we
 
 ## Project Overview
 
-MMapa provides an immersive geographic experience, allowing users to explore the ethnic distributions of various populations. Built to handle massive image textures without performance degradation, the app features dynamic demographics, responsive touch gestures, and cinematic audio feedback.
+Middle East Ethnic Map provides an immersive geographic experience, allowing users to explore the ethnic distributions of various populations. Built to handle massive image textures without performance degradation, the app features dynamic demographics, responsive touch gestures, and cinematic audio feedback.
 
 ## Key Features
 
