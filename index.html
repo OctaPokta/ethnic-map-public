@@ -95,6 +95,9 @@
             <div id="map-wrapper">
               <img draggable="false" id="base-map-img" class="map-layer map-base">
               <div id="dynamic-ethnic-layers"></div>
+              
+              <img draggable="false" id="regional-ethnic-layer" class="map-layer regional-ethnic">
+              
               <div id="dynamic-label-layers"></div>
               <img id="borders-img" class="map-border" src="images/Borders.webp" draggable="false">
               <div id="city-pins"></div>
@@ -107,6 +110,19 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+        </button>
+
+        <button id="regional-ethnic-btn" class="glass-panel" title="תפוצה אתנית אזורית" onclick="window.toggleRegionalModal(); event.stopPropagation();">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/>
+            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2"/>
+            <path d="M8.5 22c.2-.7.4-1.4.5-2"/>
+            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4"/>
+            <path d="M14 13c0 2.5 0 6.5-1 9"/>
+            <path d="M17.5 21c.1-.6.4-2.3.5-3"/>
+            <path d="M22 16c.2-2 .1-5.5 0-6"/>
+            <path d="M9 7A6 6 0 0 1 18 12v2"/>
           </svg>
         </button>
 
@@ -125,7 +141,7 @@
             <path d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z"/>
             <path class="aroma-path-1" d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
             <path class="aroma-path-2" d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
-            <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
+            <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
           </svg>
           <div class="donation-callout-card" id="donation-callout">
             <div class="callout-title"><span id="callout-title-text"></span></div>
@@ -180,6 +196,38 @@
       <button type="button" id="close-info-btn" class="close-info-btn">&times;</button>
       <div id="info-panel-content"></div>
     </aside>
+
+    <div id="regional-ethnic-modal">
+      
+      <button id="close-ethnic-modal-mobile" onclick="window.closeRegionalModal();">
+         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg> 
+         חזור למפה
+      </button>
+
+      <div class="regional-modal-header">
+        <div class="regional-modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/>
+            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2"/>
+            <path d="M8.5 22c.2-.7.4-1.4.5-2"/>
+            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4"/>
+            <path d="M14 13c0 2.5 0 6.5-1 9"/>
+            <path d="M17.5 21c.1-.6.4-2.3.5-3"/>
+            <path d="M22 16c.2-2 .1-5.5 0-6"/>
+            <path d="M9 7A6 6 0 0 1 18 12v2"/>
+          </svg>
+          תפוצה אזורית
+        </div>
+        <button id="close-ethnic-modal-desktop" class="close-info-btn" onclick="window.closeRegionalModal();">&times;</button>
+      </div>
+      
+      <p class="regional-modal-desc">בחר קבוצה אתנית כדי לראות את פריסתה הגיאוגרפית המלאה על פני מפת המזרח התיכון.</p>
+      
+      <div class="regional-ethnic-grid" id="regional-ethnic-grid"></div>
+      
+      <button id="clear-regional-btn" class="action-btn clear-map-btn" style="margin-top: 1.5rem; display: none; color: #22d3ee; border-color: rgba(34, 211, 238, 0.3);">נקה שכבת תפוצה</button>
+    </div>
+
   </div>
 
   <script src="js/data-config.js"></script>

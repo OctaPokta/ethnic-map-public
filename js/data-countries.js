@@ -141,3 +141,22 @@ window.DashboardData.countries = {
         ]
     }
 };
+
+// 🔥 NEW: Regional Ethnicity Config Data
+window.DashboardData.regionalEthnicities = [
+    { id: "arabs", name: "ערבים" },
+    { id: "kurds", name: "כורדים" },
+    { id: "persians", name: "פרסים" },
+    { id: "turks", name: "טורקים" },
+    { id: "azeris", name: "אזרים" },
+    { id: "armenians", name: "ארמנים" },
+    { id: "jews", name: "יהודים" },
+    { id: "druze", name: "דרוזים" },
+    { id: "maronites", name: "מרונים" },
+    { id: "lurs", name: "לורים" },
+    { id: "baloch", name: "בלוצ'ים" },
+    { id: "turkmens", name: "טורקמנים" },
+    { id: "bedouins", name: "בדואים" }
+];
+
+

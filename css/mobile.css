@@ -15,7 +15,6 @@
         transform: translate(-50%, -50%) scale(0.94) !important;
     }
     
-    /* Slimmed down 12px 3D Frame for Mobile */
     #map-wrapper::after {
         box-shadow: 
             inset 0 0 20px 5px rgba(30, 15, 5, 0.8),
@@ -86,6 +85,67 @@
         z-index: 3000 !important;
     }
 
+    /* 🔥 FIXED: Mobile Regional Modal docks perfectly to the bottom */
+    #regional-ethnic-modal {
+        position: fixed !important;
+        left: 0 !important;
+        top: auto !important; 
+        bottom: 0 !important;
+        width: 100vw !important; 
+        max-width: 100vw !important;
+        padding: 1.5rem !important;
+        
+        /* Slides up natively from the bottom */
+        transform: translateY(120%) scale(0.9) !important; 
+        
+        border-radius: 24px 24px 0 0 !important;
+        height: 55dvh !important; 
+        max-height: 55dvh !important;
+        border-bottom: none !important;
+        
+        /* Ensures the user can scroll perfectly through the options */
+        overflow-y: auto !important; 
+        overflow-x: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        z-index: 3000 !important;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease !important;
+    }
+
+    #regional-ethnic-modal.active {
+        transform: translateY(0) scale(1) !important;
+    }
+
+    #close-ethnic-modal-desktop { display: none !important; }
+    
+    #close-ethnic-modal-mobile {
+        position: relative !important;
+        top: 0 !important; left: 0 !important;
+        width: 100% !important; 
+        min-height: 48px !important;
+        border-radius: 12px !important;
+        display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important;
+        font-size: 1.1rem !important; font-weight: 700 !important; font-family: inherit !important;
+        background: rgba(99, 102, 241, 0.15) !important;
+        color: #a5b4fc !important;
+        margin-bottom: 1.2rem !important; border: 1px solid rgba(99, 102, 241, 0.3) !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        cursor: pointer !important;
+    }
+
+    .regional-ethnic-grid {
+        max-height: none !important; /* Lets the whole panel scroll naturally */
+        overflow: visible !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    
+    .regional-grid-item {
+        padding: 12px 6px !important;
+        font-size: 0.95rem !important;
+    }
+
     .dossier-back-btn {
         position: relative !important;
         top: 0 !important; left: 0 !important;
@@ -119,6 +179,13 @@
     .donation-callout-card::after { left: 18px; }
     .compass-btn { top: 5rem; left: 1.5rem; width: 44px; height: 44px; }
     
+    #regional-ethnic-btn {
+        top: 8.5rem;
+        left: 1.5rem;
+        width: 44px;
+        height: 44px;
+    }
+    
     #mobile-settings-container { position: absolute; top: 1.5rem; left: 1.5rem; z-index: 2100; }
     #mobile-settings-toggle { width: 44px; height: 44px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: #fff; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
     #mobile-settings-menu { position: absolute; top: calc(100% + 8px); left: 0; display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
@@ -145,7 +212,4 @@
     
     .powered-by-badge { bottom: 1.5rem; right: 1.5rem; font-size: 0.7rem; padding: 0.4rem 0.8rem; }
     .development-badge { font-size: 0.75rem; padding: 0.3rem 1rem; }
-    
-    .globe { width: 150vw !important; max-width: none !important; opacity: 0.15 !important; }
-    .loading-bg-network::before { width: 250vw !important; height: 250vw !important; margin-top: -125vw !important; margin-left: -125vw !important; -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 65%) !important; mask-image: radial-gradient(circle at center, black 10%, transparent 65%) !important; }
 }
