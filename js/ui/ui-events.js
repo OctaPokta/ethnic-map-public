@@ -2,10 +2,22 @@
 // 🖱️ GLOBAL EVENT LISTENERS
 // ==========================================
 Object.assign(window.UI, {
-
   setupEventListeners() {
     const dropdownText = document.getElementById('custom-select-text');
     const infoPanel = document.getElementById('info-panel');
+    
+    // 🔥 DEEP LINKING ENGINE: Automatically opens a country based on the URL
+    setTimeout(() => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && hash !== 'welcome' && hash !== 'map') {
+            const countryInput = document.querySelector(`input[data-layer="${hash}"]`);
+            if (countryInput && !countryInput.checked) {
+                countryInput.click(); 
+            }
+        }
+    }, 1000);
+
+
 
     document.getElementById('donation-btn').addEventListener('mouseenter', () => { if (window.matchMedia("(min-width: 951px)").matches) SoundEngine.play('coffee-hover'); });
     const donationBtn = document.getElementById('donation-btn');
@@ -84,6 +96,7 @@ Object.assign(window.UI, {
         
         document.querySelector(`input[data-layer="${opt.dataset.value}"]`).checked = true;
         this.updateLayerVisibility(opt.dataset.value, true);
+
         this.updateLimitUI();
 
         this.showInfoPanel(opt.dataset.value);
@@ -138,7 +151,7 @@ Object.assign(window.UI, {
           const anyChecked = this.cachedCheckboxes.some(c => c.checked);
           if (!anyChecked) {
             infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
-            dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, ' ');
+            dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, '#map');
           }
         }
         this.updateCityVisibility();
@@ -159,7 +172,7 @@ Object.assign(window.UI, {
       
       dropdownText.textContent = DashboardData.ui.defaultDropdownText;
       infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
-      window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility();
+      window.history.replaceState(null, null, '#map'); MapEngine.resetView(); this.updateCityVisibility();
     });
 
     document.querySelectorAll('.action-mute-btn').forEach(btn => {

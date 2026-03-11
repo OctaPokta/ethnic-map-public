@@ -1,6 +1,11 @@
 /* ==========================================
    1. BASE & RESETS
    ========================================== */
+@font-face {
+  font-family: 'Twemoji Country Flags';
+  src: url('https://cdn.jsdelivr.net/npm/country-flag-emoji-polyfill@0.1/dist/TwemojiCountryFlags.woff2') format('woff2');
+  font-display: swap;
+}
 
 * {
     margin: 0;
@@ -13,7 +18,7 @@ html {
 }
 
 body {
-    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Rubik', 'Twemoji Country Flags', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #0f172a;
     color: #e4e4e7;
     height: 100vh;

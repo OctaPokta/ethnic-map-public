@@ -1,6 +1,7 @@
 // ==========================================
 // 🌌 WELCOME SCREEN & LOADING ENGINE
 // ==========================================
+
 Object.assign(window.UI, {
 
   setupLoadingScreen() {
@@ -9,6 +10,58 @@ Object.assign(window.UI, {
     const loaderContainer = document.getElementById('loading-bar-container');
     const percentText = document.getElementById('loading-percentage');
     const enterBtn = document.getElementById('enter-map-btn');
+
+    // Close Modals when clicking the background
+    loadingScreen.addEventListener('click', (e) => {
+        const tutModal = document.getElementById('welcome-tutorial-modal');
+        const tutBtn = document.getElementById('welcome-tutorial-btn');
+        if (tutModal && tutModal.classList.contains('active')) {
+            if (!tutModal.contains(e.target) && !tutBtn.contains(e.target)) window.toggleTutorial(false);
+        }
+
+        const contactModal = document.getElementById('welcome-contact-modal');
+        const contactBtn = document.getElementById('welcome-contact-btn');
+        if (contactModal && contactModal.classList.contains('active')) {
+            if (!contactModal.contains(e.target) && !contactBtn.contains(e.target)) window.toggleContact(false);
+        }
+    });
+
+    // AJAX Form Submission Engine
+    const form = document.getElementById('contact-form');
+    const successMsg = document.getElementById('contact-success');
+    
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-contact-btn');
+            submitBtn.textContent = 'שולח...';
+            submitBtn.disabled = true;
+
+            const data = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    form.classList.add('hidden-state');
+                    successMsg.classList.remove('hidden-state');
+                    form.reset();
+                    if (window.SoundEngine) window.SoundEngine.play('chime');
+                } else {
+                    alert("שגיאה בשליחת ההודעה. נסו שוב מאוחר יותר.");
+                    submitBtn.textContent = 'שלח הודעה';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                alert("שגיאת רשת. אנא בדקו את החיבור שלכם ונסו שוב.");
+                submitBtn.textContent = 'שלח הודעה';
+                submitBtn.disabled = false;
+            }
+        });
+    }
 
     const networkBg = document.getElementById('network-bg');
     const raysContainer = document.getElementById('rays-container');
@@ -40,7 +93,15 @@ Object.assign(window.UI, {
         setTimeout(() => {
           if (loaderContainer) loaderContainer.style.display = 'none';
           if (percentText) percentText.style.display = 'none';
-          if (enterBtn) enterBtn.classList.remove('hidden');
+          
+          // 🔥 DEEP LINKING: Skip welcome if hash exists (e.g. #map or #Israel)
+          const hash = window.location.hash;
+          if (hash !== '' && hash !== '#welcome') {
+              loadingScreen.style.opacity = '0';
+              setTimeout(() => loadingScreen.style.display = 'none', 800);
+          } else {
+              if (enterBtn) enterBtn.classList.remove('hidden');
+          }
         }, 400);
       }, 500);
     };
@@ -68,10 +129,14 @@ Object.assign(window.UI, {
 
     if (enterBtn) {
       enterBtn.addEventListener('click', () => {
+        // 🔥 ROUTING: Change hash to skip welcome screen
+        window.location.hash = 'map';
+        
         if (window.SoundEngine && typeof window.SoundEngine.init === 'function') window.SoundEngine.init(); 
         if (window.SoundEngine) window.SoundEngine.play('swoosh');
         loadingScreen.style.opacity = '0';
-        setTimeout(() => loadingScreen.remove(), 800);
+        setTimeout(() => loadingScreen.style.display = 'none', 800);
+        
         setTimeout(() => {
           const callout = document.getElementById('donation-callout');
           const btn = document.getElementById('donation-btn');
@@ -83,36 +148,9 @@ Object.assign(window.UI, {
         }, 2000);
       });
     }
-  },
+  
 
-  setupVisibilityHandler() {
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") {
-        if (document.getElementById('wake-mask')) return;
-        const wakeMask = document.createElement('div');
-        wakeMask.id = 'wake-mask';
-        wakeMask.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.5s ease;';
-        wakeMask.innerHTML = `
-                    <img src="${DashboardData.images.watermark}" style="width: 150px; margin-bottom: 24px; animation: pulseLogo 1.5s infinite alternate;">
-                    <div style="width: 220px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                        <div id="wake-bar-fill" style="height: 100%; width: 0%; background: #6366f1; transition: width 0.08s linear;"></div>
-                    </div>
-                    <div id="wake-bar-text" style="color: #94a3b8; font-size: 0.85rem; font-weight: 700; font-family: monospace; margin-top: 10px; letter-spacing: 1px;">0%</div>
-                `;
-        document.body.appendChild(wakeMask);
-        let progress = 0;
-        const barFill = document.getElementById('wake-bar-fill');
-        const barText = document.getElementById('wake-bar-text');
-        const wakeInterval = setInterval(() => {
-          progress += Math.floor(Math.random() * 15) + 5;
-          if (progress >= 100) {
-            progress = 100;
-            clearInterval(wakeInterval);
-            setTimeout(() => { wakeMask.style.opacity = '0'; setTimeout(() => wakeMask.remove(), 500); }, 150);
-          }
-          barFill.style.width = `${progress}%`; barText.textContent = `${progress}%`;
-        }, 40);
-      }
-    });
+
+
   }
 });

@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="css/components/regional-modal.css">
   <link rel="stylesheet" href="css/components/floating-buttons.css">
   <link rel="stylesheet" href="css/components/badges-donation.css">
+  <link rel="stylesheet" href="css/components/contact.css">
   
   <link rel="stylesheet" href="css/core/mobile.css">
   
@@ -77,6 +78,31 @@
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
       </svg>
     </button>
+
+    <button id="welcome-contact-btn" class="glass-panel" title="צור קשר" onclick="window.toggleContact(true, event)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+    </button>
+
+    <div id="welcome-contact-modal" class="glass-panel">
+      <button id="close-contact-btn" class="close-info-btn" onclick="window.toggleContact(false, event)">&times;</button>
+      <h2 class="tutorial-title">✉️ צור קשר</h2>
+      <p class="contact-desc">יש לכם הצעות לשיפור, הערות או בקשות שיתוף פעולה? נשמח לשמוע מכם!</p>
+      
+      <form id="contact-form" action="https://formspree.io/f/xvzwarjz" method="POST" class="contact-form">
+        <input type="text" name="name" placeholder="שם מלא" required class="contact-input">
+        <input type="email" name="email" placeholder="אימייל לחזרה" required class="contact-input">
+        <textarea name="message" placeholder="ההודעה שלכם..." required class="contact-input contact-textarea"></textarea>
+        <button type="submit" id="submit-contact-btn">שלח הודעה</button>
+      </form>
+
+      <div id="contact-success" class="contact-success-msg hidden-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span>הודעתך נשלחה בהצלחה!<br>תודה רבה.</span>
+      </div>
+    </div>
 
     <div id="welcome-tutorial-modal" class="glass-panel">
       <button id="close-tutorial-btn" class="close-info-btn" onclick="window.toggleTutorial(false, event)">&times;</button>
@@ -130,7 +156,8 @@
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
     
     <div class="powered-by-badge loading-powered-by" dir="ltr">
-      <span id="powered-by-prefix-loading">Powered by</span> <strong>The Security Front</strong>
+      <span id="powered-by-prefix-loading">Powered by</span> 
+      <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" class="brand-link">THE SECURITY FRONT</a>
     </div>
   </div>
 
@@ -179,6 +206,13 @@
           </svg>
         </button>
 
+        <a id="home-btn" class="glass-panel desktop-only" title="חזור למסך הפתיחה" href=".">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </a>
+
         <div id="mobile-settings-container" class="mobile-only">
           <button id="mobile-settings-toggle" class="glass-panel" title="הגדרות">⚙️</button>
           <div id="mobile-settings-menu" class="glass-panel">
@@ -205,7 +239,8 @@
         <div id="regional-legend" class="regional-legend"></div>
 
         <div id="powered-by-badge" class="glass-panel powered-by-badge" dir="ltr">
-          <span id="powered-by-prefix"></span> <strong id="powered-by-brand"></strong>
+          <span id="powered-by-prefix"></span> 
+          <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" id="powered-by-brand" class="brand-link"></a>
         </div>
 
         <div id="minimap" class="glass-panel">
@@ -284,20 +319,20 @@
 
   </div>
 
-  <script src="js/data/data-config.js?v=6"></script>
-  <script src="js/data/data-countries.js?v=6"></script>
-  <script src="js/data/data-cities.js?v=6"></script>
+  <script src="js/data/data-config.js?v=9"></script>
+  <script src="js/data/data-countries.js?v=9"></script>
+  <script src="js/data/data-cities.js?v=9"></script>
   
-  <script src="js/core/audio.js?v=6"></script>
-  <script src="js/core/map.js?v=6"></script>
+  <script src="js/core/audio.js?v=9"></script>
+  <script src="js/core/map.js?v=9"></script>
 
-  <script src="js/ui/ui-core.js?v=6"></script>
-  <script src="js/ui/ui-builder.js?v=6"></script>
-  <script src="js/ui/ui-events.js?v=6"></script>
-  <script src="js/ui/ui-welcome.js?v=6"></script>
-  <script src="js/ui/ui-utils.js?v=6"></script>
-  <script src="js/ui/ui-panels.js?v=6"></script>
+  <script src="js/ui/ui-core.js?v=9"></script>
+  <script src="js/ui/ui-builder.js?v=9"></script>
+  <script src="js/ui/ui-events.js?v=9"></script>
+  <script src="js/ui/ui-welcome.js?v=9"></script>
+  <script src="js/ui/ui-utils.js?v=9"></script>
+  <script src="js/ui/ui-panels.js?v=9"></script>
   
-  <script src="js/core/app.js?v=6"></script>
+  <script src="js/core/app.js?v=9"></script>
 </body>
 </html>

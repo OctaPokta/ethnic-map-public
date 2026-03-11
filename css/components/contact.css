@@ -1,0 +1,160 @@
+/* ==========================================
+   ✉️ WELCOME SCREEN CONTACT MODAL
+   ========================================== */
+
+#welcome-contact-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem; /* Places it opposite the tutorial button */
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  color: #22d3ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999998 !important; 
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  pointer-events: auto; 
+  transition: all 0.3s ease;
+}
+
+#welcome-contact-btn:hover {
+  background: rgba(34, 211, 238, 0.15);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
+  border-color: #22d3ee;
+}
+
+#welcome-contact-modal {
+  position: absolute;
+  top: 50%;
+  left: 2rem;
+  transform: translateY(-50%) scale(0.9);
+  transform-origin: left center;
+  opacity: 0;
+  display: none;
+  pointer-events: none; 
+  z-index: 999999 !important; 
+  width: 90%;
+  max-width: 400px;
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(25px);
+  box-shadow: 10px 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(34, 211, 238, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-direction: column;
+}
+
+#welcome-contact-modal.active {
+  opacity: 1 !important;
+  display: flex !important; 
+  pointer-events: auto !important; 
+  transform: translateY(-50%) scale(1) !important;
+}
+
+.contact-desc {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-input {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #fff;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.contact-input:focus {
+  border-color: #22d3ee;
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+.contact-input::placeholder { color: #94a3b8; }
+
+.contact-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+#submit-contact-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(14, 165, 233, 0.2));
+  border: 1px solid rgba(34, 211, 238, 0.5);
+  color: #22d3ee;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#submit-contact-btn:hover {
+  background: rgba(34, 211, 238, 0.3);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+}
+
+#submit-contact-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.contact-success-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #22c55e;
+  gap: 10px;
+  font-weight: 600;
+  padding: 20px 0;
+}
+
+.hidden-state { display: none !important; }
+
+@media (max-width: 950px) {
+  #welcome-contact-btn {
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 44px;
+      height: 44px;
+  }
+  #welcome-contact-modal {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      transform-origin: center center;
+      padding: 1.5rem;
+      width: 92%;
+  }
+  #welcome-contact-modal.active {
+      transform: translate(-50%, -50%) scale(1) !important;
+  }
+}

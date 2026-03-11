@@ -81,6 +81,48 @@
   border-color: rgba(34, 211, 238, 0.8);
 }
 
+/* 🔥 NEW: Home Button */
+#home-btn {
+  position: absolute;
+  top: 10rem; /* Places it directly below the Regional button */
+  left: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+#home-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+#home-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+@media (max-width: 950px) {
+  .desktop-only {
+    display: none !important; /* Strictly hidden on phones */
+  }
+}
+
 /* Minimap */
 #minimap {
   position: absolute;
@@ -107,9 +149,7 @@ body.night-mode #minimap img {
   filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9);
 }
 
-/* ==========================================
-   🎨 REGIONAL MAP LEGEND (Desktop Only)
-   ========================================== */
+/* Regional Map Legend */
 #regional-legend {
   position: absolute;
   bottom: 5.5rem; 
