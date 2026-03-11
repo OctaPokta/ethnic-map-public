@@ -85,7 +85,6 @@ window.UI = {
       const versionTextEl = document.getElementById('version-text');
       if (versionTextEl) {
         versionTextEl.textContent = DashboardData.ui.versionText || 'Alpha';
-        // 🔥 NEW: Attach the release notes URL
         if (DashboardData.ui.releaseNotesLink) {
             versionTextEl.href = DashboardData.ui.releaseNotesLink;
         }
@@ -144,12 +143,29 @@ window.UI = {
         e.stopPropagation();
         this.showInfoPanel(key);
 
-        if (window.innerWidth <= 768) {
+        if (window.matchMedia("(max-width: 950px)").matches) {
           const sidebar = document.querySelector('.sidebar');
           if (sidebar) sidebar.classList.add('collapsed');
         }
       });
       wrapper.appendChild(infoBtn);
+
+      // Event Interceptor
+      wrapper.addEventListener('click', (e) => {
+          if (e.target.closest('.sidebar-info-btn')) return; 
+          
+          const isMobile = window.matchMedia("(max-width: 950px)").matches;
+          if (isMobile) {
+              const count = this.cachedCheckboxes.filter(c => c.checked).length;
+              const input = wrapper.querySelector('input');
+              
+              if (!input.checked && count >= 5) {
+                  e.preventDefault(); 
+                  e.stopPropagation(); 
+                  this.showMobileToast("ניתן לבחור עד 5 מדינות במקביל בטלפון. לחוויה מלאה, השתמשו במחשב.");
+              }
+          }
+      }, true); 
 
       checkboxesContainer.appendChild(wrapper);
     });
@@ -176,7 +192,7 @@ window.UI = {
         if (MapEngine.hasDragged) return;
         e.stopPropagation(); SoundEngine.play('tick');
 
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.matchMedia("(max-width: 950px)").matches;
         if (isMobile) {
           document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
           const sidebar = document.querySelector('.sidebar');
@@ -205,7 +221,7 @@ window.UI = {
               <button class="close-info-btn" onclick="
                   this.parentElement.remove(); 
                   SoundEngine.play('tick');
-                  if(window.innerWidth <= 768) {
+                  if(window.matchMedia('(max-width: 950px)').matches) {
                       const p = document.getElementById('info-panel');
                       if(p) p.classList.remove('hidden-by-dossier');
                   }
@@ -228,6 +244,7 @@ window.UI = {
 
     this.cachedCheckboxes = Array.from(document.querySelectorAll('.checkbox-label input[data-layer]'));
     this.updateCachedVisibleLayers();
+    this.updateLimitUI();
   },
 
   setupLoadingScreen() {
@@ -237,35 +254,21 @@ window.UI = {
     const percentText = document.getElementById('loading-percentage');
     const enterBtn = document.getElementById('enter-map-btn');
 
-    // 🔥 Elements for pure JS Parallax Math
     const networkBg = document.getElementById('network-bg');
     const raysContainer = document.getElementById('rays-container');
     const globeContainer = document.getElementById('globe-container');
 
     loadingScreen.addEventListener('mousemove', (e) => {
-      if (window.innerWidth > 768) {
-        // Calculate relative mouse position (-1 to 1) from the center of screen
+      if (window.innerWidth > 950) {
         const xPos = (e.clientX / window.innerWidth - 0.5) * 2;
         const yPos = (e.clientY / window.innerHeight - 0.5) * 2;
         
-        // Pass spotlight coordinate variables to CSS
         loadingScreen.style.setProperty('--mouse-x', xPos);
         loadingScreen.style.setProperty('--mouse-y', yPos);
 
-        // 1. Move the center of the rays towards the mouse (This makes them point at cursor!)
-        if (raysContainer) {
-          raysContainer.style.transform = `translate(${xPos * 70}px, ${yPos * 70}px)`;
-        }
-        
-        // 2. Move the globe in the opposite direction to create massive depth
-        if (globeContainer) {
-          globeContainer.style.transform = `translate(calc(-50% + ${xPos * -35}px), calc(-50% + ${yPos * -35}px))`;
-        }
-
-        // 3. Tilt the entire 3D background wrapper towards the mouse
-        if (networkBg) {
-          networkBg.style.transform = `perspective(1000px) rotateX(${yPos * -8}deg) rotateY(${xPos * 8}deg)`;
-        }
+        if (raysContainer) raysContainer.style.transform = `translate(${xPos * 70}px, ${yPos * 70}px)`;
+        if (globeContainer) globeContainer.style.transform = `translate(calc(-50% + ${xPos * -35}px), calc(-50% + ${yPos * -35}px))`;
+        if (networkBg) networkBg.style.transform = `perspective(1000px) rotateX(${yPos * -8}deg) rotateY(${xPos * 8}deg)`;
       }
     });
 
@@ -354,5 +357,217 @@ window.UI = {
         }, 40);
       }
     });
+  },
+
+  // 🔥 THE FIX: Adds class to the wrapper so CSS can accurately target the label!
+  updateLimitUI() {
+      const isMobile = window.matchMedia("(max-width: 950px)").matches;
+      const count = this.cachedCheckboxes.filter(c => c.checked).length;
+
+      this.cachedCheckboxes.forEach(c => {
+          const wrapper = c.closest('.sidebar-item-wrapper');
+          if (!isMobile) {
+              wrapper.classList.remove('disabled-limit');
+          } else {
+              if (!c.checked && count >= 5) {
+                  wrapper.classList.add('disabled-limit');
+              } else {
+                  wrapper.classList.remove('disabled-limit');
+              }
+          }
+      });
+  },
+
+  showMobileToast(message) {
+      const existing = document.querySelector('.mobile-toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'mobile-toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      void toast.offsetWidth; // Force Reflow
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+      }, 3500);
+  },
+
+  setupEventListeners() {
+    const dropdownText = document.getElementById('custom-select-text');
+    const infoPanel = document.getElementById('info-panel');
+
+    document.getElementById('donation-btn').addEventListener('mouseenter', () => { if (window.matchMedia("(min-width: 951px)").matches) SoundEngine.play('coffee-hover'); });
+    const donationBtn = document.getElementById('donation-btn');
+    const donationCallout = document.getElementById('donation-callout');
+    
+    donationBtn.addEventListener('click', (e) => { 
+        if (window.matchMedia("(max-width: 950px)").matches) {
+            if (!donationCallout.contains(e.target)) {
+                e.preventDefault(); 
+                const isShowing = donationCallout.classList.contains('show');
+                if (!isShowing) {
+                    donationCallout.classList.add('show');
+                    SoundEngine.play('coffee-hover'); 
+                } else {
+                    donationCallout.classList.remove('show');
+                }
+            } else {
+                SoundEngine.play('chime');
+                setTimeout(() => donationCallout.classList.remove('show'), 500);
+            }
+        } else {
+            SoundEngine.play('chime');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (window.matchMedia("(max-width: 950px)").matches && donationCallout.classList.contains('show')) {
+            if (!donationBtn.contains(e.target)) {
+                donationCallout.classList.remove('show');
+            }
+        }
+    });
+
+    document.getElementById('compass-btn').addEventListener('click', () => { SoundEngine.play('swoosh'); MapEngine.resetView(); });
+
+    const mobileSettingsToggle = document.getElementById('mobile-settings-toggle');
+    const mobileSettingsMenu = document.getElementById('mobile-settings-menu');
+    if (mobileSettingsToggle && mobileSettingsMenu) {
+      mobileSettingsToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileSettingsMenu.classList.toggle('active');
+        SoundEngine.play('tick');
+      });
+      document.addEventListener('click', (e) => {
+        if (!mobileSettingsToggle.contains(e.target) && !mobileSettingsMenu.contains(e.target)) {
+          mobileSettingsMenu.classList.remove('active');
+        }
+      });
+    }
+
+    document.querySelector('.custom-select-trigger').addEventListener('click', (e) => {
+      e.stopPropagation(); document.getElementById('country-dropdown').classList.toggle('open'); SoundEngine.play('tick');
+    });
+
+    document.querySelectorAll('.custom-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        SoundEngine.play('tick');
+
+        document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
+
+        dropdownText.textContent = opt.textContent;
+        window.history.replaceState(null, null, '#' + opt.dataset.value);
+
+        this.cachedCheckboxes.forEach(cb => {
+          cb.checked = false; this.updateLayerVisibility(cb.dataset.layer, false);
+        });
+        
+        document.querySelector(`input[data-layer="${opt.dataset.value}"]`).checked = true;
+        this.updateLayerVisibility(opt.dataset.value, true);
+
+        this.updateLimitUI();
+
+        this.showInfoPanel(opt.dataset.value);
+        MapEngine.flyToView(opt.dataset.value);
+        this.updateCityVisibility();
+
+        if (window.matchMedia("(max-width: 950px)").matches) { document.querySelector('.sidebar').classList.add('collapsed'); }
+      });
+    });
+
+    this.cachedCheckboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        
+        // Final sanity fallback
+        const isMobile = window.matchMedia("(max-width: 950px)").matches;
+        if (isMobile) {
+            const count = this.cachedCheckboxes.filter(c => c.checked).length;
+            if (cb.checked && count > 5) {
+                cb.checked = false; 
+                this.showMobileToast("ניתן לבחור עד 5 מדינות במקביל בטלפון. לחוויה מלאה, השתמשו במחשב.");
+                this.updateLimitUI(); 
+                return; 
+            }
+        }
+
+        SoundEngine.play('tick');
+        document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+        if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
+
+        this.updateLayerVisibility(cb.dataset.layer, cb.checked);
+        this.updateLimitUI();
+
+        if (cb.checked) {
+          window.history.replaceState(null, null, '#' + cb.dataset.layer);
+          const opt = document.querySelector(`.custom-option[data-value="${cb.dataset.layer}"]`);
+          if (opt) dropdownText.textContent = opt.textContent;
+
+          if (window.matchMedia("(min-width: 951px)").matches) {
+            this.showInfoPanel(cb.dataset.layer);
+          }
+        } else {
+          const anyChecked = this.cachedCheckboxes.some(c => c.checked);
+          if (!anyChecked) {
+            infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
+            dropdownText.textContent = DashboardData.ui.defaultDropdownText; window.history.replaceState(null, null, ' ');
+          }
+        }
+        this.updateCityVisibility();
+      });
+    });
+
+    document.getElementById('clear-map-btn').addEventListener('click', () => {
+      SoundEngine.play('tick');
+      document.querySelectorAll('.dynamic-dossier').forEach(el => el.remove());
+      if (infoPanel) infoPanel.classList.remove('hidden-by-dossier');
+
+      this.cachedCheckboxes.forEach(cb => { 
+          cb.checked = false; 
+          this.updateLayerVisibility(cb.dataset.layer, false); 
+      });
+      
+      this.updateLimitUI();
+      
+      dropdownText.textContent = DashboardData.ui.defaultDropdownText;
+      infoPanel.style.transform = ''; infoPanel.style.transition = ''; infoPanel.classList.remove('active'); setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
+      window.history.replaceState(null, null, ' '); MapEngine.resetView(); this.updateCityVisibility();
+    });
+
+    document.querySelectorAll('.action-mute-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        SoundEngine.isMuted = !SoundEngine.isMuted;
+        document.querySelectorAll('.action-mute-btn').forEach(b => b.textContent = SoundEngine.isMuted ? '🔇' : '🔊');
+        if (!SoundEngine.isMuted) SoundEngine.play('tick');
+      });
+    });
+
+    document.querySelectorAll('.action-theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.body.classList.toggle('night-mode');
+        SoundEngine.play('tick');
+        const isNight = document.body.classList.contains('night-mode');
+        document.querySelectorAll('.action-theme-btn').forEach(b => b.textContent = isNight ? '☀️' : '🌙');
+      });
+    });
+
+    document.getElementById('toggle-sidebar-btn').addEventListener('click', () => {
+      document.querySelector('.sidebar').classList.toggle('collapsed'); SoundEngine.play('swoosh');
+    });
+
+    document.getElementById('close-info-btn').addEventListener('click', () => {
+      infoPanel.style.transform = '';
+      infoPanel.style.transition = '';
+      infoPanel.classList.remove('active');
+      infoPanel.classList.remove('hidden-by-dossier');
+      SoundEngine.play('tick');
+      setTimeout(() => { infoPanel.style.top = ''; infoPanel.style.left = ''; }, 500);
+    });
+
+    if (window.matchMedia("(max-width: 1024px)").matches) document.querySelector('.sidebar').classList.add('collapsed');
   }
 };

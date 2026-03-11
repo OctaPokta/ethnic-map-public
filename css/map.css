@@ -24,41 +24,42 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  
+  /* Adjusted to 0.95 to perfectly fit the sleeker 24px gridless frame */
+  transform: translate(-50%, -50%) scale(0.95);
+  
   width: 100%;
   height: 100%;
   max-width: calc(100vh * (6194 / 3876));
-  max-width: calc(100dvh * (6194 / 3876));
   max-height: calc(100vw * (3876 / 6194));
-  border-radius: 6px; 
-  background: #0f172a; 
+  
+  border-radius: 4px;
+  background: #0f172a;
 }
 
-/* 🔥 THE 3D ANTIQUE GOLD & WOOD FRAME 🔥 */
+/* 🔥 THE 3D ANTIQUE GOLD & MAHOGANY FRAME (Gridless) 🔥 */
 #map-wrapper::after {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none; /* Clicks pass right through to the map */
-  z-index: 104; /* Sits right above the map layers, but below city pins */
-  border-radius: 6px;
+  pointer-events: none;
+  z-index: 104;
+  border-radius: 4px;
   
-  /* Stacking shadows creates a highly realistic carved 3D frame */
+  /* Sleek multi-band frame matching the mobile aesthetic */
   box-shadow: 
-    /* 1. Inner Depth (Embedded vignette look over the map) */
-    inset 0 0 60px 10px rgba(0, 0, 0, 0.8),
-    inset 0 0 0 2px rgba(255, 220, 100, 0.4), 
-    
-    /* 2. The Physical Frame Borders (Expanding Outward) */
-    0 0 0 6px #16100b, /* Inner dark wood bevel */
-    0 0 0 10px #c59b27, /* Bright gold inner band */
-    0 0 0 24px #2a1f16, /* Thick mahogany wood body */
-    0 0 0 28px #8b6508, /* Dark gold outer band */
-    0 0 0 30px #e6c27a, /* Bright gold outer edge glint */
-    
-    /* 3. Massive Levitation Drop Shadows (Casts onto the dark blue background) */
-    0 40px 80px 20px rgba(0, 0, 0, 0.9),
-    0 0 150px 40px rgba(0, 0, 0, 0.7);
+    inset 0 0 60px 10px rgba(30, 15, 5, 0.8),
+    inset 0 0 0 2px rgba(230, 194, 122, 0.5), 
+    0 0 0 2px #26170d, 
+    0 0 0 6px #ffd700, 
+    0 0 0 8px #5c4002,
+    0 0 0 12px #e6c27a, 
+    0 0 0 14px #996e17, 
+    0 0 0 16px #ffeb99, 
+    0 0 0 22px #2a1103, 
+    0 0 0 24px #0f0601,
+    0 30px 60px 20px rgba(0, 0, 0, 0.6),
+    0 60px 120px 30px rgba(0, 0, 0, 0.9);
 }
 
 @media (min-width: 769px) {
@@ -85,7 +86,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 6px; /* Keeps the map image safely tucked inside the frame */
+  border-radius: 4px; 
 }
 
 .map-base {
@@ -129,7 +130,7 @@
   object-fit: cover;
   z-index: 100;
   pointer-events: none;
-  border-radius: 6px; /* Keeps borders tucked inside the frame */
+  border-radius: 4px;
 }
 
 .vignette {
@@ -139,8 +140,9 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.6);
   z-index: 10;
+  border-radius: 4px;
 }
 
 body.night-mode {
@@ -173,7 +175,7 @@ body.night-mode .vignette {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 105;
+  z-index: 110; 
   pointer-events: none;
 }
 
@@ -230,15 +232,8 @@ body.night-mode .vignette {
 }
 
 @keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translate(-50%, -50%) scale(3);
-    opacity: 0;
-  }
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
 }
 
 .city-tooltip {
