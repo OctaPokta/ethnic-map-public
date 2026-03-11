@@ -17,7 +17,7 @@ window.DashboardData = {
     // 🔥 NEW: Welcome Screen Text
     welcomeTitle: "ברוכים הבאים",
     welcomeDesc: "פרויקט זה פותח על ידי הערוץ <a href='https://t.me/TheSecurityFrontWW3' target='_blank' rel='noopener noreferrer'>\"החזית הביטחונית בטלגרם\"</a> במטרה להנגיש את המורכבות הגיאופוליטית והדמוגרפית של המזרח התיכון בצורה חווייתית ואינטראקטיבית. מוזמנים לחקור, ללחוץ על הערים, ולגלות את הסיפורים של הקהילות השונות החיות במרחב שלנו.",
-    
+
     donationLink: "https://www.buymeacoffee.com/thesecurityfront",
     donationTooltip: "☕אהבתם את המפה?",
 
@@ -25,8 +25,8 @@ window.DashboardData = {
     poweredByBrand: "The Security Front",
     showUnderDevelopment: true,
     underDevelopmentText: "🚧 תחת פיתוח 🚧",
-    versionText: "Beta v0.0.1", 
-    releaseNotesLink: "https://github.com/OctaPokta/ethnic-map-public/releases/tag/v0.0.1-Beta" // 🔥 NEW: Link to release notes
+    versionText: "Beta v1.1.0",
+    releaseNotesLink: "https://github.com/OctaPokta/ethnic-map-public/releases/tag/v1.1.0-Beta" // 🔥 NEW: Link to release notes
   },
 
   // --- 2. BASE IMAGE PATHS ---
