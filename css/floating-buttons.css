@@ -1,0 +1,158 @@
+/* ==========================================
+   🗺️ FLOATING UI: BUTTONS & MINIMAP
+   ========================================== */
+
+.compass-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 40;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.compass-btn svg {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compass-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.compass-btn:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Regional Scan Button */
+#regional-ethnic-btn {
+  position: absolute;
+  top: 6rem;
+  left: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(6, 182, 212, 0.5); 
+  color: #22d3ee; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2000; 
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 15px rgba(6, 182, 212, 0.2);
+  pointer-events: auto;
+}
+
+#regional-ethnic-btn::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent, rgba(6, 182, 212, 0.8), transparent 40%);
+  animation: spinAura 3s linear infinite;
+  z-index: -1;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+#regional-ethnic-btn:hover::before {
+    opacity: 1;
+}
+
+#regional-ethnic-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4), inset 0 0 15px rgba(6, 182, 212, 0.2);
+  border-color: rgba(34, 211, 238, 0.8);
+}
+
+/* Minimap */
+#minimap {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  width: 200px;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#minimap:active { cursor: grabbing; }
+#minimap:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); }
+#minimap img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; transition: filter 0.3s ease; }
+#minimap-rect { position: absolute; border: 2px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4); background: rgba(255, 255, 255, 0.1); pointer-events: none; }
+
+body.night-mode #minimap img {
+  filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9);
+}
+
+/* ==========================================
+   🎨 REGIONAL MAP LEGEND (Desktop Only)
+   ========================================== */
+#regional-legend {
+  position: absolute;
+  bottom: 5.5rem; 
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 40;
+  pointer-events: none; 
+  opacity: 0.75; 
+  transition: opacity 0.3s ease;
+}
+
+.legend-item {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  animation: legendFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.legend-color-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2), 0 0 6px currentColor;
+}
+
+@keyframes legendFadeIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 950px) {
+  #regional-legend {
+    display: none !important;
+  }
+}

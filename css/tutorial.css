@@ -1,0 +1,172 @@
+/* ==========================================
+   📖 WELCOME SCREEN TUTORIAL
+   ========================================== */
+
+#welcome-tutorial-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999998 !important; /* Forces it over the 3D background */
+  transition: all 0.3s ease;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  pointer-events: auto; 
+}
+
+#welcome-tutorial-btn:hover {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+  border-color: #fbbf24;
+}
+
+#welcome-tutorial-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+#welcome-tutorial-modal {
+  position: absolute;
+  top: 50%;
+  
+  /* 🔥 FIXED: Desktop Anchor - Snaps to the Right Side */
+  right: 2rem;
+  left: auto;
+  transform: translateY(-50%) scale(0.9);
+  transform-origin: right center;
+  
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none; 
+  z-index: 999999 !important; 
+  width: 90%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(25px);
+  box-shadow: -10px 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(251, 191, 36, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+#welcome-tutorial-modal.active {
+  /* 🔥 FIXED: Triggers the active Right-Side animation */
+  transform: translateY(-50%) scale(1) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important; 
+}
+
+#welcome-tutorial-modal .close-info-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  margin: 0;
+}
+
+.tutorial-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.tutorial-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tutorial-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.tutorial-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.tutorial-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tutorial-text strong {
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+.tutorial-text span {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+#got-it-btn {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.2));
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  color: #fbbf24;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+#got-it-btn:hover {
+  background: rgba(251, 191, 36, 0.3);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+/* 🔥 MOBILE OVERRIDE: Forces it perfectly into the center of the phone screen */
+@media (max-width: 950px) {
+  #welcome-tutorial-btn {
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 44px;
+      height: 44px;
+  }
+  
+  #welcome-tutorial-modal {
+      top: 50%;
+      left: 50%;
+      right: auto;
+      transform: translate(-50%, -50%) scale(0.9);
+      transform-origin: center center;
+      padding: 1.5rem;
+      width: 92%;
+  }
+  
+  #welcome-tutorial-modal.active {
+      transform: translate(-50%, -50%) scale(1) !important;
+  }
+}

@@ -14,16 +14,14 @@ Object.assign(window.UI, {
         let toCheck = [];
         let ethnicDataObj = null;
 
-        // Gather all countries that have this ethnicity
         Object.keys(this.demographicData).forEach(country => {
             const ethnicData = this.demographicData[country].find(d => d.name === ethnicName);
             if (ethnicData) toCheck.push({ country, data: ethnicData });
         });
 
-        // Strict Limit perfectly synced with CSS media query (950px)
         const isMobile = window.matchMedia("(max-width: 950px)").matches;
         if (isMobile && toCheck.length > 5) {
-            toCheck = toCheck.slice(0, 5); // Cap to 5 nations
+            toCheck = toCheck.slice(0, 5); 
             this.showMobileToast(`מציג 5 מדינות בלבד (מגבלת טלפון). לחוויה מלאה, השתמשו במחשב.`);
         }
 
@@ -34,7 +32,7 @@ Object.assign(window.UI, {
                 if (!ethnicDataObj) ethnicDataObj = item.data;
             });
 
-            this.updateLimitUI(); // Refresh grayed-out menus
+            this.updateLimitUI(); 
             MapEngine.resetView();
             SoundEngine.play('swoosh');
             this.updateCityVisibility();
@@ -56,7 +54,6 @@ Object.assign(window.UI, {
                 dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
 
                 if (!isMobile) {
-                    // 🔥 REVERTED: Back to original central staggered positions
                     const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
                     dossier.style.top = `calc(50% + ${offset}px)`;
                     dossier.style.left = `calc(50% + ${offset}px)`;
@@ -100,10 +97,8 @@ Object.assign(window.UI, {
         const isMobile = window.matchMedia("(max-width: 950px)").matches;
         
         if (isMobile) {
-            // Mobile stays single-view to protect memory
             document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
         } else {
-            // PC allows multiple! Just bring an existing one to the front if clicked twice.
             const existing = document.getElementById(`regional-dossier-${ethObj.id}`);
             if (existing) {
                 this.bringToFront(existing);
@@ -116,11 +111,10 @@ Object.assign(window.UI, {
         dossier.className = 'glass-panel dossier-panel dynamic-dossier regional-dossier active';
 
         if (!isMobile) {
-            // 🔥 REVERTED: Back to original central staggered positions
             const dossierCount = document.querySelectorAll('.regional-dossier').length;
             const offset = (dossierCount * 35) % 210; 
             dossier.style.top = `calc(50% + ${offset}px)`;
-            dossier.style.left = `calc(65% + ${offset}px)`; 
+            dossier.style.left = `calc(50% + ${offset}px)`; 
             dossier.style.transform = 'translate(-50%, -50%)';
         }
 

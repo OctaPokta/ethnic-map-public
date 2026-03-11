@@ -2,13 +2,29 @@
 // 💻 UI CORE STATE & DATA INJECTION
 // ==========================================
 
+window.toggleTutorial = (show, event) => {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    const modal = document.getElementById('welcome-tutorial-modal');
+    if (modal) {
+        if (show) {
+            modal.classList.add('active');
+            if (window.SoundEngine) window.SoundEngine.play('tick');
+        } else {
+            modal.classList.remove('active');
+            if (window.SoundEngine) window.SoundEngine.play('tick');
+        }
+    }
+};
+
 window.toggleRegionalModal = () => {
     const modal = document.getElementById('regional-ethnic-modal');
     if (modal) {
         if (!modal.classList.contains('active')) {
             if (window.SoundEngine) window.SoundEngine.play('swoosh');
             
-            // Mobile Interference Shield: Hide sidebar if opening Regional Menu
             if (window.matchMedia("(max-width: 950px)").matches) {
                 const sidebar = document.querySelector('.sidebar');
                 if (sidebar && !sidebar.classList.contains('collapsed')) {
@@ -37,18 +53,29 @@ window.UI = {
   DEBUG_MODE: false,
   countryViews: {}, demographicData: {}, countryNamesHebrew: {},
   windowZIndex: 2500, 
+  
+  // 🔥 NEW: Color Mapping for the Legend
+  regionalColors: {
+    arabs: '#22c55e', kurds: '#eab308', persians: '#2dd4bf', 
+    turks: '#15803d', azeris: '#dc2626', armenians: '#3b82f6', 
+    jews: '#2563eb', druze: '#a855f7', maronites: '#9f1239', 
+    lurs: '#4338ca', baloch: '#92400e', turkmens: '#84cc16', 
+    bedouins: '#d97706'
+  },
 
   cachedVisibleLayers: [],
   cachedCheckboxes: [],
   domUpdateScheduled: false,
 
   init() {
-    this.buildDebugPanel();
+    console.log("🟢 Booting Master UI Engine...");
+    if(typeof this.buildDebugPanel === 'function') this.buildDebugPanel();
     this.injectData();
     this.setupLoadingScreen();
     this.setupEventListeners();
-    this.setupPerformanceMonitor();
+    if(typeof this.setupPerformanceMonitor === 'function') this.setupPerformanceMonitor();
     this.setupVisibilityHandler();
+    console.log("✅ Master UI Engine Loaded Successfully!");
   },
 
   updateLayerVisibility(country, visible) {
@@ -241,7 +268,6 @@ window.UI = {
         dossier.className = 'glass-panel dossier-panel dynamic-dossier active';
 
         if (!isMobile) {
-          // 🔥 REVERTED: Back to original central staggered positions
           const offset = (document.querySelectorAll('.dynamic-dossier').length * 30) % 150;
           dossier.style.top = `calc(50% + ${offset}px)`;
           dossier.style.left = `calc(50% + ${offset}px)`;
@@ -334,6 +360,7 @@ window.UI = {
                     }
                 } else {
                     if (isActive) {
+                        // Desktop Map Layer Deactivation
                         btn.classList.remove('active');
                         
                         const layer = container.querySelector(`img[data-regional-id="${eth.id}"]`);
@@ -345,10 +372,15 @@ window.UI = {
                         const dossier = document.getElementById(`regional-dossier-${eth.id}`);
                         if (dossier) dossier.remove();
                         
+                        // 🔥 REMOVE SPECIFIC LEGEND
+                        const legend = document.getElementById(`legend-${eth.id}`);
+                        if (legend) legend.remove();
+                        
                         if (document.querySelectorAll('.regional-grid-item.active').length === 0) {
                             clearRegionalBtn.style.display = 'none';
                         }
                     } else {
+                        // Desktop Map Layer Activation
                         btn.classList.add('active');
                         
                         const img = document.createElement('img');
@@ -362,6 +394,18 @@ window.UI = {
                         img.classList.add('visible');
                         
                         clearRegionalBtn.style.display = 'block';
+                        
+                        // 🔥 APPEND LEGEND ITEM
+                        const legendContainer = document.getElementById('regional-legend');
+                        if (legendContainer && !document.getElementById(`legend-${eth.id}`)) {
+                            const item = document.createElement('div');
+                            item.id = `legend-${eth.id}`;
+                            item.className = 'legend-item';
+                            const color = window.UI.regionalColors[eth.id] || '#ffffff';
+                            // Adds the glowing colored box matching the map
+                            item.innerHTML = `<div class="legend-color-box" style="background-color: ${color}; color: ${color};"></div><span>${eth.name}</span>`;
+                            legendContainer.appendChild(item);
+                        }
                         
                         if (typeof this.showRegionalDossier === 'function') {
                             this.showRegionalDossier(eth);
@@ -385,6 +429,11 @@ window.UI = {
             });
             
             document.querySelectorAll('.regional-dossier').forEach(el => el.remove());
+            
+            // 🔥 CLEAR ALL LEGENDS
+            const legendContainer = document.getElementById('regional-legend');
+            if (legendContainer) legendContainer.innerHTML = '';
+            
             clearRegionalBtn.style.display = 'none';
         });
     }

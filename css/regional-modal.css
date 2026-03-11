@@ -1,0 +1,143 @@
+/* ==========================================
+   🌍 REGIONAL ETHNICITY MODAL & DOSSIERS
+   ========================================== */
+
+#regional-ethnic-modal {
+  position: fixed; 
+  top: 50%;
+  left: 2rem;
+  transform: translateY(-50%) translateX(-150%); 
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 99999;
+  width: 90%;
+  max-width: 380px; 
+  border-radius: 16px;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(6, 182, 212, 0.3);
+  transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+#regional-ethnic-modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100px;
+  background: radial-gradient(ellipse at top, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 16px 16px 0 0;
+}
+
+#regional-ethnic-modal.active {
+  transform: translateY(-50%) translateX(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Regional Dossier Custom Theming */
+.regional-dossier {
+  box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(6, 182, 212, 0.4) !important;
+}
+
+.regional-dossier::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 120px;
+  background: radial-gradient(ellipse at top, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 24px 24px 0 0;
+}
+
+#close-ethnic-modal-mobile { display: none; }
+
+.regional-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+
+#close-ethnic-modal-desktop {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+.regional-modal-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.regional-modal-desc {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-bottom: 1.2rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+
+.regional-ethnic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  max-height: 45vh;
+  overflow-y: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 2px;
+  padding-right: 6px; 
+  position: relative;
+  z-index: 2;
+}
+
+.regional-ethnic-grid::-webkit-scrollbar { width: 6px; }
+.regional-ethnic-grid::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.3); border-radius: 10px; }
+
+.regional-grid-item {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.regional-grid-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.regional-grid-item.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(14, 165, 233, 0.25));
+  border-color: #22d3ee;
+  color: #22d3ee;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.1);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
