@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="color-scheme" content="light dark">
-  
+
   <title>מפה אתנית - המזרח התיכון</title>
-  
+
   <link rel="icon" type="image/png" href="images/logo.png">
 
   <meta property="og:title" content="מפה אתנית - המזרח התיכון">
@@ -17,40 +18,42 @@
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="מפה אתנית - המזרח התיכון">
-  <meta name="twitter:description" content="מפה אתנית אינטראקטיבית המציגה את ההרכב הדמוגרפי והעדות השונות במזרח התיכון.">
+  <meta name="twitter:description"
+    content="מפה אתנית אינטראקטיבית המציגה את ההרכב הדמוגרפי והעדות השונות במזרח התיכון.">
   <meta name="twitter:image" content="https://the-security-front.online/images/social-preview.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="preload" as="image" href="images/Background.webp">
   <link rel="preload" as="image" href="images/Borders.webp">
-  
+
   <link rel="stylesheet" href="css/core/base.css">
   <link rel="stylesheet" href="css/core/ui-components.css">
-  
+
   <link rel="stylesheet" href="css/screens/map.css">
   <link rel="stylesheet" href="css/screens/welcome.css">
   <link rel="stylesheet" href="css/screens/tutorial.css">
-  
+
   <link rel="stylesheet" href="css/components/sidebar.css">
   <link rel="stylesheet" href="css/components/panels.css">
   <link rel="stylesheet" href="css/components/regional-modal.css">
   <link rel="stylesheet" href="css/components/floating-buttons.css">
   <link rel="stylesheet" href="css/components/badges-donation.css">
   <link rel="stylesheet" href="css/components/contact.css">
-  
+
   <link rel="stylesheet" href="css/core/mobile.css">
-  
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-39E16DGBMF"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-39E16DGBMF');
   </script>
 </head>
+
 <body>
 
   <div id="loading-screen">
@@ -71,8 +74,10 @@
       </div>
     </div>
 
-    <button id="welcome-tutorial-btn" class="glass-panel" title="איך להשתמש במפה?" onclick="window.toggleTutorial(true, event)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button id="welcome-tutorial-btn" class="glass-panel" title="איך להשתמש במפה?"
+      onclick="window.toggleTutorial(true, event)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -80,70 +85,88 @@
     </button>
 
     <button id="welcome-contact-btn" class="glass-panel" title="צור קשר" onclick="window.toggleContact(true, event)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" style="width: 22px; height: 22px;">
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
         <polyline points="22,6 12,13 2,6"></polyline>
       </svg>
     </button>
 
     <div id="welcome-contact-modal" class="glass-panel">
-      <button id="close-contact-btn" class="close-info-btn" onclick="window.toggleContact(false, event)">&times;</button>
-      <h2 class="tutorial-title">✉️ צור קשר</h2>
+      <button id="close-contact-btn" class="close-info-btn"
+        onclick="window.toggleContact(false, event)">&times;</button>
+      <h2 class="tutorial-title">✉️ צרו קשר</h2>
       <p class="contact-desc">יש לכם הצעות לשיפור, הערות או בקשות שיתוף פעולה? נשמח לשמוע מכם!</p>
-      
+
       <form id="contact-form" action="https://formspree.io/f/xvzwarjz" method="POST" class="contact-form">
         <input type="text" name="name" placeholder="שם מלא" required class="contact-input">
         <input type="email" name="email" placeholder="אימייל לחזרה" required class="contact-input">
-        <textarea name="message" placeholder="ההודעה שלכם..." required class="contact-input contact-textarea"></textarea>
+        <textarea name="message" placeholder="ההודעה שלכם..." required
+          class="contact-input contact-textarea"></textarea>
         <button type="submit" id="submit-contact-btn">שלח הודעה</button>
       </form>
 
       <div id="contact-success" class="contact-success-msg hidden-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:48px;height:48px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" style="width:48px;height:48px;">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
         <span>הודעתך נשלחה בהצלחה!<br>תודה רבה.</span>
       </div>
     </div>
 
     <div id="welcome-tutorial-modal" class="glass-panel">
-      <button id="close-tutorial-btn" class="close-info-btn" onclick="window.toggleTutorial(false, event)">&times;</button>
+      <button id="close-tutorial-btn" class="close-info-btn"
+        onclick="window.toggleTutorial(false, event)">&times;</button>
       <h2 class="tutorial-title">🌍 מדריך למשתמש</h2>
       <div class="tutorial-content">
         <div class="tutorial-step">
-            <div class="tutorial-icon">🖱️</div>
-            <div class="tutorial-text">
-                <strong>ניווט במפה</strong>
-                <span>גררו כדי לזוז ברחבי המזרח התיכון, וגללו כדי להתקרב ולהתרחק.</span>
-            </div>
+          <div class="tutorial-icon">🖱️</div>
+          <div class="tutorial-text">
+            <strong>ניווט במפה</strong>
+            <span>גררו כדי לזוז ברחבי המזרח התיכון, וגללו כדי להתקרב ולהתרחק.</span>
+          </div>
         </div>
         <div class="tutorial-step">
-            <div class="tutorial-icon">🏳️</div>
-            <div class="tutorial-text">
-                <strong>שכבות לאומיות</strong>
-                <span>בחרו מדינה מהתפריט הצדדי כדי לראות את ההרכב האתני המלא שלה על המפה.</span>
-            </div>
+          <div class="tutorial-icon">🏳️</div>
+          <div class="tutorial-text">
+            <strong>שכבות לאומיות</strong>
+            <span>בחרו מדינה מהתפריט הצדדי כדי לראות את ההרכב האתני המלא שלה על המפה.</span>
+          </div>
         </div>
         <div class="tutorial-step">
-            <div class="tutorial-icon">📊</div>
-            <div class="tutorial-text">
-                <strong>נתונים ודמוגרפיה</strong>
-                <span>לחצו על כפתור המידע (i) ליד כל מדינה כדי לקרוא בהרחבה על הקבוצות השונות.</span>
-            </div>
+          <div class="tutorial-icon">📊</div>
+          <div class="tutorial-text">
+            <strong>נתונים ודמוגרפיה</strong>
+            <span>לחצו על כפתור המידע (i) ליד כל מדינה כדי לקרוא בהרחבה על הקבוצות השונות.</span>
+          </div>
         </div>
         <div class="tutorial-step">
-            <div class="tutorial-icon">
-                <svg style="width:1.4rem; height:1.4rem; color:#22d3ee;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2"/><path d="M8.5 22c.2-.7.4-1.4.5-2"/><path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4"/><path d="M14 13c0 2.5 0 6.5-1 9"/><path d="M17.5 21c.1-.6.4-2.3.5-3"/><path d="M22 16c.2-2 .1-5.5 0-6"/><path d="M9 7A6 6 0 0 1 18 12v2"/></svg>
-            </div>
-            <div class="tutorial-text">
-                <strong>סורק אזורי</strong>
-                <span>לחצו על סמל טביעת האצבע במפה כדי לראות תפוצה אתנית חוצת-גבולות ברחבי המזרח התיכון.</span>
-            </div>
+          <div class="tutorial-icon">
+            <svg style="width:1.4rem; height:1.4rem; color:#22d3ee;" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4" />
+              <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2" />
+              <path d="M8.5 22c.2-.7.4-1.4.5-2" />
+              <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4" />
+              <path d="M14 13c0 2.5 0 6.5-1 9" />
+              <path d="M17.5 21c.1-.6.4-2.3.5-3" />
+              <path d="M22 16c.2-2 .1-5.5 0-6" />
+              <path d="M9 7A6 6 0 0 1 18 12v2" />
+            </svg>
+          </div>
+          <div class="tutorial-text">
+            <strong>סורק אזורי</strong>
+            <span>לחצו על סמל טביעת האצבע במפה כדי לראות תפוצה אתנית חוצת-גבולות ברחבי המזרח התיכון.</span>
+          </div>
         </div>
       </div>
       <button id="got-it-btn" onclick="window.toggleTutorial(false, event)">הבנתי, בואו נתחיל!</button>
     </div>
 
     <img id="loading-logo" alt="Logo" class="loading-logo">
-    
+
     <div class="welcome-text-container">
       <h2 id="welcome-title"></h2>
       <p id="welcome-desc"></p>
@@ -152,12 +175,15 @@
     <div class="loading-bar-container" id="loading-bar-container">
       <div class="loading-bar-fill" id="loading-bar-fill"></div>
     </div>
-    <div id="loading-percentage" style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">0%</div>
+    <div id="loading-percentage"
+      style="color: #94a3b8; font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 12px; letter-spacing: 1px; transition: opacity 0.4s ease;">
+      0%</div>
     <button id="enter-map-btn" class="enter-map-btn hidden">היכנס למפה</button>
-    
+
     <div class="powered-by-badge loading-powered-by" dir="ltr">
-      <span id="powered-by-prefix-loading">Powered by</span> 
-      <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" class="brand-link">THE SECURITY FRONT</a>
+      <span id="powered-by-prefix-loading">Powered by</span>
+      <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" class="brand-link">THE
+        SECURITY FRONT</a>
     </div>
   </div>
 
@@ -171,13 +197,13 @@
 
       <div class="map-container">
         <div id="map-viewport">
-          <div id="map-content">       
+          <div id="map-content">
             <div id="map-wrapper">
               <img draggable="false" id="base-map-img" class="map-layer map-base">
               <div id="dynamic-ethnic-layers"></div>
-              
+
               <div id="regional-layers-container"></div>
-              
+
               <div id="dynamic-label-layers"></div>
               <img id="borders-img" class="map-border" src="images/Borders.webp" draggable="false">
               <div id="city-pins"></div>
@@ -187,27 +213,31 @@
         </div>
 
         <button id="compass-btn" class="glass-panel compass-btn" title="אפס תצוגה">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
           </svg>
         </button>
 
-        <button id="regional-ethnic-btn" class="glass-panel" title="תפוצה אתנית אזורית" onclick="window.toggleRegionalModal(); event.stopPropagation();">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/>
-            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2"/>
-            <path d="M8.5 22c.2-.7.4-1.4.5-2"/>
-            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4"/>
-            <path d="M14 13c0 2.5 0 6.5-1 9"/>
-            <path d="M17.5 21c.1-.6.4-2.3.5-3"/>
-            <path d="M22 16c.2-2 .1-5.5 0-6"/>
-            <path d="M9 7A6 6 0 0 1 18 12v2"/>
+        <button id="regional-ethnic-btn" class="glass-panel" title="תפוצה אתנית אזורית"
+          onclick="window.toggleRegionalModal(); event.stopPropagation();">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4" />
+            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2" />
+            <path d="M8.5 22c.2-.7.4-1.4.5-2" />
+            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4" />
+            <path d="M14 13c0 2.5 0 6.5-1 9" />
+            <path d="M17.5 21c.1-.6.4-2.3.5-3" />
+            <path d="M22 16c.2-2 .1-5.5 0-6" />
+            <path d="M9 7A6 6 0 0 1 18 12v2" />
           </svg>
         </button>
 
         <a id="home-btn" class="glass-panel desktop-only" title="חזור למסך הפתיחה" href=".">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
@@ -223,12 +253,18 @@
 
         <a id="donation-btn" class="donation-btn" target="_blank" rel="noopener noreferrer">
           <svg class="coffee-svg" viewBox="0 0 512 512" fill="currentColor">
-            <path d="M400 192H160a16 16 0 0 0 -16 16v192a64.07 64.07 0 0 0 64 64h128a64.07 64.07 0 0 0 64-64V208A16 16 0 0 0 400 192zm-32 192a32 32 0 0 1 -32 32H192a32 32 0 0 1 -32-32V240h176z"/>
-            <path d="M112 192H96a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 112 192z"/>
-            <path d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z"/>
-            <path class="aroma-path-1" d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
-            <path class="aroma-path-2" d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
-            <path class="aroma-path-3" d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z"/>
+            <path
+              d="M400 192H160a16 16 0 0 0 -16 16v192a64.07 64.07 0 0 0 64 64h128a64.07 64.07 0 0 0 64-64V208A16 16 0 0 0 400 192zm-32 192a32 32 0 0 1 -32 32H192a32 32 0 0 1 -32-32V240h176z" />
+            <path
+              d="M112 192H96a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 112 192z" />
+            <path
+              d="M432 192H416a16 16 0 0 0 -16 16v160a16 16 0 0 0 16 16h16a16 16 0 0 0 16-16V208A16 16 0 0 0 432 192z" />
+            <path class="aroma-path-1"
+              d="M192.3 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7S203.3 40.6 192.3 40.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
+            <path class="aroma-path-2"
+              d="M256 160c11 0 19.7-8.8 19.7-19.7S267 120.6 256 120.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zM256 96c11 0 19.7-8.8 19.7-19.7S267 56.6 256 56.6s-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
+            <path class="aroma-path-3"
+              d="M319.7 144c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7zm0-64c11 0 19.7-8.8 19.7-19.7s-8.8-19.7-19.7-19.7 8.8-19.7 19.7 8.8 19.7 19.7 19.7z" />
           </svg>
           <div class="donation-callout-card" id="donation-callout">
             <div class="callout-title"><span id="callout-title-text"></span></div>
@@ -239,8 +275,9 @@
         <div id="regional-legend" class="regional-legend"></div>
 
         <div id="powered-by-badge" class="glass-panel powered-by-badge" dir="ltr">
-          <span id="powered-by-prefix"></span> 
-          <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" id="powered-by-brand" class="brand-link"></a>
+          <span id="powered-by-prefix"></span>
+          <a href="https://t.me/TheSecurityFrontWW3" target="_blank" rel="noopener noreferrer" id="powered-by-brand"
+            class="brand-link"></a>
         </div>
 
         <div id="minimap" class="glass-panel">
@@ -249,7 +286,7 @@
         </div>
       </div>
     </main>
-    
+
     <aside class="sidebar glass-panel">
       <button type="button" id="toggle-sidebar-btn" class="toggle-sidebar-btn">
         <span class="arrow-icon"></span>
@@ -279,7 +316,7 @@
         <div class="sidebar-actions">
           <button type="button" id="clear-map-btn" class="action-btn clear-map-btn"></button>
         </div>
-      </div> 
+      </div>
     </aside>
 
     <aside class="info-panel glass-panel" id="info-panel">
@@ -289,32 +326,40 @@
 
     <div id="regional-ethnic-modal">
       <button id="close-ethnic-modal-mobile" onclick="window.closeRegionalModal();">
-         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg> 
-         חזור למפה
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 14 4 9 9 4"></polyline>
+          <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+        </svg>
+        חזור למפה
       </button>
 
       <div class="regional-modal-header">
         <div class="regional-modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
-            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/>
-            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2"/>
-            <path d="M8.5 22c.2-.7.4-1.4.5-2"/>
-            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4"/>
-            <path d="M14 13c0 2.5 0 6.5-1 9"/>
-            <path d="M17.5 21c.1-.6.4-2.3.5-3"/>
-            <path d="M22 16c.2-2 .1-5.5 0-6"/>
-            <path d="M9 7A6 6 0 0 1 18 12v2"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" style="width: 24px; height: 24px;">
+            <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4" />
+            <path d="M5 19.5C5.5 18 6 15 6 12c0-3.3 2.7-6 6-6s6 2.7 6 6c0 .7-.1 1.4-.3 2" />
+            <path d="M8.5 22c.2-.7.4-1.4.5-2" />
+            <path d="M12 10a2 2 0 0 0-2 2c0 1 .1 2.5.3 4" />
+            <path d="M14 13c0 2.5 0 6.5-1 9" />
+            <path d="M17.5 21c.1-.6.4-2.3.5-3" />
+            <path d="M22 16c.2-2 .1-5.5 0-6" />
+            <path d="M9 7A6 6 0 0 1 18 12v2" />
           </svg>
           תפוצה אזורית
         </div>
-        <button id="close-ethnic-modal-desktop" class="close-info-btn" onclick="window.closeRegionalModal();">&times;</button>
+        <button id="close-ethnic-modal-desktop" class="close-info-btn"
+          onclick="window.closeRegionalModal();">&times;</button>
       </div>
-      
+
       <p class="regional-modal-desc">בחר קבוצה אתנית כדי לראות את פריסתה הגיאוגרפית המלאה על פני מפת המזרח התיכון.</p>
-      
+
       <div class="regional-ethnic-grid" id="regional-ethnic-grid"></div>
-      
-      <button id="clear-regional-btn" class="action-btn clear-map-btn" style="margin-top: 1.5rem; display: none; color: #22d3ee; border-color: rgba(34, 211, 238, 0.3);">נקה שכבת תפוצה</button>
+
+      <button id="clear-regional-btn" class="action-btn clear-map-btn"
+        style="margin-top: 1.5rem; display: none; color: #22d3ee; border-color: rgba(34, 211, 238, 0.3);">נקה שכבת
+        תפוצה</button>
     </div>
 
   </div>
@@ -322,7 +367,7 @@
   <script src="js/data/data-config.js?v=9"></script>
   <script src="js/data/data-countries.js?v=9"></script>
   <script src="js/data/data-cities.js?v=9"></script>
-  
+
   <script src="js/core/audio.js?v=9"></script>
   <script src="js/core/map.js?v=9"></script>
 
@@ -332,7 +377,8 @@
   <script src="js/ui/ui-welcome.js?v=9"></script>
   <script src="js/ui/ui-utils.js?v=9"></script>
   <script src="js/ui/ui-panels.js?v=9"></script>
-  
+
   <script src="js/core/app.js?v=9"></script>
 </body>
+
 </html>
