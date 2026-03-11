@@ -166,7 +166,7 @@
 .regional-modal-desc {
   font-size: 0.95rem;
   color: #cbd5e1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem; /* Adjusted slightly to offset the new top padding on the grid */
   line-height: 1.6;
   position: relative;
   z-index: 2;
@@ -178,7 +178,13 @@
   gap: 10px;
   max-height: 45vh;
   overflow-y: auto;
-  padding-right: 6px;
+  
+  /* 🔥 FIXED: Added interior padding so the active button's upward transform and glow don't clip against the scroll box ceiling */
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 2px;
+  padding-right: 6px; 
+  
   position: relative;
   z-index: 2;
 }
@@ -239,11 +245,6 @@
 #minimap:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); }
 #minimap img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; transition: filter 0.3s ease; }
 #minimap-rect { position: absolute; border: 2px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4); background: rgba(255, 255, 255, 0.1); pointer-events: none; }
-
-/* 🔥 FIXED: Seamless Night Mode for the Minimap Image! */
-body.night-mode #minimap img {
-  filter: invert(0.9) hue-rotate(180deg) saturate(0.6) brightness(0.9);
-}
 
 /* ==========================================
    DONATION BUTTON & BADGES
