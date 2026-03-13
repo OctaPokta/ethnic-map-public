@@ -303,8 +303,8 @@ window.DashboardData.countries = {
     bahrain: {
       hebrewName: "בחריין 🇧🇭",
       view: { scale: 8.00, x: -6249, y: -4138 },
-      ethnicImage: "images/countries-ethnic/ethnic-bahrain.webp", 
-      labelImage: "images/countries-labels/labels-bahrain.webp",
+      ethnicImage: "images/countries-ethnic/ethnic-bahrain.png", 
+      labelImage: "images/countries-labels/labels-bahrain.png",
       demographics: [
         { 
             name: "כוח עבודה מדרום אסיה", 
