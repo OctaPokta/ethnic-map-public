@@ -49,7 +49,7 @@ window.DashboardData.countries = {
             name: "פיליפינים ודרום-מזרח אסיה", 
             percent: 4, 
             color: "#a855f7", // Purple
-            image: "images/ethnicities/filipinos.webp",
+            image: "images/ethnicities/bahrain_filipinos.webp",
             desc: "עובדי שירותים, קמעונאות, סיעוד ואירוח, המהווים קהילה חשובה ומשמעותית בכלכלה המקומית המודרנית.",
             language: "טגלוג, אנגלית", 
             religion: "נצרות קתולית" 
@@ -99,7 +99,7 @@ window.DashboardData.countries = {
             religion: "אסלאם סוני, נצרות" 
         },
         { 
-            name: "פיליפינים ודרום-מזרח אסיה", 
+            name: "פיליפינים ואינדונזים", 
             percent: 8, 
             color: "#3b82f6", // Blue
             image: "images/ethnicities/filipinos-qatar.webp",
@@ -125,7 +125,7 @@ window.DashboardData.countries = {
       labelImage: "images/countries-labels/labels-uae.webp", // Change to null if labels are baked into the ethnicImage
       demographics: [
         { 
-            name: "מהגרי עבודה דרום אסייתים", 
+            name: "פועלים דרום אסייתים", 
             percent: 59, 
             color: "#828282", 
             image: "images/ethnicities/south_asians.webp",
@@ -161,7 +161,7 @@ window.DashboardData.countries = {
             religion: "אסלאם, נצרות" 
         },
         { 
-            name: "פיליפינים ודרום-מזרח אסיה", 
+            name: "עובדים פיליפינים ודרום-מזרח אסיתיים", 
             percent: 6, 
             color: "#3b82f6", 
             image: "images/ethnicities/filipinos.webp",
@@ -219,8 +219,76 @@ window.DashboardData.countries = {
         ethnicImage: "images/countries-ethnic/ethnic-SaudiArabia.webp",
         labelImage: "images/countries-labels/labels-SaudiArabia.webp",
         demographics: [
-            { name: "ערבים סעודים", percent: 58.4, color: "#22c55e", image: "images/ethnicities/saudis.webp", desc: "אזרחי הממלכה הילידים. כפי שמשתקף במפה, רובם המכריע הם ערבים מוסלמים סונים (לצד מיעוט שיעי במזרח המדינה). החברה הסעודית משלבת מסורת שבטית עמוקה עם פיתוח עירוני וטכנולוגי מואץ.", language: "ערבית", religion: "אסלאם סוני (והאבי)" },
-            { name: "לא-סעודים (עובדים זרים)", percent: 41.6, color: "#64748b", image: "images/ethnicities/others.webp", desc: "כוח אדם זר עצום המניע את כלכלת הממלכה, ומהווה כמעט מחצית מהאוכלוסייה. רובם מהגרים ממדינות דרום אסיה (כגון הודו, פקיסטן ובנגלדש) וממדינות ערב השכנות. קהילות אלו מתרכזות בעיקר במרכזים העירוניים.", language: "מגוון (הינדי, אורדו, טגאלוג ועוד)", religion: "אסלאם / הינדואיזם / נצרות" }
+            { 
+                id: "saudi_sunnis",
+                name: "סעודים סונים (עירוניים ושבטיים)", 
+                percent: 46, 
+                color: "#22c55e", // Green
+                image: "images/ethnicities/saudis.webp", 
+                desc: "האוכלוסייה הילידית המרכזית, המרוכזת באזורי נג'ד (ריאד) וחג'אז (מכה ומדינה). החברה עברה עיור מואץ, אך שומרת על מבנה שבטי עמוק ומהווה את הבסיס לשלטון ולזהות הלאומית.", 
+                language: "ערבית (ניב נג'די וחג'אזי)", 
+                religion: "אסלאם סוני (ווהאבי/סלפי)" 
+            },
+            { 
+                id: "saudi_expats_south_asia",
+                name: "מהגרי עבודה מדרום אסיה", 
+                percent: 20, 
+                color: "#828282", // Gray
+                image: "images/ethnicities/saudi_expats_south_asia.webp", 
+                desc: "כוח העבודה הזר הגדול בממלכה (בעיקר הודים, פקיסטנים ובנגלדשים). הם מניעים את תעשיות הבנייה, התשתיות, והשירותים, אך משולבים גם במגזרי הטכנולוגיה וההנדסה.", 
+                language: "הינדי, אורדו, בנגלית, אנגלית", 
+                religion: "אסלאם, הינדואיזם" 
+            },
+            { 
+                id: "saudi_expats_arab",
+                name: "מהגרים ערבים ממדינות אחרות", 
+                percent: 13.6, 
+                color: "#10b981", // Emerald Green
+                image: "images/ethnicities/saudi_expats_arab.webp", 
+                desc: "מיליוני מהגרים (בעיקר ממצרים, תימן, סוריה וסודאן) המהווים נדבך קריטי במערכות החינוך, הבריאות והמסחר הסעודיות. לרוב חולקים קרבה תרבותית ודתית לאוכלוסייה המקומית.", 
+                language: "ערבית", 
+                religion: "אסלאם סוני (ברובו)" 
+            },
+            { 
+                id: "saudi_shia",
+                name: "סעודים שיעים", 
+                percent: 7, 
+                color: "#3b82f6", // Blue (Matches Bahrain/Iran Shia representation)
+                image: "images/ethnicities/saudi_shia.webp", 
+                desc: "מיעוט ילידי משמעותי המרוכז במחוז המזרחי העשיר בנפט (קטיף, אל-אחסא) ובדרום המדינה (נג'ראן). היסטורית סבלו מהדרה, אך כיום עוברים תהליכי השתלבות הדרגתיים במסגרת רפורמות 2030.", 
+                language: "ערבית (ניב מפרצי/בחרני)", 
+                religion: "אסלאם שיעי (תריסרי ואיסמאעילי)" 
+            },
+            { 
+                id: "saudi_bedouins",
+                name: "בדואים (נוודים ונוודים למחצה)", 
+                percent: 5.4, 
+                color: "#d97706", // Desert Gold (Matches UAE/Qatar Bedouins)
+                image: "images/ethnicities/saudi_bedouins.webp", 
+                desc: "שבטי המדבר המקוריים החולשים על מרחבי 'הרבע הריק' (רובע אל-ח'אלי) והמדבריות הצפוניים. למרות שרבים מהם עברו ליישובי קבע, הם משמרים תרבות עצמאית וזהות ייחודית שחוצה גבולות לאמירויות ולקטאר.", 
+                language: "ערבית (ניב בדואי)", 
+                religion: "אסלאם סוני" 
+            },
+            { 
+                id: "saudi_expats_se_asia",
+                name: "מהגרים פיליפינים ודרום-מזרח אסיה", 
+                percent: 5, 
+                color: "#a855f7", // Purple
+                image: "images/ethnicities/saudi_expats_se_asia.webp", 
+                desc: "קהילת מהגרים גדולה המועסקת ברובה במערכת הבריאות (אחים ואחיות), בתעשיית האירוח ובשירותים ביתיים.", 
+                language: "טגלוג, אינדונזית, אנגלית", 
+                religion: "נצרות קתולית, אסלאם" 
+            },
+            { 
+                id: "saudi_westerners",
+                name: "עובדים מערביים ואחרים", 
+                percent: 3, 
+                color: "#f59e0b", // Amber
+                image: "images/ethnicities/saudi_westerners.webp", 
+                desc: "מומחים ואנשי מקצוע מצפון אמריקה, אירופה ואוסטרליה. עובדים לרוב במתחמים סגורים (Compounds) ומועסקים בתעשיות האסטרטגיות: נפט (עראמקו), הגנה, ופיננסים.", 
+                language: "אנגלית", 
+                religion: "נצרות, חילונים" 
+            }
         ]
     },
     Iraq: {

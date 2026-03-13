@@ -58,7 +58,7 @@ window.closeRegionalModal = () => {
 };
 
 window.UI = {
-    DEBUG_MODE: true,
+    DEBUG_MODE: false,
     countryViews: {}, demographicData: {}, countryNamesHebrew: {},
     windowZIndex: 2500,
 
