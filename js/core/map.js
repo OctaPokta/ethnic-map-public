@@ -216,7 +216,7 @@ const MapEngine = {
         const mx = e.clientX - rect.left; 
         const my = e.clientY - rect.top;
         
-        const nextScale = Math.min(8, Math.max(1, this.scale + (e.deltaY > 0 ? -0.4 : 0.4)));
+        const nextScale = Math.min(12, Math.max(1, this.scale + (e.deltaY > 0 ? -0.4 : 0.4)));
         
         if (nextScale !== this.scale) { 
           this.translateX = mx - ((mx - this.translateX) / this.scale) * nextScale; 
@@ -268,7 +268,7 @@ const MapEngine = {
             e.touches[0].clientY - e.touches[1].clientY
           );
           const scaleChange = currentDistance / this.initialPinchDistance;
-          const nextScale = Math.min(6, Math.max(1, this.initialScale * scaleChange));
+          const nextScale = Math.min(12, Math.max(1, this.initialScale * scaleChange));
           
           this.translateX = this.pinchCenterX - ((this.pinchCenterX - this.initialTranslateX) / this.initialScale) * nextScale;
           this.translateY = this.pinchCenterY - ((this.pinchCenterY - this.initialTranslateY) / this.initialScale) * nextScale;
