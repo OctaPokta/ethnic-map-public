@@ -12,8 +12,6 @@ const MapEngine = {
     
     MAP_ORIGINAL_W: 6194,
     MAP_ORIGINAL_H: 3876,
-    MAP_ORIGINAL_W: 6194,
-    MAP_ORIGINAL_H: 3876,
   
     init() {
       this.mapViewport = document.getElementById('map-viewport');
@@ -59,9 +57,52 @@ const MapEngine = {
         pin.style.transform = `translate(-50%, -50%) scale(${invScale})`;
       });
 
-      if (window.UI && UI.debugPanel) {
-          UI.debugPanel.innerText = `view: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(this.translateX)}, y: ${Math.round(this.translateY)} }`;
-      }
+      this.updateDebugPanel();
+    },
+
+    // 🔥 NEW: Screen-Independent Universal Coordinate Calculator
+    updateDebugPanel() {
+        if (!window.UI || !UI.debugPanel) return;
+
+        const currentW = this.mapViewport.clientWidth;
+        const currentH = this.mapViewport.clientHeight;
+        if (currentW === 0 || currentH === 0) return;
+
+        const IMG_RATIO = this.MAP_ORIGINAL_W / this.MAP_ORIGINAL_H;
+
+        // 1. Find actual image center percentage based on current view
+        let currWrapperW, currWrapperH, currOffsetX, currOffsetY;
+        if (currentW / currentH > IMG_RATIO) {
+            currWrapperH = currentH; currWrapperW = currentH * IMG_RATIO;
+            currOffsetX = (currentW - currWrapperW) / 2; currOffsetY = 0;
+        } else {
+            currWrapperW = currentW; currWrapperH = currentW / IMG_RATIO;
+            currOffsetX = 0; currOffsetY = (currentH - currWrapperH) / 2;
+        }
+
+        const rawX = ((currentW / 2) - this.translateX) / this.scale;
+        const rawY = ((currentH / 2) - this.translateY) / this.scale;
+        const pctX = (rawX - currOffsetX) / currWrapperW;
+        const pctY = (rawY - currOffsetY) / currWrapperH;
+
+        // 2. Translate that percentage into the standardized BASE_W/BASE_H system
+        const BASE_W = 1536; const BASE_H = 864;
+        let baseWrapperW, baseWrapperH, baseOffsetX, baseOffsetY;
+        if (BASE_W / BASE_H > IMG_RATIO) {
+            baseWrapperH = BASE_H; baseWrapperW = BASE_H * IMG_RATIO;
+            baseOffsetX = (BASE_W - baseWrapperW) / 2; baseOffsetY = 0;
+        } else {
+            baseWrapperW = BASE_W; baseWrapperH = BASE_W / IMG_RATIO;
+            baseOffsetX = 0; baseOffsetY = (BASE_H - baseWrapperH) / 2;
+        }
+
+        const baseRawX = (pctX * baseWrapperW) + baseOffsetX;
+        const baseRawY = (pctY * baseWrapperH) + baseOffsetY;
+
+        const standardizedX = (BASE_W / 2) - (baseRawX * this.scale);
+        const standardizedY = (BASE_H / 2) - (baseRawY * this.scale);
+
+        UI.debugPanel.innerText = `view: { scale: ${this.scale.toFixed(2)}, x: ${Math.round(standardizedX)}, y: ${Math.round(standardizedY)} }`;
     },
   
     flyToView(countryKey) { 
@@ -157,7 +198,6 @@ const MapEngine = {
   
       this.mapViewport.addEventListener('click', () => {
         if (this.hasDragged) return;
-        // Map clicks without drag will no longer do anything since hover detection is removed
       });
       
       document.addEventListener('mouseup', (e) => { 
