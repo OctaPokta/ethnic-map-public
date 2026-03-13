@@ -218,3 +218,20 @@
         width: var(--target-width);
     }
 }
+
+/* ==========================================
+   FIX: Title Overlap & Safe Zones
+   ========================================== */
+#info-panel h2,
+#info-panel-content h2,
+.dossier-panel h2,
+.dynamic-dossier h2 {
+    padding-left: 3.5rem; /* Creates a safe zone on the left for the X button */
+    padding-right: 0.5rem;
+    line-height: 1.3;     /* Keeps longer titles looking neat if they drop to a second line */
+}
+
+/* Ensure the close button always stays on top */
+.close-info-btn {
+    z-index: 10;
+}

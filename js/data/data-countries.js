@@ -2,6 +2,185 @@
 // 🌍 COUNTRY & DEMOGRAPHIC DATA
 // ==========================================
 window.DashboardData.countries = {
+
+    bahrain: {
+      hebrewName: "בחריין 🇧🇭",
+      view: { scale: 8.00, x: -6249, y: -4138 },
+      ethnicImage: "images/countries-ethnic/ethnic-bahrain.webp", 
+      labelImage: "images/countries-labels/labels-bahrain.webp",
+      demographics: [
+        { 
+            name: "כוח עבודה מדרום אסיה", 
+            percent: 43, 
+            color: "#828282", // Gray
+            image: "images/ethnicities/south_asians_bahrain_workers.webp",
+            desc: "הקבוצה הכוללת הגדולה ביותר במדינה (הודים, פקיסטנים, בנגלדשים). הם מהווים את הבסיס לכוח העבודה בתעשייה, בבנייה ובשירותים, ומרוכזים בעיקר בבירה מנאמה.",
+            language: "הינדי, אורדו, מלאיאלאם", 
+            religion: "הינדואיזם, אסלאם סוני" 
+        },
+        { 
+            name: "בחריינים שיעים (בחרנה)", 
+            percent: 31, 
+            color: "#E28CA6", // Blue (Dominant native color)
+            image: "images/ethnicities/baharna.webp",
+            desc: "התושבים הערבים הילידים והמקוריים של האי (ה'בחרנה'). למרות שהם מהווים רוב מוחלט בקרב אזרחי המדינה (כ-65-70% מהאזרחים), הם מודרים מרוב מוקדי הכוח הפוליטיים והביטחוניים.",
+            language: "ערבית (ניב בחרני)", 
+            religion: "אסלאם שיעי" 
+        },
+        { 
+            name: "בחריינים סונים (ומשפחת המלוכה)", 
+            percent: 15, 
+            color: "#8A1538", // Red
+            image: "images/ethnicities/sunni_bahrainis.webp",
+            desc: "המיעוט השולט במדינה, הכולל את משפחת המלוכה (אל-ח'ליפה) ושבטים ערביים שהיגרו לאי במאות הקודמות. הם מחזיקים ברוב העמדות הממשלתיות, הפוליטיות והכלכליות הבכירות.",
+            language: "ערבית (ניב מפרצי)", 
+            religion: "אסלאם סוני" 
+        },
+        { 
+            name: "מהגרים ערבים ממדינות אחרות", 
+            percent: 6, 
+            color: "#10b981", // Emerald Green
+            image: "images/ethnicities/other-arabs-bahrain.webp",
+            desc: "מהגרים מצרים, ירדנים, סורים ותימנים. חלק ניכר מהם משרתים בכוחות הביטחון, הצבא והמשטרה של בחריין, כחלק ממדיניות הממשל לאזן את הרוב השיעי.",
+            language: "ערבית", 
+            religion: "אסלאם סוני" 
+        },
+        { 
+            name: "פיליפינים ודרום-מזרח אסיה", 
+            percent: 4, 
+            color: "#a855f7", // Purple
+            image: "images/ethnicities/filipinos.webp",
+            desc: "עובדי שירותים, קמעונאות, סיעוד ואירוח, המהווים קהילה חשובה ומשמעותית בכלכלה המקומית המודרנית.",
+            language: "טגלוג, אנגלית", 
+            religion: "נצרות קתולית" 
+        },
+        { 
+            name: "אנשי פיננסים מערביים ואחרים", 
+            percent: 1, 
+            color: "#f59e0b", // Amber
+            image: "images/ethnicities/bahrain-westerners.webp",
+            desc: "קהילה קטנה אך בעלת השפעה של מומחים, מהנדסים ואנשי פיננסים מאירופה וארה״ב, המועסקים במגזרי הבנקאות (בחריין היא מרכז פיננסי אזורי) והנפט.",
+            language: "אנגלית", 
+            religion: "נצרות, חילונים" 
+        }
+      ]
+    },
+    qatar: {
+      hebrewName: "קטאר 🇶🇦",
+      view: { scale: 8.00, x: -6383, y: -4291 },
+      ethnicImage: "images/countries-ethnic/ethnic-Qatar.webp", 
+      labelImage: "images/countries-labels/labels-Qatar.webp", // Change to null if baked in
+      demographics: [
+        { 
+            name: "פועלים מדרום אסיה", 
+            percent: 65, 
+            color: "#828282", // Gray/Silver 
+            image: "images/ethnicities/south_asians_qatar.webp",
+            desc: "הקבוצה הגדולה ביותר בקטאר, הכוללת בעיקר יוצאי הודו, נפאל, בנגלדש ופקיסטן. הם מהווים את עמוד השדרה של שוק העבודה הקטארי, במיוחד בתחומי הבנייה והתשתיות.",
+            language: "הינדי, מלאיאלאם, נפאלית, אורדו", 
+            religion: "הינדואיזם, אסלאם" 
+        },
+        { 
+            name: "קטרים (אזרחים ילידים)", 
+            percent: 12, 
+            color: "#8A1538", // Qatar Maroon
+            image: "images/ethnicities/qataris.webp",
+            desc: "האזרחים המקוריים של המדינה. למרות היותם מיעוט קטן, הם נהנים מעושר עצום המבוסס על משאבי הגז והנפט של המדינה, ומחזיקים בכל מוקדי הכוח הפוליטי והכלכלי.",
+            language: "ערבית (ניב מפרצי)", 
+            religion: "אסלאם סוני (והאבי)" 
+        },
+        { 
+            name: "מהגרים ערבים", 
+            percent: 10, 
+            color: "#10b981", // Emerald Green
+            image: "images/ethnicities/arab-qataris.webp",
+            desc: "מהגרים מצרים, סורים, לבנונים וירדנים. רבים מהם מועסקים במגזר הציבורי, בחינוך, בתקשורת (כמו רשת אל-ג'זירה) וברפואה.",
+            language: "ערבית", 
+            religion: "אסלאם סוני, נצרות" 
+        },
+        { 
+            name: "פיליפינים ודרום-מזרח אסיה", 
+            percent: 8, 
+            color: "#3b82f6", // Blue
+            image: "images/ethnicities/filipinos-qatar.webp",
+            desc: "מהגרים מהפיליפינים ומאינדונזיה, המועסקים בעיקר בתחומי שירותי הבריאות, האירוח, הקמעונאות ועבודות משק בית.",
+            language: "טגלוג, אנגלית", 
+            religion: "נצרות קתולית, אסלאם" 
+        },
+        { 
+            name: "בכירים מערביים ואחרים", 
+            percent: 5, 
+            color: "#d97706", // Gold
+            image: "images/ethnicities/western-qataris.webp",
+            desc: "מומחים, מהנדסים ומנהלים מאירופה, אמריקה הצפונית ומדינות אחרות, המרוכזים לרוב בתעשיות הגז, הפיננסים, ובתפקידי ניהול בכירים.",
+            language: "אנגלית", 
+            religion: "נצרות, חילונים" 
+        }
+      ]
+    },
+    uae: {
+      hebrewName: "איחוד האמירויות 🇦🇪",
+      view: { scale: 4.40, x: -3549, y: -2280 },
+      ethnicImage: "images/countries-ethnic/ethnic-uae.webp", 
+      labelImage: "images/countries-labels/labels-uae.webp", // Change to null if labels are baked into the ethnicImage
+      demographics: [
+        { 
+            name: "מהגרי עבודה דרום אסייתים", 
+            percent: 59, 
+            color: "#828282", 
+            image: "images/ethnicities/south_asians.webp",
+            desc: "מהווים את רוב אוכלוסיית המדינה וכוח העבודה העיקרי בה, החל מתשתיות ובנייה ועד לטכנולוגיה. רוב ה'מהגרים' המסומנים במפה משתייכים לקבוצה זו.",
+            language: "הינדי, אורדו, אנגלית", 
+            religion: "הינדואיזם, אסלאם" 
+        },
+        { 
+            name: "אמירתים (אזרחים ילידים)", 
+            percent: 11, 
+            color: "#CE3D42", 
+            image: "images/ethnicities/emiratis.webp",
+            desc: "האזרחים הילידים של האמירויות. למרות שהם מיעוט קטן בארצם (מרוכזים בעיקר באבו דאבי ואל עין), הם מחזיקים בשליטה הפוליטית המלאה.",
+            language: "ערבית (ניב מפרצי)", 
+            religion: "אסלאם סוני (ברובו)" 
+        },
+        { 
+            name: "מערביים ואחרים", 
+            percent: 12, 
+            color: "#606060", 
+            image: "images/ethnicities/westerners.webp",
+            desc: "קהילה גדולה של גולים מאירופה, צפון אמריקה ואוסטרליה. מועסקים לרוב במגזרים פיננסיים, נדל״ן ותיירות, ומרוכזים באזורי היוקרה של דובאי.",
+            language: "אנגלית, שפות אירופאיות", 
+            religion: "נצרות, חילונים" 
+        },
+        { 
+            name: "ערבים ממדינות אחרות", 
+            percent: 10, 
+            color: "#10b981", 
+            image: "images/ethnicities/other_arabs.webp",
+            desc: "מהגרים ממדינות ערב השכנות (כגון מצרים, ירדן, סוריה ולבנון), המגיעים לאמירויות בחיפוש אחר הזדמנויות כלכליות ומשתלבים במעמד הביניים.",
+            language: "ערבית", 
+            religion: "אסלאם, נצרות" 
+        },
+        { 
+            name: "פיליפינים ודרום-מזרח אסיה", 
+            percent: 6, 
+            color: "#3b82f6", 
+            image: "images/ethnicities/filipinos.webp",
+            desc: "קהילה משמעותית המורכבת בעיקר ממהגרים מהפיליפינים, המועסקים רבות בתחומי השירותים, הרפואה, הקמעונאות והאירוח.",
+            language: "טגלוג, אנגלית", 
+            religion: "נצרות קתולית" 
+        },
+        { 
+            name: "בדואים", 
+            percent: 2, 
+            color: "#CCA635", 
+            image: "images/ethnicities/bedouins.webp",
+            desc: "שבטי נוודים החיים באזורי המדבר הפנימיים והדרומיים של האמירויות. שומרים על קשר לאורח החיים ההיסטורי, למרות שרובם השתלבו בחברה המודרנית.",
+            language: "ערבית (ניב בדואי)", 
+            religion: "אסלאם סוני" 
+        }
+      ]
+    },
+
     Iran: {
         hebrewName: "איראן 🇮🇷",
         view: { scale: 1.50, x: -835, y: -125 },
