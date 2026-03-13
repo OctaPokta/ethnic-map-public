@@ -25,8 +25,8 @@ window.DashboardData = {
     poweredByBrand: "The Security Front",
     showUnderDevelopment: true,
     underDevelopmentText: "🚧 תחת פיתוח 🚧",
-    versionText: "Beta v1.1.0",
-    releaseNotesLink: "https://github.com/OctaPokta/ethnic-map-public/releases/tag/v1.1.0-Beta" // 🔥 NEW: Link to release notes
+    versionText: "Beta v1.1.1",
+    releaseNotesLink: "https://github.com/OctaPokta/ethnic-map-public/releases/tag/v1.1.1-Beta" // 🔥 NEW: Link to release notes
   },
 
   // --- 2. BASE IMAGE PATHS ---
