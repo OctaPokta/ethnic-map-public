@@ -385,7 +385,66 @@ window.DashboardData.countries = {
             { name: "כורדים", percent: 1.2, color: "#eab308", image: "images/ethnicities/kurds.webp", desc: "המיעוט האתני הגדול בארמניה, החי בעיקר באזורים הכפריים וההרריים של מערב המדינה. קהילה זו מורכבת ברובה המוחלט מיזידים (דת פוליתאיסטית ייחודית) ולצידם כורדים מוסלמים.", language: "כורדית (קורמאנג'י)", religion: "יזידיזם / אסלאם סוני" },
             { name: "רוסים", percent: 0.3, color: "#94a3b8", image: "images/ethnicities/russians.webp", desc: "קבוצה אתנית סלאבית מזרחית. נוכחותם במדינה קשורה בעיקר להיסטוריה של האימפריה הרוסית וברית המועצות, והם מתגוררים כיום בעיקר בבירה ירוואן.", language: "רוסית", religion: "נצרות (אורתודוקסית)" }
         ]
-    }
+    },
+    Georgia: {
+        hebrewName: "גאורגיה 🇬🇪",
+        // שים לב: תצטרך להשתמש בכלי הדיבאג שלך כדי לדייק את הקואורדינטות האלו!
+        view: { scale: 3.80, x: -2200, y: 150 }, 
+        ethnicImage: "images/countries-ethnic/ethnic-Georgia.webp",
+        labelImage: "images/countries-labels/labels-Georgia.webp",
+        demographics: [
+            {
+                id: "georgians",
+                name: "גאורגים",
+                percent: 82,
+                color: "#ff6b6b", // Red (Matches your map)
+                image: "images/ethnicities/georgians.webp",
+                desc: "הקבוצה האתנית המרכזית והילידית של גאורגיה. בעלי היסטוריה עתיקה, תרבות עשירה ושפה ייחודית (שפה כרתוולית) שאינה שייכת לאף משפחת שפות גדולה אחרת.",
+                language: "גאורגית",
+                religion: "נצרות (הכנסייה האורתודוקסית הגאורגית)"
+            },
+            {
+                id: "georgia_armenians",
+                name: "ארמנים",
+                percent: 5,
+                color: "#3b82f6", // Blue (Matches your map)
+                image: "images/ethnicities/armenians.webp",
+                desc: "מיעוט היסטורי משמעותי, המתרכז בעיקר באזור הדרומי (סאמצחה-ג'אוואחתי) סמוך לגבול עם ארמניה, וכן בבירה טביליסי.",
+                language: "ארמנית, גאורגית",
+                religion: "נצרות (הכנסייה האפוסטולית הארמנית)"
+            },
+            {
+                id: "abkhazians",
+                name: "אבחזים",
+                percent: 2,
+                color: "#65a30d", // Olive Green (Matches your map)
+                image: "images/ethnicities/abkhazians.webp",
+                desc: "עם קווקזי החי בחבל אבחזיה שבצפון-מערב המדינה, על חוף הים השחור. האזור מתפקד כרפובליקה בדלנית הנתמכת על ידי רוסיה מאז שנות ה-90.",
+                language: "אבחזית, רוסית",
+                religion: "נצרות אורתודוקסית, אסלאם סוני"
+            },
+            {
+                id: "ossetians",
+                name: "אוסטים",
+                percent: 1.5,
+                color: "#fde047", // Yellow (Matches your map)
+                image: "images/ethnicities/ossetians.webp",
+                desc: "קבוצה אתנית ממוצא איראני החיה בחבל דרום אוסטיה (מרכז-צפון גאורגיה). בדומה לאבחזיה, זהו אזור בדלני בעל ממשל עצמאי דה-פקטו בחסות רוסית.",
+                language: "אוסטית, רוסית",
+                religion: "נצרות אורתודוקסית"
+            },
+            {
+                id: "georgia_others",
+                name: "אזרים, רוסים ואחרים",
+                percent: 9.5,
+                color: "#828282", // Gray
+                image: "images/ethnicities/georgia_others.webp",
+                desc: "כולל מיעוט גדול של אזרים (בדרום-מזרח המדינה), רוסים, ומיעוטים קטנים נוספים המפוזרים בעיקר בערים הגדולות ובאזורי הגבול.",
+                language: "אזרית, רוסית, מגוון",
+                religion: "אסלאם שיעי, נצרות"
+            }
+        ]
+    },
 };
 
 // 🔥 NEW: Regional Ethnicity Config Data (with dedicated pan-regional descriptions!)
