@@ -17,8 +17,6 @@ Object.assign(window.UI, {
         }
     }, 1000);
 
-
-
     document.getElementById('donation-btn').addEventListener('mouseenter', () => { if (window.matchMedia("(min-width: 951px)").matches) SoundEngine.play('coffee-hover'); });
     const donationBtn = document.getElementById('donation-btn');
     const donationCallout = document.getElementById('donation-callout');
@@ -206,5 +204,26 @@ Object.assign(window.UI, {
     });
 
     if (window.matchMedia("(max-width: 1024px)").matches) document.querySelector('.sidebar').classList.add('collapsed');
+
   }
 });
+
+// ==========================================
+// 🔥 OIL FIELDS TOGGLE (Global Scope)
+// ==========================================
+window.toggleOilFields = function(event) {
+    if (event) event.stopPropagation();
+    
+    const overlay = document.getElementById('oil-fields-overlay');
+    const btn = document.getElementById('oil-toggle-btn');
+    
+    if (overlay.classList.contains('active-overlay')) {
+        overlay.classList.remove('active-overlay');
+        btn.classList.remove('active');
+        if (window.audioManager) window.audioManager.playSound('click');
+    } else {
+        overlay.classList.add('active-overlay');
+        btn.classList.add('active');
+        if (window.audioManager) window.audioManager.playSound('click'); 
+    }
+};
